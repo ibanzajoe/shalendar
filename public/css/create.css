@@ -1,0 +1,236 @@
+@font-face{font-family:appleLogo;src:url("/font/lato-light.woff2");unicode-range:U+F8FF}
+.tiny{font-size:.7rem}
+.small{font-size:.9rem}
+.no_pointer_events{pointer-events:none}
+.logo_link{display:inline-block}
+.fs_split{position:absolute;overflow:hidden;width:100%;top:0;bottom:0;left:0;right:0;background-color:#e8e8e8;-webkit-transition:background-color .2s ease-out 0s;-moz-transition:background-color .2s ease-out 0s;transition:background-color .2s ease-out 0s}
+.fs_split h1{font-size:2.625rem;line-height:3rem;font-weight:300;margin-bottom:2rem}
+.fs_split label{margin-bottom:.5rem}
+.fs_split .desc{font-size:1.25rem;color:#9e9ea6;margin-bottom:2rem}
+.fs_split .email{color:#555459;font-weight:700}
+.fs_split .header_error_message{margin:0 11%;padding:1rem 2rem;background:#fff1e1;border:none;border-left:.5rem solid #ffa940;border-radius:.25rem}
+.fs_split .header_error_message h3{margin:0}
+.fs_split .error_message{display:none;font-weight:700;color:#ffa940}
+.fs_split .error input,.fs_split .error textarea{border:1px solid #ffa940;background:#fff1e1}
+.fs_split .error input:focus,.fs_split .error textarea:focus{border-color:#fff1e1;box-shadow:0 0 7px rgba(255,185,100,.15)}
+.fs_split .error .error_message{display:inline}
+.fs_split_pane{height:100%}
+.fs_split_pane .fs_split_flex_wrapper{position:relative;min-height:100%;font-size:1rem;display:-webkit-box;display:-webkit-flex;display:-moz-flex;display:-ms-flexbox;display:flex;-ms-flex-direction:column;-moz-flex-direction:column;-webkit-flex-direction:column;flex-direction:column;-ms-flex-pack:justify;-webkit-box-pack:justify;-webkit-justify-content:space-between;-moz-justify-content:space-between;justify-content:space-between}
+.fs_split_pane .fs_split_mini_header{-webkit-align-self:flex-start;-moz-align-self:flex-start;-ms-flex-item-align:flex-start;align-self:flex-start;display:none}
+.fs_split_pane .fs_split_header{-webkit-align-self:flex-start;-moz-align-self:flex-start;-ms-flex-item-align:flex-start;align-self:flex-start;width:100%;padding:1rem}
+.fs_split_pane .fs_split_body{padding:0 12%;position:relative;-webkit-align-self:center;-moz-align-self:center;-ms-flex-item-align:center;align-self:center;max-width:100%}
+.fs_split_pane .fs_split_body .fs_split_graphics{position:absolute;height:100%;width:76%;background-position:50%;background-repeat:no-repeat;background-size:contain;-webkit-transition:height .5s ease-out 0s;-moz-transition:height .5s ease-out 0s;transition:height .5s ease-out 0s}
+.fs_split_pane .fs_split_footer{padding:.5rem 12%;margin:0 auto;text-align:center;-webkit-align-self:flex-end;-moz-align-self:flex-end;-ms-flex-item-align:flex-end;align-self:flex-end;max-width:100%}
+.fs_split_pane .fs_split_well{padding:.8rem;max-width:initial;font-size:.8rem;line-height:1.2rem;color:#434245;background-color:#f2f2f5;border-radius:.25rem;order:1}
+.fs_split_pane .fs_split_well a{color:#434245;font-weight:400}
+.fs_split_pane .fs_split_footer:last-of-type{padding-bottom:2rem}
+.fs_split_pane_left{background-color:#fff;color:#434245;width:50%;min-width:486px;max-width:624px;float:left;z-index:1;overflow-y:auto;word-wrap:break-word}
+.fs_split_pane_left>*{flex:1 0 auto}
+.fs_split_pane_left .fs_split_header{text-align:left}
+.fs_split_pane_left .fs_split_body{width:100%}
+.fs_split_pane_right{width:auto;overflow:hidden}
+.fs_split_pane_right .fs_split_flex_wrapper{max-width:750px;margin:auto;height:100%}
+.fs_split_pane_right .fs_split_header{text-align:right}
+.fs_split_pane_right .fs_split_body{width:100%;-ms-flex:1;-webkit-flex:1;flex:1}
+.fs_split_pane_full_width{background-color:#fff;width:100%;overflow-y:auto}
+.fs_split_pane_full_width .fs_split_flex_wrapper{width:30rem;min-height:90%;margin:auto;-ms-flex-pack:start;-webkit-box-pack:start;-webkit-justify-content:flex-start;-moz-justify-content:flex-start;justify-content:flex-start}
+.fs_split_pane_full_width .fs_split_header{text-align:left}
+.fs_split_pane_full_width .fs_split_body{padding:0 1rem;margin-bottom:1rem}
+.fs_split_pane_full_width .fs_split_footer:last-of-type{padding:.5rem 1rem}
+.modal-backdrop{background:#000}
+#generic_dialog{max-width:500px;top:20%}
+#generic_dialog .modal-body{padding:2rem 2rem 0rem}
+#generic_dialog .modal-body h1{font-size:2.25rem;line-height:2.4375rem;font-weight:300;margin-bottom:1rem}
+#generic_dialog .modal-body p{color:#9e9ea6}
+#generic_dialog .modal-footer a{height:52px;padding:1rem;font-size:1rem}
+#generic_dialog .modal-footer .dialog_go{line-height:1rem}
+#generic_dialog .modal-footer .dialog_go .ts_icon_arrow_right{opacity:.7;font-size:1.5rem;vertical-align:middle;margin:0}
+@media only screen and (max-height:44rem) and (min-width:767px){.fs_split{display:table;overflow:scroll}
+    .fs_split .fs_split_pane{display:table-cell;vertical-align:top;overflow:hidden!important}
+    .fs_split .fs_split_pane_right{width:100%}
+    .fs_split .fs_split_pane_right .fs_split_flex_wrapper{height:100%}
+    .fs_split .fs_split_pane_left{min-height:100%;width:486px}
+}
+@media only screen and (max-width:767px){.fs_split .fs_split_pane h1{font-size:2.25rem}
+    .fs_split .fs_split_pane .fs_split_flex_wrapper{display:block;max-height:initial;max-width:420px;margin:auto}
+    .fs_split .fs_split_pane .fs_split_flex_wrapper .fs_split_body{padding:0 1rem 3rem}
+    .fs_split .fs_split_pane .fs_split_flex_wrapper .fs_split_mini_header{display:block}
+    .fs_split .fs_split_pane .fs_split_flex_wrapper .fs_split_footer{padding:.5rem 1rem}
+    .fs_split .fs_split_pane_left{width:100%;min-width:inherit;max-width:inherit;overflow:scroll;-webkit-overflow-scrolling:touch}
+    .fs_split .fs_split_pane_right{display:none}
+    .fs_split .fs_split_pane_full_width .fs_split_flex_wrapper .fs_split_body{padding:0 1rem}
+    #generic_dialog{margin:0!important;width:75%;left:12.5%;right:12.5%;bottom:initial}
+    #generic_dialog .modal-footer a{width:100%;margin:.5rem 0!important}
+}
+@media only screen and (max-width:414px){#generic_dialog{margin:0!important;width:100%;border-radius:0;top:10%;left:0;right:0}
+    #generic_dialog .modal-footer{border-radius:0}
+}
+.split_input{display:table;border-spacing:0}
+.split_input_item{display:table-cell;border:1px solid #9e9ea6}
+.split_input_item:not(:first-child){border-left:none}
+.split_input_item:first-child{border-top-left-radius:5px;border-bottom-left-radius:5px}
+.split_input_item:last-child{border-top-right-radius:5px;border-bottom-right-radius:5px}
+.split_input_item.focused{border:1px double #2780f8;box-shadow:0 0 7px rgba(39,128,248,.3)}
+.split_input_item input{height:5rem;text-align:center;font-size:2.5rem;border:none;background:0 0;box-shadow:none}
+.split_input_item input:active,.split_input_item input:focus,.split_input_item input:hover{box-shadow:none}
+img#slack_logo{flex-grow:0}
+#signup_graphics{-webkit-transition:opacity .2s,background-position .2s;-moz-transition:opacity .2s,background-position .2s;transition:opacity .2s,background-position .2s}
+#signup_graphics.hide_image_loading{opacity:0}
+#electron_header{position:absolute;top:0;left:0;height:70px;width:100%;z-index:2;background-color:#fff;box-shadow:0 1px 1px rgba(0,0,0,.1)}
+#electron_header #slack_logo{position:relative;left:50%;-webkit-transform:translateX(-50%);-moz-transform:translateX(-50%);-ms-transform:translateX(-50%);transform:translateX(-50%)}
+#electron_header~.full_height.fs_split{padding-top:70px}
+#electron_header~.full_height.fs_split #slack_logo,#electron_header~.full_height.fs_split .logo_link{opacity:0;-moz-opacity:0;-khtml-opacity:0;height:0;margin:0 0 70px;overflow:hidden}
+#signup_flow[data-step=email]{background-color:#21b2fe}
+#signup_flow[data-step=confirm_email]{background-color:#18be8c}
+#signup_flow[data-step=password]{background-color:#6d438e}
+#signup_flow[data-step=password] #signup_graphics_pane .fs_split_footer,#signup_flow[data-step=password] #signup_graphics_pane .fs_split_header{-ms-flex:.5;-webkit-flex:.5;flex:.5}
+#signup_flow[data-step=password] #signup_graphics_pane .fs_split_body{-ms-flex:2;-webkit-flex:2;flex:2;max-height:682px}
+#signup_flow[data-step=invites],#signup_flow[data-step=google_invite],#signup_flow[data-step=teaminfo]{background-color:#21b2fe}
+#signup_flow[data-step=teamname]{background-color:#6d438e}
+#signup_flow[data-step=signin] #signup_graphics,#signup_flow[data-step=confirm] #signup_graphics,#signup_flow[data-step=teamname] #signup_graphics{background-position:0;width:200%}
+#signup_flow[data-step=google_auth]{background-color:#4d6dc3}
+#signup_flow[data-step=url]{background-color:#f92765}
+#signup_flow[data-step=name]{background-color:#18be8c}
+#signup_flow[data-step=signin],#signup_flow[data-step=confirm]{background-color:#ffaf62}
+#signup_flow[data-step=invites] .btn_large,#signup_flow[data-step=google_invite] .btn_large{padding:14px 14px 16px}
+#find_team{z-index:1;color:#fff;font-size:1rem;text-align:right}
+@media only screen and (max-width:975px) and (min-width:767px){#find_team span{display:block}
+}
+#find_team_link{font-weight:700;color:#fff;padding:.5rem 1.25rem;line-height:3rem;border:1px solid #fff;text-decoration:none;border-radius:.25rem;-webkit-transition:background .1s ease-out 0s;-moz-transition:background .1s ease-out 0s;transition:background .1s ease-out 0s;margin-left:.5rem}
+#find_team_link:hover{background:#fff;color:#555459!important}
+#find_team_mobile{-webkit-align-self:flex-start;-moz-align-self:flex-start;-ms-flex-item-align:flex-start;align-self:flex-start;text-align:center;padding:.5rem;width:100%;max-width:100%;border-bottom:1px solid #e8e8e8;font-size:.8rem;line-height:1rem}
+#find_team_mobile_link{text-decoration:underline;color:#434245}
+#legalese{display:block;text-align:center;font-size:smaller;max-width:675px!important;color:#fff;margin:1rem 3rem}
+#legalese a{color:#fff;font-weight:600}
+#legalese_mobile{width:inherit;margin:0rem 2rem 1.5rem}
+@media only screen and (max-width:767px){#legalese_mobile{padding:.8rem;max-width:initial;font-size:.8rem;line-height:1.2rem;color:#434245;background-color:#f2f2f5;border-radius:.25rem;order:1;text-align:center}
+    #legalese_mobile a{color:#434245;font-weight:400}
+}
+#signup_wrapper{position:relative}
+#signup_wrapper[data-step=invite]{max-height:100%}
+#signup_wrapper[data-step=invite] *{-ms-flex:0 0 auto;-webkit-flex:0 0 auto;flex:0 0 auto}
+#signup_wrapper.domain_claiming{display:block!important;overflow:auto!important}
+#signup_wrapper.domain_claiming .fs_split_flex_wrapper{width:38rem}
+#signup_wrapper.domain_claiming .fs_split_body{position:absolute;width:100%;height:100%;margin-bottom:0;display:flex;flex-direction:column;justify-content:center;font-size:1.125rem}
+@media only screen and (max-height:42rem) and (min-width:767px){#signup_graphics_pane[step*=email] #signup_graphics_wrapper{position:fixed;left:486px;top:0;right:0}
+    #signup_graphics_pane[step*=email] #signup_graphics_wrapper bottom:0 .fs_split_footer{padding-bottom:0}
+    #signup_graphics_pane[step*=email] #signup_graphics_wrapper .fs_split_body .fs_split_graphics{height:90%}
+}
+#custom_username_policy{max-width:initial;color:#555459;background-color:#e8e8e8;border-radius:.25rem;padding:1rem}
+#submit{min-width:100%;margin-bottom:1rem}
+#submit p{max-width:280px;margin:1rem auto}
+#submit .btn_large{padding:12px 32px 18px}
+#submit .ts_icon_arrow_right{font-size:2rem;margin:0 -.5rem 0 0;padding-left:.25rem}
+#submit .ts_icon_arrow_right:before{vertical-align:middle}
+#submit #secondary_btn{background:0 0;color:#9e9ea6!important}
+#submit #secondary_btn:hover{color:#3aa3e3!important}
+#submit #secondary_btn:after{border-width:2px}
+.send_invitations_button_container{display:-webkit-box;display:-webkit-flex;display:-moz-flex;display:-ms-flexbox;display:flex;-ms-flex-pack:justify;-webkit-box-pack:justify;-webkit-justify-content:space-between;-moz-justify-content:space-between;justify-content:space-between}
+.send_invitations_button_container .btn{-ms-flex:1;-webkit-flex:1;flex:1;padding:14px 14px 16px}
+.send_invitations_button_container .btn_outline{margin-right:.5rem}
+.input_wrapper{position:relative}
+.input_wrapper p{position:absolute;margin:.75rem;font-size:1.25rem;height:1.75rem;pointer-events:none;border-left:1px solid;border-color:rgba(0,0,0,0)}
+.input_wrapper .input_spinner{position:absolute;left:-3rem}
+.input_wrapper .input_checkmark{color:#2ab27b;background-color:#fff;text-align:right;z-index:5;right:.5rem}
+.error .input_overlay{background:#fff1e1!important}
+.confirmation_code_span_cell{display:table-cell;font-weight:700;font-size:2rem;text-align:center;padding:0 .5rem;width:2rem}
+.confirmation_code_state_message{position:absolute;width:100%;opacity:0;-webkit-transition:opacity .2s;-moz-transition:opacity .2s;transition:opacity .2s}
+.confirmation_code_state_message.error,.confirmation_code_state_message.processing,.confirmation_code_state_message.ratelimited{font-size:1.25rem;font-weight:700;line-height:2rem}
+.confirmation_code_state_message.processing{color:#3aa3e3}
+.confirmation_code_state_message.error,.confirmation_code_state_message.ratelimited{color:#ffa940}
+.confirmation_code_state_message ts-icon:before{font-size:2.5rem}
+.confirmation_code_state_message svg.ts_icon_spinner{height:2rem;width:2rem}
+.confirmation_code_checker{position:relative;height:12rem;text-align:center}
+.confirmation_code_checker[data-state=unchecked] .confirmation_code_state_message.unchecked,.confirmation_code_checker[data-state=error] .confirmation_code_state_message.error,.confirmation_code_checker[data-state=processing] .confirmation_code_state_message.processing,.confirmation_code_checker[data-state=ratelimited] .confirmation_code_state_message.ratelimited{opacity:1}
+#email_checkbox{margin:1.5rem auto}
+#email_checkbox label{font-weight:400;display:inline}
+#url_form_body input{position:relative;font-weight:700;padding-left:4.95rem}
+#url_form_body #url_overlay{font-weight:700;-webkit-transition:width 2s;-moz-transition:width 2s;transition:width 2s;max-width:95%;overflow:hidden;white-space:pre;color:rgba(0,0,0,0);z-index:5}
+#url_form_body .input_wrapper{display:flex}
+#url_form_body .input_wrapper .url_subdomain{font-weight:initial;text-align:right;width:auto;min-width:0;flex-grow:1;padding-left:2.9rem}
+#url_form_body .input_wrapper .url_domain_slack_dot_com{position:relative;margin-left:.2rem;white-space:nowrap}
+#url_form_body .input_wrapper .input_checkmark{right:auto}
+#url_form_body .input_wrapper .input_spinner{right:auto;left:initial}
+#url_form_body #url_info{min-height:8rem}
+#url_form_body #available_url_message,#url_form_body #unavailable_url_message{opacity:1;height:auto;margin-left:0;transition:opacity .4s,margin-left 0s,height 0s}
+#url_form_body #available_url_message.is_faded_out,#url_form_body #unavailable_url_message.is_faded_out{opacity:0;height:0;margin-left:-50rem;transition:opacity .4s,margin-left 0s linear .4s,height 0s linear .4s}
+#create_team_body{min-height:24rem}
+#create_team_body .create_team_section{margin-bottom:1rem;border-bottom:2px solid rgba(0,0,0,0)}
+#create_team_body .create_team_section.error{margin-bottom:0}
+#create_team_body .create_team_section .ct_input_wrapper{position:relative;margin-left:-.5rem}
+#create_team_body .create_team_section input{margin:0}
+#create_team_body .create_team_section.disabled{border-color:#babbbf}
+#create_team_body .create_team_section.disabled .ct_input_wrapper{margin-left:0}
+#create_team_body .create_team_section.disabled input{background:0 0;border:none;width:90%;font-size:1.2rem;padding:0;margin-left:0}
+#create_team_body .create_team_section.disabled .edit_btn,#create_team_body .create_team_section.disabled .names_edit_btn{display:inline-block}
+#create_team_body .create_team_section.disabled .url_create #url_checkmark{width:100%;display:none}
+#create_team_body .create_team_section.disabled .url_create #url_overlay,#create_team_body .create_team_section.signup_names_section .ct_input_wrapper{margin-left:0}
+#create_team_body .create_team_section.signup_names_section #name_input_overlay{position:relative;float:left;height:auto;margin-bottom:-.25rem;max-width:95%;word-break:break-word}
+#create_team_body .create_team_section.signup_names_section.disabled input{display:none}
+#create_team_body .create_team_section.signup_names_section.disabled #name_input_overlay{margin-left:0}
+#create_team_body .create_team_section.signup_names_section:not(.disabled) #name_input_overlay{display:none}
+#create_team_body label{font-weight:800;margin:0!important}
+#create_team_body .error_message{font-size:.9rem;margin:0}
+#create_team_body input{color:#434245;height:2.5rem;font-size:1.2rem;padding:.5rem;transition:none}
+#create_team_body input#signup_url{font-weight:400}
+#create_team_body .input_wrapper{height:2.5rem}
+#create_team_body .input_wrapper p{position:absolute;margin:.5rem;font-size:1.2rem;height:1.5rem;pointer-events:none;border:1px solid;border-color:rgba(0,0,0,0)}
+#create_team_body .input_wrapper #url_overlay{font-weight:400;color:rgba(0,0,0,0);max-width:95%;overflow:hidden;white-space:pre}
+#create_team_body .input_wrapper #url_overlay::before{content:none}
+#create_team_body .input_wrapper #url_overlay::after{color:#9e9ea6;content:".slack.com"}
+#create_team_body .edit_btn,#create_team_body .names_edit_btn{display:none;padding-top:.5rem;color:#babbbf;font-weight:700;font-size:.8rem;position:absolute;right:0;cursor:pointer}
+#create_team_body .edit_btn:focus,#create_team_body .edit_btn:hover,#create_team_body .names_edit_btn:focus,#create_team_body .names_edit_btn:hover{outline:0;text-decoration:underline}
+#invite_form_body #invite_rows{width:112%;max-height:15rem}
+#invite_form_body .invite_row{position:relative;padding-right:12%;margin-bottom:.5rem}
+#invite_form_body .invite_row:hover .delete_row{display:inline-block}
+#invite_form_body .invite_row:only-child .delete_row{display:none}
+#invite_form_body .delete_row{position:absolute;top:1rem;right:6%;color:#9e9ea6;display:none}
+#invite_form_body .delete_row:hover{display:inline-block}
+@media only screen and (min-height:42rem) and (min-width:767px){#invite_form_body{padding-top:12%;min-height:0;display:-webkit-box;display:-webkit-flex;display:-moz-flex;display:-ms-flexbox;display:flex;-ms-flex-direction:column;-moz-flex-direction:column;-webkit-flex-direction:column;flex-direction:column}
+    #invite_form_body #invite_rows{max-height:inherit}
+}
+.shared_invite_link_form_body{display:-webkit-box;display:-webkit-flex;display:-moz-flex;display:-ms-flexbox;display:flex;-ms-flex-direction:column;-moz-flex-direction:column;-webkit-flex-direction:column;flex-direction:column}
+.shared_invite_link_form_body .shared_invite_link_text{margin-top:1.75rem}
+.shared_invite_link_form_body .shared_invite_link_container{background:#f2f2f5;padding:1.5rem 2rem 2rem;border-radius:.5rem;width:110%;align-self:center}
+.shared_invite_link_form_body .shared_invite_link_label{font-weight:700}
+.shared_invite_link_form_body .shared_invite_link_input_container{display:-webkit-box;display:-webkit-flex;display:-moz-flex;display:-ms-flexbox;display:flex;background:#fff;border:1px solid #babbbf;border-radius:4px;padding:.3rem .3rem .3rem .5rem;height:auto;margin-top:.5rem}
+.shared_invite_link_form_body .shared_invite_link_input_container.focus{border-color:#2780f8}
+.shared_invite_link_form_body .shared_invite_link_input{border:none;padding:0;margin-bottom:0;cursor:pointer;padding-right:.4rem}
+.shared_invite_link_form_body .shared_invite_link_input:focus{box-shadow:none}
+.shared_invite_link_form_body .shared_invite_link_skip_container{margin:3rem 0 1rem;text-align:center}
+.shared_invite_link_back_container{margin:2rem 0;text-align:center}
+.fs_split_pane_full_width #invite_form_body{padding-top:1rem}
+.google_signin_button,.google_signin_button.hover,.google_signin_button:focus,.google_signin_button:hover{background:#39a3e2}
+.invite_contact_list_wrapper{overflow:scroll;margin-bottom:1rem;margin-right:-17px;padding-right:17px;height:55vh}
+.signup_team{display:block;border-bottom:1px solid #e8e8e8;padding:.8em 0}
+.signup_team:first-child{border-top:1px solid #e8e8e8}
+.signup_more_teams .signup_team:first-child{border-top:none}
+.signup_team .btn{min-width:80px}
+.signup_team_ellipsis{overflow:hidden;width:auto;padding-right:1em;text-overflow:ellipsis;white-space:nowrap}
+.signup_team_more_btn{display:block;margin:0 auto}
+.signup_team_more_btn:hover{text-decoration:underline}
+.signup_loading_wrapper{position:absolute;top:50%;left:50%;transform:translateX(-50%) translateY(-50%)}
+.create_step_number_label{color:#a0a0a2;font-weight:700}
+.minimal_ui_legalese{font-size:.85rem;line-height:1.2rem;text-align:center;color:#a0a0a2;padding:0 .5rem 1rem}
+.minimal_ui_legalese a{color:#a0a0a2}
+.minimal_ui_email_misc_checkbox{margin:1rem auto}
+.minimal_ui_email_misc_checkbox label{font-weight:400;display:inline}
+.team_info_question{margin-top:1.6rem}
+.team_info_question label{margin-bottom:0}
+.team_info_question label:after{right:1rem;bottom:.9rem}
+.team_info_question input{margin-top:.25rem;margin-bottom:0}
+.team_info_select{margin-bottom:0}
+.team_info_select.unanswered{color:gray}
+.form_text_placeholder{margin-top:2rem}
+.form_text_placeholder_title{height:.75rem;background:rgba(0,0,0,.06);border-radius:3rem;width:55%}
+.form_text_placeholder_body{height:3rem;background:rgba(0,0,0,.06);margin-top:.75rem;border-radius:.15rem}
+label.signup_whitelist_domain_notice{position:relative;padding-left:2rem;margin-bottom:0}
+label.signup_whitelist_domain_notice input[type=checkbox]{top:.2rem;left:0}
+@media only screen and (max-width:1300px){.legalese{max-width:500px!important}
+}
+@media only screen and (max-width:767px){.input_wrapper .input_spinner{left:initial!important;right:2rem}
+    #email_checkbox{margin:1rem}
+    .send_invitations_button_container{-ms-flex-direction:column;-moz-flex-direction:column;-webkit-flex-direction:column;flex-direction:column}
+    .send_invitations_button_container .btn{-ms-flex:none;-webkit-flex:none;flex:none;max-width:100%;margin-right:0;margin-bottom:.5rem}
+    .shared_invite_link_skip_container{margin-top:2rem}
+}
