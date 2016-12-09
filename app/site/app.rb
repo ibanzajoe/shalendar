@@ -164,7 +164,7 @@ module Honeybadger
     ### Test Landing Page ###
 
     get '/landing' do
-      render "landing"
+      render "landing2"
     end
 
 
