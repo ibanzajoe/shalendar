@@ -1,0 +1,52 @@
+<nav class="nav main">
+  <a class="nav-item is-brand" href="/dashboard">
+    <img src="/site/img/bambee_mark.svg" alt="Logo" />
+  </a>
+  <div class="nav-left">
+    <a class="nav-item" href="/dashboard/my/employees">
+      <h1 class="title">Manage Employees</h1>
+    </a>
+    <a class="nav-item is-<%= set_active_on_match(/employee/) %>" href="/dashboard/employee/wizard?next=pip">
+      <h1 class="title">Create Performance Plan</h1>
+    </a>
+  </div>
+
+  <div class="nav-right nav-menu {this.opts.mobile_menu_expanded ? 'is-active' : ''}">
+    <div class="nav-item">
+      <a href="/dashboard/manager/wizard" class="button is-secondary is-outlined is-medium">+ New Manager</a>
+      <a href="/dashboard/my/employees#employee-search" class="search-icon">
+        <i class="ion-ios-search-strong"></i>
+      </a>
+    </div>
+
+    <div class="nav-item profile">
+      <div class="image is-64x64 is-round">
+        <img :src="user.avatar_url" />
+      </div>
+
+      <i class="fa fa-angle-down fa-2x" aria-hidden="true"></i>
+      <div class="container profile-popup">
+        <aside class="menu has-text-left">
+          <h1 class="title">
+            Hi {{user.first_name}}
+          </h1>
+          <ul class="menu-list">
+            <!--<li><a href="#">My account</a></li>-->
+            <li><a href="/dashboard/my/employees">My Employees</a></li>
+            <li><a href="/dashboard/employee/wizard">+ Performance Plan</a></li>
+            <li><a href="#">Upload Documents</a></li>
+            <li><a href="/dashboard/settings">Settings</a></li>
+            <li><a href="/user/logout">Sign out</a></li>
+          </ul>
+        </aside>
+      </div>
+    </div>
+  </div>
+
+  <span class="nav-toggle" @click="mobile_expand">
+      <span></span>
+      <span></span>
+      <span></span>
+    </span>
+
+</nav>

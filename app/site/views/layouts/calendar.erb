@@ -1,0 +1,334 @@
+<!DOCTYPE HTML>
+<html>
+
+  <head>
+
+    <title>Shalendar | <%= @user[:username] %></title>
+
+    <!-- jquery -->
+    <script src='/fc/lib/jquery.min.js'></script>
+
+    <!-- utilities -->
+    <script src='/fc/lib/moment.min.js'></script>
+
+    <!-- vue -->
+    <script src='/bower_components/vue/dist/vue.min.js'></script>
+
+    <!-- bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+    <!-- fontawesome -->
+    <link rel="stylesheet" href="/bower_components/font-awesome/css/font-awesome.min.css">
+
+    <!-- sweetalert -->
+    <link rel="stylesheet" href="/bower_components/sweetalert/dist/sweetalert.css">
+    <script src="/bower_components/sweetalert/dist/sweetalert.min.js"></script>
+
+    <!-- fc -->
+    <link href='/fc/fullcalendar.css' rel='stylesheet' />
+    <link href='/fc/fullcalendar.print.css' rel='stylesheet' media='print' />
+    <script src='/fc/fullcalendar.min.js'></script>
+
+    <!-- css -->
+    <link rel="stylesheet" href="/assets/css/styles.css">
+
+    <!-- webpack -->
+    <!-- <script src='//webpack.shalendar.docker/static/bundle.js'></script> -->
+
+
+  </head>
+
+  <body class="calendar">
+
+    <div class="container-fluid">
+      <div class="row">
+
+        <!-- left -->
+        <div class="col-fixed-250 left-calendar">
+
+          <!-- <input type="text" class="form-control" placeholder="Search"> -->
+
+          <div class="left-head" >
+            My Calendars  ({{calendars.length}})
+            <span class="left-add-calendar" @click="add_calendar" v-if="has_access()">+</span>
+          </div>
+
+          <div class="left-calendars">
+            <ul>
+              <li :class="is_active_calendar('all')">
+                <!-- <i class="fa fa-calendar-o" aria-hidden="true"></i> -->
+                <a @click="set_active_calendar()">All</a>
+              </li>
+              <ul>
+                <li v-for="calendar in calendars" :class="is_active_calendar(calendar)">
+                  <!-- <i class="fa fa-circle" aria-hidden="true"></i> -->
+                  <a href="#" @click.prevent="set_active_calendar(calendar)">{{calendar.name}}</a>
+                </li>
+              </ul>
+
+            </ul>
+
+          </div>
+
+          <div class="left-footer">
+            <div v-if="current_user">
+              <p>Welcome {{current_user.first_name}}, <a href="/user/logout">Logout</a></p>
+            </div>
+            <div v-if="!current_user">
+              <p>You are not logged in, <a href="/user/login">Login</a></p>
+            </div>
+          </div>
+
+      </div>
+
+      <!-- middle -->
+      <div class="col-md-12 col-offset-250">
+
+        <div class="container-fluid">
+          <div class="row">
+
+            <!-- top nav -->
+            <!-- <div class="col-md-12 col-header top-nav">
+            <div class="row">
+            <div class="col-md-3">Shalendar</div>
+            <div class="col-md-7 col-header-search text-right">
+            <% if @current_user.blank? %>
+            <a href="">register</a>
+            <a href="">login</a>
+            <% else %>
+            <a href="/user/logout">Hi <%= @current_user[:first_name] %> </a>
+            <% end %>
+            </div>
+            <div class="col-md-2 col-header-login text-right">log in</div>
+            </div>
+            </div> -->
+
+            <div class="col-md-12 col-main-top top-calendar">
+              <div class="row">
+                <div class="col-md-1 calendar-banner"><img src="/assets/images/profile_img.jpg" height="120"></div>
+                <div class="col-md-7 col-header-description">
+                  <h2>Slack</h2>
+                  <div class="calendar-description">
+                    We provide a messaging platform that rocks and lets you host rooms
+                    and privately share conversations with team members.
+                  </div>
+                  <div class="calendar-stats">
+                    <div class=""><h4>34 following | 12 followers</h4></div>
+                  </div>
+                  <div class="calendar-follow">
+                    <div class="calendar-follow-button"><button class="btn btn-warning">Follow</button> </div>
+                  </div>
+
+                </div>
+
+              </div>
+
+              <div class="row">
+                <div id="calendar" class="col-md-12 col-main-content" style="width: 100%;"></div>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    </div>
+
+    <script>
+     new Vue({
+       el: '.left-calendar',
+       data: {
+         user: <%== @user.to_json %>,
+         current_user: <%== session[:user].to_json %>,
+         calendars: [],
+         active_calendar: null,
+         eventsources: [],
+         cal: {},
+         events: [],
+       },
+
+       mounted: function(){
+         this.get_calendars();
+         this.init_calendar();
+         this.set_active_calendar();
+         //this.get_events();
+       },
+
+       methods: {
+
+         add_eventsource: function(source){
+           this.eventsources.push(source);
+           this.cal.fullCalendar('addEventSource', source)
+         },
+
+         remove_eventsource: function(source){
+           var idx = $.inArray(source, this.eventsources)
+             console.log(idx)
+             this.cal.fullCalendar('removeEventSource', source);
+         },
+
+         has_access: function(){
+           if(!this.current_user) return false
+           if(this.user.id == this.current_user.id){
+             return true
+           }
+         },
+
+         is_active_calendar: function(calendar){
+           if(this.active_calendar && (this.active_calendar.id == calendar.id) ){
+             return 'active'
+           }
+           if(calendar == 'all' && !this.active_calendar) return 'active'
+         },
+
+         unset_calendar: function(calendar){
+           this.active_calendar = null;
+           this.eventsources = []
+           this.cal.fullCalendar('removeEventSources')
+             this.cal.fullCalendar('removeEvents')
+         },
+
+         set_active_calendar: function(calendar){
+
+           this.unset_calendar(calendar);
+
+           if(calendar){
+             console.log('active calendar', calendar)
+               this.active_calendar = calendar;
+             this.add_eventsource("/api/events?user_id="+this.user.id+"&calendar_id="+calendar.id);
+             //this.cal.fullCalendar.refetchEvents();
+             location.hash = calendar.name
+           }else{
+             this.add_eventsource("/api/events?user_id="+this.user.id);
+             location.hash = ''
+           }
+           console.log(this.eventsources)
+         },
+
+         get_calendars: function(){
+           var _this = this
+           $.get("/api/calendars", {user_id: this.user.id}, function(res){
+             _this.calendars = res
+             console.log(res)
+           })
+         },
+
+         add_calendar: function(){
+           var _this = this
+           swal({
+             title: "Add a calendar",
+             text: "What do you want to call it?",
+             type: "input",
+             showCancelButton: true,
+             closeOnConfirm: false,
+             animation: "slide-from-top",
+             inputPlaceholder: "Write something"
+           }, function(calendar_name){
+             if (calendar_name === false) return false
+             if (calendar_name === "") {
+               swal.showInputError("You need to write something!")
+                 return false
+             }
+             
+             var color = '#e6ecf1'
+
+             $.post("/api/calendar", {user_id: _this.user.id, name: calendar_name, color: color }, function(res){
+               swal("Nice!", "You just created a calendar: " + calendar_name, "success")
+                 _this.get_calendars()
+             })
+
+           })
+         },
+
+         init_calendar: function(){
+           var _this = this
+           console.log('init calendar')
+             var cal = $('#calendar')
+             _this.cal = cal
+
+           cal.fullCalendar({
+             defaultDate: moment(),
+             editable: true,
+             eventLimit: true, // allow "more" link when too many events
+             aspectRatio: 2.5,
+             firstDay: 1,
+             fixedWeekCount: false,
+             header: {
+               left: 'prev,next today',
+               center: 'title',
+               right: 'listDay,listWeek,month'
+             },
+             views: {
+               listDay: { buttonText: 'day' },
+               listWeek: { buttonText: 'week' }
+             },
+             displayEventTime: false,
+             dayClick: function (date, jsEvent, view) {
+
+               _this.show_add_event(date)
+
+             },
+
+             //events: "/api/events?user_id="+_this.user.id,
+             //eventSources: _this.eventsources,
+
+           });
+
+         },
+
+         show_add_event: function(date){
+
+           var _this = this;
+
+           if (_this.user.id == _this.current_user.id)
+             swal({
+               title: "What happened on this day?",
+               type: "input",
+               showCancelButton: true,
+               closeOnConfirm: false,
+               animation: "slide-from-top",
+               inputPlaceholder: "Write something",
+               allowOutsideClick: true
+
+             }, function (title) {
+
+               if (title) {
+
+                 // setup payload
+                 var event = {
+                   title: title,
+                   start: date.utc().format(),
+                   end: date.utc().add(1, 'day').format(),
+                 }
+
+                 // if calendar selected, add calendar_id to payload
+                 if(_this.active_calendar) event.calendar_id = _this.active_calendar.id
+
+                 // post to /api/event
+                 $.post('/api/event', event, function (res) {
+                   _this.cal.fullCalendar('renderEvent', res);
+                   swal("Nice!", "Event has been posted on your calendar", "success");
+                 })
+
+               }
+             })
+
+
+         },
+
+       }
+     })
+
+    </script>
+    <!-- <script src='/assets/js/calendar.js'></script> -->
+
+  </body>
+
+</html>

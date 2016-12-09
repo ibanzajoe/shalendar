@@ -15,7 +15,7 @@ module Honeybadger
         end
 
         def markdown(text)
-          coderayified = CodeRayify.new(:filter_html => true, 
+          coderayified = CodeRayify.new(:filter_html => true,
                                         :hard_wrap => true)
           options = {
             :fenced_code_blocks => true,
@@ -27,15 +27,19 @@ module Honeybadger
           markdown_to_html.render(text).html_safe
         end
 
+        def error_page(msg, opts)
+          redirect "/error", :error => msg
+        end
+
     end
 
     helpers SiteHelper
   end
 
 
-  
 
-  
+
+
 
 
 end

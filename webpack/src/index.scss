@@ -1,0 +1,142 @@
+$family-primary: "Lato", sans-serif;
+$blue: #4290fd;
+$primary: $blue;
+
+@import 'bulma/bulma.sass';
+
+h1, h2, h3, h4 {
+  font-family: 'Merriweather'
+}
+
+.button.is-large {
+  height: 60px;
+  font-size: 1.5rem;
+}
+
+.nav {
+  position: fixed;
+  top: 0;
+  width: 100%;
+
+  .nav-center {
+    min-width: 200px;
+  }
+
+  .nav-item.is-brand {
+    position: absolute;
+    top: 0;
+    transition: top 0.2s;
+    font-family: 'Merriweather';
+    font-weight: 700;
+    font-size: 2.75rem;
+    color: #555;
+  }
+
+  .nav-toggle {
+    position: absolute;
+  }
+}
+
+.fold {
+  padding-top: 35px;
+}
+
+.hero.fold {
+  position: relative;
+  min-height: 540px;
+  height: 100vh;
+  background-image: url("http://lemonade.com/assets/home/index/bg-skyline-combined-ac9ca47514e7fafd574df7dcf40f78a7d146e321751f4cfb7399b078d86bcdd5.svg");
+  background-position: right bottom 0px;
+  background-size: auto 35%;
+  background-repeat: repeat-x;
+
+  .hero-body {
+    align-items: flex-start;
+  }
+
+  h1 {
+    line-height: 1.3;
+    font-weight: 400;
+    font-size: 1.75rem;
+  }
+}
+
+@include tablet {
+  .nav {
+    .nav-item.is-brand {
+      position: absolute;
+      top: 50px;
+      &.has-scrolled {
+        top: 55px;
+      }
+    }
+  }
+
+
+  .hero.fold {
+    padding-top: 100px;
+    background-image: none;
+    h1 {
+      font-size: 2rem;
+    }
+
+    p {
+      font-size: 1.25rem;
+    }
+  }
+  .fold:before {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    height: 250px;
+    width: 600px;
+    background-image: url("http://lemonade.com/assets/home/index/bg-skyline-combined-ac9ca47514e7fafd574df7dcf40f78a7d146e321751f4cfb7399b078d86bcdd5.svg");
+    background-position: left bottom;
+    background-size: auto;
+  }
+
+  .fold:after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    height: 250px;
+    width: 600px;
+    background-image: url("http://lemonade.com/assets/home/index/bg-skyline-combined-ac9ca47514e7fafd574df7dcf40f78a7d146e321751f4cfb7399b078d86bcdd5.svg");
+    background-position: right bottom;
+  }
+}
+
+.calendar {
+
+  .left-calendars {
+    li {
+      cursor: pointer;
+      list-style-type: none;
+    }
+  }
+
+}
+
+@include desktop {
+  .hero.fold {
+    height: 90vh;
+
+    .hero-body {
+      align-items: center;
+    }
+
+    h1 {
+      font-size: 4rem;
+    }
+
+    p {
+      font-size: 1.75rem;
+    }
+
+    .check-prices {
+      margin-top: 30px;
+    }
+  }
+
+}

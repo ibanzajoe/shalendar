@@ -18,7 +18,8 @@ module Honeybadger
       @title = "Honeybadger CMS"
       @page = (params[:page] || 1).to_i
       @per_page = params[:per_page] || 5
-    end      
+      @current_user = session[:user] if !session[:user].blank?
+    end
 
     ### authentication routes ###
     auth_keys = settings.auth # @todo: settings is not available in Builder
@@ -52,7 +53,7 @@ module Honeybadger
 
     get "/user/account" do
       @user = session[:user]
-      
+
       render "account"
     end
 
@@ -81,7 +82,7 @@ module Honeybadger
     end
 
     get "/user/login" do
-      render "login"
+      render "login", :layout => 'site'
     end
 
     post "/user/login" do
@@ -99,11 +100,11 @@ module Honeybadger
         if user.errors.empty?
           session[:user] = user
           flash[:success] = "You are now logged in"
-          redirect("/")
+          redirect("/#{user[:username]}")
         else
           flash.now[:notice] = user.errors[:validation][0]
           render "login"
-        end        
+        end
       end
 
     end
@@ -147,24 +148,160 @@ module Honeybadger
 
     ### put your routes here ###
     get '/' do
-      @posts = Post.order(:id).paginate(@page, @per_page).reverse
       render "index"
-    end
-
-    ### view page ###
-    get '/:title/:id' do
-      @post = Post[params[:id]]
-      render "post"
     end
 
     get '/about' do
       render "about"
     end
 
-    ### Test Landing Page ###
+    get '/features' do
+      render "features"
+    end
 
-    get '/landing' do
-      render "landing2"
+    get '/pricing' do
+      render "pricing"
+    end
+
+    get '/error' do
+      render "error"
+    end
+
+    ### calendar page ###
+    get '/:username' do
+      @user = User.where(:username => params[:username]).first
+      if @user.blank?
+        return "error"
+      end
+      render "user_calendar", :layout => "calendar"
+    end
+
+    ### get a list of calendars
+    ### params: user_id
+    get '/api/calendars' do
+      content_type :json
+      calendars = Calendar.where(:user_id => params[:user_id]).all
+      return calendars.to_json
+    end
+
+    ### create a calendar
+    ### params: user_id, name
+    post '/api/calendar' do
+      content_type :json
+
+      colors = ['#e38d13', '#009dac', '#ff9f89']
+      data = {
+        :user_id => params[:user_id],
+        :name => params[:name],
+        :color => colors.sample
+      }
+      calendar = Calendar.create(data)
+      return calendar.to_json
+    end
+
+    ### get a list of events
+    ### params: user_id
+    ### optional: calendar_id
+    get '/api/events' do
+      content_type :json
+      conditions = { :user_id => params[:user_id] }
+
+      p 'params'
+      p params
+
+      if !params[:calendar_id].blank?
+        calendar = Calendar.where(:user_id => params[:user_id], :id => params[:calendar_id]).first
+        p 'calendar'
+        p calendar
+        conditions[:calendar_id] = calendar[:id] if calendar
+      end
+
+      starts_at = params[:start] || Date.today.at_beginning_of_month
+      ends_at = params[:end] || Date.today.at_beginning_of_month.next_month
+      events = Event.where(conditions).where('ends_at >= ?', starts_at).where('ends_at <= ?', ends_at).all
+
+      p 'events sql'
+      p Event.where(conditions).where('ends_at >= ?', starts_at).where('ends_at <= ?', ends_at)
+
+      p 'conditions'
+      p conditions
+
+      res = []
+      events.each {|event|
+        res << event.formatted.values.except(:starts_at, :ends_at)
+      }
+
+      p res
+      return res.to_json
+
+    end
+
+    ### create an event
+    ### params: title, start
+    ### note: user_id (taken from session)
+    ### optional: calendar_id, end, url, description
+    post '/api/event' do
+      content_type :json
+
+      calendar = Calendar[params[:calendar_id]]
+
+      data = {
+        :user_id => @current_user[:id],
+        :calendar_id => params[:calendar_id],
+        :title => params[:title],
+        :starts_at => params[:start],
+        :ends_at => params[:end],
+        :url => params[:url],
+        :description => params[:description],
+        :color => calendar[:color]
+      }
+      p data
+      event = Event.create(data)
+      res = event.formatted.values.to_json
+      return res
+    end
+
+
+    post '/api/login' do
+
+      content_type :json
+
+      rules = {
+        :email => {:type => 'email', :required => true},
+        :password => {:type => 'string', :required => true},
+      }
+
+      validator = Validator.new(params, rules)
+      if !validator.valid?
+        res = {                    
+          :status => 'input validation failure',
+          :code => 403,
+          :error => validator.errors,
+        }
+      else
+        user = User.login(params)
+        if user.errors.empty?
+          session[:user] = user
+
+          res = {                    
+            :status => 'auth success',
+            :code => 200,
+            :redir => "/#{user[:username]}",
+          }
+
+        else
+
+          res = {                    
+            :status => 'authentication failure',
+            :code => 401,
+            :error => user.errors,
+          }
+          
+        end
+      end
+
+      res.to_json
+
     end
 
 

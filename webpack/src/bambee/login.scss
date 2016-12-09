@@ -1,0 +1,31 @@
+#login {
+  background-color: $grey-lightest;
+
+  .box {
+    background-color: white;
+    padding: 60px;
+  }
+
+  .input {
+    margin: 10px 0px;
+  }
+
+  .input.is-large {
+    font-size: 18px;
+    font-weight: 400;
+  }
+
+  .button.is-large{
+    min-width: 200px;
+    padding: 15px 20px;
+    height: auto;
+  }
+
+  .logo {
+    padding: 40px 80px;
+  }
+
+  .error {
+    color: $red;
+  }
+}

@@ -1,0 +1,171 @@
+
+<!DOCTYPE html>
+<html lang="en" class="full_height">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>
+    Honeybadger CMS
+  </title>
+
+  <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+  <script src="/bower_components/vue/dist/vue.js"></script>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.2.3/css/bulma.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/site/css/create.css">
+  <link rel="stylesheet" href="/site/css/plastic.css">
+</head>
+<body class="full_height no_margin full_bleed">
+
+
+  <div id="signup_flow" class="full_height fs_split">
+
+
+
+
+    <div id="signup_pane" class="fs_split_pane fs_split_pane_left" style="display: none;">
+      <div id="find_team_mobile" class="show_on_mobile">
+        <span>Join our Calender Experience Today!</span>
+        <a href="/register" id="find_team_mobile_link">Make a calendar today</a>
+      </div>
+      <form class="fs_split_flex_wrapper" onsubmit="return false;">
+        <a data-clog-event="WEBSITE_CLICK" data-clog-params="action=nav_logo,trigger=create_team" class="logo_link" href="/">
+          <img id="slack_logo" src="https://slack.global.ssl.fastly.net/66f9/img/slack_logo_240.png" width="120" height="137" title="Slack">
+        </a>
+        <div id="email_form_body" class="fs_split_body">
+          <h1>Create a new calendar</h1>
+          
+          <input type="text" name="name" placeholder="james smith" id="signup_email" data-qa="email_field" spellcheck="false" aria-labelledby="email_label" data-email-healing="true">
+
+          
+          <input type="text" name="email" placeholder="email@emaildomain.com" id="signup_email" data-qa="email_field" spellcheck="false" aria-labelledby="email_label" data-email-healing="true">
+
+          
+          <input type="password" placeholder="must be at least 8 characters" name="password" id="signup_email" data-qa="email_field" spellcheck="false" aria-labelledby="email_label" data-email-healing="true">
+
+          <p class="error" v-if="error">{{error}}</p>
+        </div>
+        <div id="submit" class="fs_split_footer">
+          <div class="button_container">
+            <button id="submit_btn" class="btn btn_large ladda-button" disabled="disabled" aria-disabled="true" data-style="expand-right" data-qa="submit_button">
+              <span class="ladda-label">
+                Sign Up
+                <ts-icon class="ts_icon_arrow_right" aria-hidden="true"></ts-icon>
+              </span>
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+
+
+
+    <div id="login_pane" class="fs_split_pane fs_split_pane_left" style="display: none;">
+      <div id="find_team_mobile" class="show_on_mobile">
+        <span>Join our Calender Experience Today!</span>
+        <a href="/register" id="find_team_mobile_link">Make a calendar today</a>
+      </div>
+      <form @submit.prevent="handle_login" action="/user/login" method="POST" class="fs_split_flex_wrapper">
+        <a class="logo_link" href="/">
+          <img id="slack_logo" src="https://slack.global.ssl.fastly.net/66f9/img/slack_logo_240.png" width="120" height="137" title="Slack">
+        </a>
+        <div id="email_form_body" class="fs_split_body">
+          <h1>Welcome back, log in!</h1>
+          <label id="email_label"><span class="normal">Your</span> email address</label>
+          <input type="text" v-model="email" name="email" placeholder="email@emaildomain.com" id="signup_email" data-qa="email_field" spellcheck="false" aria-labelledby="email_label" data-email-healing="true">
+          <label id="email_label"><span class="normal">Your</span> password</label>
+          <input type="password" v-model="password" placeholder="must be at least 8 characters" name="password" id="signup_email" data-qa="email_field" spellcheck="false" aria-labelledby="email_label" data-email-healing="true">
+          <p class="error" v-if="error">{{error}}</p>
+        </div>
+        <div id="submit" class="fs_split_footer">
+          <div class="button_container">
+            <button id="submit_btn" class="btn btn_large ladda-button" data-style="expand-right" data-qa="submit_button">
+              <span class="ladda-label">
+                Login
+                <ts-icon class="ts_icon_arrow_right" aria-hidden="true"></ts-icon>
+              </span>
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+
+
+
+
+
+
+    <div id="signup_graphics_pane" class="fs_split_pane fs_split_pane_right" style="background-color: #21b2fe;">
+      <div class="fs_split_flex_wrapper">
+        <div id="signup_graphics_container" class="fs_split_body">
+          <div id="signup_graphics" class="fs_split_graphics" style="background-image: url('/site/img/image01.png')"></div>
+        </div>
+        <div class="fs_split_footer">
+          <div class="fs_split_header">
+            <div id="find_team" style="text-align: center;">
+              <a href="/user/register" id="find_team_link" class="trig_register">Sign Up Free</a>
+              <a href="/user/login" id="find_team_link" class="trig_login">Login</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+
+  <script>
+
+  var vue_login = new Vue({
+    el: '#signup_flow',
+    data: {
+      email: '',
+      password: '',
+      error: false
+    },
+    methods: {
+      handle_login: function(e){
+        var _this = this
+        $.post('/api/login', {email: this.email, password: this.password}, function(res){
+          console.log(res)
+          if(res.code == "200"){
+            location.href = res.redir
+          }else{
+            _this.error = "authentication error, please try again"
+          }
+        })
+      }
+    }
+  })
+
+  // var vue_register = new Vue({
+  //   el: '#login_pane',
+  //   data: {
+  //   },
+  //   methods: {
+  //     handle_register: function(e){
+  //       return true
+  //     }
+  //   }
+  // })
+
+  $(function(){
+    $('body').on('click', '.trig_register', function(e){
+      e.preventDefault()
+      $('.fs_split_pane_left').hide()
+      $('#signup_pane').show()
+    })
+
+    $('body').on('click', '.trig_login', function(e){
+      e.preventDefault()
+      $('.fs_split_pane_left').hide()
+      $('#login_pane').show()
+    })
+  })
+  </script>
+
+</body>
+</html>

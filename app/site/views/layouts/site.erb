@@ -7,11 +7,12 @@
     <%=@title%>
     </title>
 
-    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
-    <link rel="stylesheet" href="/site/css/style.css">
+    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>    
+    <script src="/bower_components/vue/dist/vue.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.2.3/css/bulma.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
-    <link rel="stylesheet" href="/css/main2.css">
+    <link rel="stylesheet" href="/site/css/site.css">
+
   </head>
   <body class="full_height no_margin full_bleed">
       <%= flash_tag(:notice, :class => 'alert alert-warning') %>
@@ -20,13 +21,5 @@
 
       <%=yield%>
 
-    <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
-    <script src="http://static.jsbin.com/js/embed.min.js?3.34.0"></script>
-
-    <script>
-    (function(){
-      $('.dropdown-toggle').dropdown();
-    });
-    </script>
   </body>
 </html>

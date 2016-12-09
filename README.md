@@ -24,4 +24,3 @@ git clone git@github.com:jaequery/honeybadger.git
 cd honeybadger
 docker-compose up
 ```
-# shalendar

@@ -1,0 +1,20 @@
+<section class="section employee-list">
+  <div class="columns is-multiline">
+    <div transition="fade-in-fast" v-for="user in users | filterBy filter in 'full_name'" class="column is-one-third">
+      <a @click="click(user)" class="box media employee {{is_selected(user) ? 'selected' : '' }}">
+        <div class="media-left">
+          <figure class="image is-96x96 is-round">
+            <img :src="user.avatar_url" alt="Image">
+          </figure>
+        </div>
+        <div class="media-content">
+          <span class="title">{{user.full_name}}</span><br>
+          <span class="grey">{{user.title}}</span> <br>
+          <span v-if="show_status && user.pip_status" class="is-blue">
+            PIP {{user.pip_status}}
+          </span> <br>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>

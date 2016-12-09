@@ -2,13 +2,13 @@ app:
  image: jaequery/honeybadger
  links:
  - db:honeybadger-postgres
- - memcache:memcache 
+ - memcache:memcache
  command: /app/bin/docker/init.sh
  environment:
- - VIRTUAL_HOST=honeybadger.docker
+ - VIRTUAL_HOST=shalendar.docker
  - RACK_ENV=development
  - BUNDLE_PATH=/app/volumes/bundler
- - PASSENGER_POOL_IDLE_TIME=0 
+ - PASSENGER_POOL_IDLE_TIME=0
  volumes:
  - .:/app
  #tty: true
@@ -20,7 +20,7 @@ db:
  - POSTGRES_PASSWORD=j
  - POSTGRES_DB=honeybadger_development
  volumes:
- #- pgdata:/var/lib/postgresql/data 
+ #- pgdata:/var/lib/postgresql/data
  - ./sql:/sql
  tty: true
  ports:
@@ -31,3 +31,13 @@ memcache:
  image: memcached
  ports:
  - "11211"
+
+webpack:
+ build: ./webpack
+ environment:
+ - VIRTUAL_HOST=webpack.shalendar.docker
+ - ENV=dev
+ volumes:
+ - ./webpack:/webpack
+ volumes_from:
+ - app

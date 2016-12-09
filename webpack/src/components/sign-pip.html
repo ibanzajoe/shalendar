@@ -1,0 +1,32 @@
+<form @submit.prevent="handle_submit">
+  <div class="container">
+    <h3>Type your signature.</h3>
+    <!-- <a class="button" @click="handle_show_signature">+ signature</a> -->
+    <!--<a class="button">+ printed name</a>
+    <a class="button">+ date</a>-->
+  </div>
+  <div class="columns has-text-left">
+    <div class="column is-fluid">
+      <input type="text" class="input is-expanded" v-model="signature_text" placeholder="Your Name?" required><br/>
+      <br>
+      <p class="signatured"><span class="cursive big">{{signature_text}}</span></p>
+    </div>
+  </div>
+  <div class="columns" style="margin: 20px 0;"><label><input type="checkbox" v-model="sign_agree" required> I agree to electronically sign this document.</label></div>
+
+  <div class="columns">
+    <button style="margin-top: 10px;" class="button {{is_confirmed(sign_agree)}}">Confirm Signature</button><br>
+    <hr>
+
+  </div>
+  <!-- <modal :show.sync="showSignature">
+    <div slot="content" class="box">
+      <h3>Draw Your Signature</h3>
+      <div id="manager_signature_pad" style="" class="signature"></div>
+      <label><input type="checkbox" value="1" v-model="pip.manager_signature_confirmation"> I certify that this digital signature is legit</label>
+      <br><br>
+      <a class="button is-primary" @click="handle_add_signature">Add Signature</a>
+      <a class="button is-danger" @click="handle_reset_signature">Reset</a>
+    </div>
+  </modal> -->
+</form>

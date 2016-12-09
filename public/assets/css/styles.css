@@ -1,0 +1,64 @@
+div { border: 0px solid;}
+
+.col-header-search{
+
+}
+
+.col-header-login{
+
+}
+
+.col-header{
+  padding-top:10px;
+  padding-bottom:10px;
+  border-style: none;
+  border-bottom-color: #c1c7cb;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+}
+
+.col-fixed-250{
+  width:250px;
+  background:#e6ecf1;
+  position:fixed;
+  height:100%;
+  padding:20px;
+}
+
+.col-offset-250{
+  padding-left:270px;
+}
+
+.col-main-content{
+  padding:20px;
+}
+
+.col-main-top{
+  padding: 5px;
+  border-style: none;
+  border-bottom-color: #c1c7cb;;
+  border-bottom-style: solid;
+  border-bottom-width: 0px;
+}
+
+
+/* calendar - left side */
+.left-calendar { z-index: 99; }
+.left-head { background-color: #009dac; color: white; margin-top: 0px; padding: 8px 20px; }
+.left-head:hover { cursor: pointer; }
+.left-add-calendar { float: right;}
+.left-calendars { margin-top: 10px; padding-left: 20px;}
+.left-calendars ul { padding-left: 7px; margin-left: 10px; margin-bottom: 20px; }
+.left-calendars li { padding-left: 5px; margin-bottom: 4px; cursor: pointer; }
+.left-calendars li.active, .left-calendars li.active a { font-weight: bold; text-decoration: none; }
+
+.left-footer { position: fixed; bottom: 10px; text-align: center; }
+
+/* calendar - top nav */
+.top-nav { position: fixed; background-color: white; z-index:99; }
+.top-calendar { margin-top: 0px; }
+
+/* calendar */
+.calendar-description { }
+.calendar-banner { width: 240px; margin-top: 20px;}
+.calendar-follow-button { margin-top: 20px; }

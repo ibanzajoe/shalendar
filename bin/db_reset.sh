@@ -4,4 +4,5 @@ parentdir="$(dirname "$dir")"
 app=${parentdir##*/}
 ./stop.sh
 docker exec -it ${app}_app_1 padrino rake db:reset
+docker exec -it ${app}_app_1 padrino rake db:seed
 ./start.sh
