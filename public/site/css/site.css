@@ -32,6 +32,7 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    padding: 0;
 }
 
 img#slack_logo {
@@ -90,7 +91,7 @@ img#slack_logo {
 }
 
 .left_p_footer #email_checkbox{
-    margin-bottom: 30px;
+    margin-bottom: 10px;
 }
 .left_p_footer input {
     display: inline;

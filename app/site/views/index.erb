@@ -30,7 +30,7 @@
 						<p><input type="password" v-model="password" class="input"></p>	    
 
 						<div class="button_class" style="margin-top: 10px;">
-							<button class="button is-medium is-primary modal_on">Next</button>
+							<button class="button is-medium is-primary modal_on" @click="handle_login">Next</button>
 							<a class="is-pulled-right" @click="handle_register_button">Or Sign Up</a>
 						</div>
 					</div>
@@ -51,7 +51,7 @@
 						<p><input type="password" v-model="password" class="input"></p>	    
 
 						<div class="button_class" style="margin-top: 10px;">
-							<button class="button is-medium is-primary modal_on">Next</button>
+							<button class="button is-medium is-primary modal_on" @class="handle_register">Next</button>
 							<a class="is-pulled-right" @click="handle_login_button">Or Login</a>
 						</div>
 					</div>

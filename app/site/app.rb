@@ -304,6 +304,48 @@ module Honeybadger
 
     end
 
+    post '/api/register' do
+
+      content_type :json
+
+      rules = {
+          :email => {:type => 'email', :required => true},
+          :password => {:type => 'string', :required => true},
+      }
+
+      validator = Validator.new(params, rules)
+      if !validator.valid?
+        res = {
+            :status => 'input validation failure',
+            :code => 403,
+            :error => validator.errors,
+        }
+      else
+        user = User.register_with_email(params)
+        if user.errors.empty?
+          session[:user] = user
+
+          res = {
+              :status => 'auth success',
+              :code => 200,
+              :redir => "/#{user[:username]}",
+          }
+
+        else
+
+          res = {
+              :status => 'authentication failure',
+              :code => 401,
+              :error => user.errors,
+          }
+
+        end
+      end
+
+      res.to_json
+
+    end
+
 
   end
 
