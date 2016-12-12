@@ -34,6 +34,7 @@
     <!-- css -->
     <link rel="stylesheet" href="/assets/css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.2.3/css/bulma.css">
+    <link rel="stylesheet" href="/site/css/site.css">
     <!-- webpack -->
     <!-- <script src='//webpack.shalendar.docker/static/bundle.js'></script> -->
 
@@ -42,7 +43,7 @@
 
   <body class="calendar">
 
-    <div class="container-fluid">
+    <div id="app" class="container-fluid">
       <div class="row">
 
         <!-- left -->
@@ -127,6 +128,16 @@
 
               <div class="row">
                 <div id="calendar" class="col-md-12 col-main-content" style="width: 100%;"></div>
+                <div id="app">
+                  <modal v-if="showModal" @close="showModal = false">
+                    <!--
+                      you can use custom content here to overwrite
+                      default content
+                    -->
+                    <h3 slot="header">custom header</h3>
+                  </modal>
+                </div>
+
               </div>
 
             </div>
@@ -141,9 +152,88 @@
 
     </div>
 
+    <script type="text/x-template" id="modal-template">
+      <transition name="modal">
+        <div class="modal-mask" @click="$emit('close')">
+          <div class="modal-wrapper" style="height: 100%;">
+            <div class="modal-container">
+
+
+              <div class="modal-body">
+                <slot name="body">
+                  <h3>What Happened On This Day?</h3>
+                  <label class="label">Name</label>
+                  <p class="control">
+                    <input class="input" type="text" placeholder="Text input">
+                  </p>
+                  <label class="label">Username</label>
+                  <p class="control has-icon has-icon-right">
+                    <input class="input is-success" type="text" placeholder="Text input" value="bulma">
+                    <i class="fa fa-check"></i>
+                    <span class="help is-success">This username is available</span>
+                  </p>
+                  <label class="label">Email</label>
+                  <p class="control has-icon has-icon-right">
+                    <input class="input is-danger" type="text" placeholder="Email input" value="hello@">
+                    <i class="fa fa-warning"></i>
+                    <span class="help is-danger">This email is invalid</span>
+                  </p>
+                  <label class="label">Subject</label>
+                  <p class="control">
+                    <span class="select">
+                      <select>
+                        <option>Select dropdown</option>
+                        <option>With options</option>
+                      </select>
+                    </span>
+                  </p>
+                  <label class="label">Message</label>
+                  <p class="control">
+                    <textarea class="textarea" placeholder="Textarea"></textarea>
+                  </p>
+                  <p class="control">
+                    <label class="checkbox">
+                      <input type="checkbox">
+                      Remember me
+                    </label>
+                  </p>
+                  <p class="control">
+                    <label class="radio">
+                      <input type="radio" name="question">
+                      Yes
+                    </label>
+                    <label class="radio">
+                      <input type="radio" name="question">
+                      No
+                    </label>
+                  </p>
+                  <p class="control">
+                    <button class="button is-primary">Submit</button>
+                    <button class="button is-link">Cancel</button>
+                  </p>
+                  <div class="modal_action">
+                    <button class="button is-info is-outlined modal-default-button" @click="$emit('close')">
+                      Add Event
+                    </button>
+                  </div>
+
+                </slot>
+              </div>
+            </div>
+          </div>
+        </div>
+      </transition>
+    </script>
+
+
+
     <script>
+      Vue.component('modal', {
+        template: '#modal-template'
+      })
+
      new Vue({
-       el: '.left-calendar',
+       el: '#app',
        data: {
          user: <%== @user.to_json %>,
          current_user: <%== session[:user].to_json %>,
@@ -152,6 +242,7 @@
          eventsources: [],
          cal: {},
          events: [],
+         showModal: false
        },
 
        mounted: function(){
@@ -271,8 +362,10 @@
              },
              displayEventTime: false,
              dayClick: function (date, jsEvent, view) {
-
-               _this.show_add_event(date)
+               _this.showModal = true
+               console.log("tu madre es muy gordo")
+               <%#
+               _this.show_add_event(date)%>
 
              },
 
@@ -284,7 +377,6 @@
          },
 
          show_add_event: function(date){
-
            var _this = this;
 
            if (_this.user.id == _this.current_user.id)
@@ -319,6 +411,7 @@
 
                }
              })
+
 
 
          },
