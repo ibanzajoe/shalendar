@@ -15,7 +15,7 @@ module Honeybadger
 
     ### this runs before all routes ###
     before do
-      @title = "Honeybadger CMS"
+      @title = "Shalendar | Digital Calendar for your life"
       @page = (params[:page] || 1).to_i
       @per_page = params[:per_page] || 5
       @current_user = session[:user] if !session[:user].blank?
@@ -273,7 +273,7 @@ module Honeybadger
 
       validator = Validator.new(params, rules)
       if !validator.valid?
-        res = {                    
+        res = {
           :status => 'input validation failure',
           :code => 403,
           :error => validator.errors,
@@ -283,7 +283,7 @@ module Honeybadger
         if user.errors.empty?
           session[:user] = user
 
-          res = {                    
+          res = {
             :status => 'auth success',
             :code => 200,
             :redir => "/#{user[:username]}",
@@ -291,12 +291,12 @@ module Honeybadger
 
         else
 
-          res = {                    
+          res = {
             :status => 'authentication failure',
             :code => 401,
             :error => user.errors,
           }
-          
+
         end
       end
 

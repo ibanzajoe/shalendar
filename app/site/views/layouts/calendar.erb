@@ -128,15 +128,10 @@
 
               <div class="row">
                 <div id="calendar" class="col-md-12 col-main-content" style="width: 100%;"></div>
-                <div id="app">
-                  <modal v-if="showModal" @close="showModal = false">
-                    <!--
-                      you can use custom content here to overwrite
-                      default content
-                    -->
-                    <h3 slot="header">custom header</h3>
-                  </modal>
-                </div>
+
+                <modal v-if="showModal" @close="showModal = false">
+                  <h3 slot="header">custom header</h3>
+                </modal>
 
               </div>
 
@@ -157,9 +152,7 @@
         <div class="modal-mask" @click="$emit('close')">
           <div class="modal-wrapper" style="height: 100%;">
             <div class="modal-container">
-
-
-              <div class="modal-body">
+              <div class="modal-body" @click.stop>
                 <slot name="body">
                   <h3>What Happened On This Day?</h3>
                   <label class="label">Name</label>
@@ -327,7 +320,7 @@
                swal.showInputError("You need to write something!")
                  return false
              }
-             
+
              var color = '#e6ecf1'
 
              $.post("/api/calendar", {user_id: _this.user.id, name: calendar_name, color: color }, function(res){
