@@ -28,7 +28,7 @@ body {
 
 #left_p{
     min-height: 100%;
-    background-color: #f9f9f9;
+    background-color: #ffffff;
     display: flex;
     flex-direction: column;
     justify-content: space-between;

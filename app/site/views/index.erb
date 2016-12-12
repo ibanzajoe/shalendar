@@ -1,174 +1,174 @@
 <div id="main_p" class="panel_main columns is-flex" style="display: none;">
 
-	<div id="left_p" class="panel_left column is-5">
-		<transition-group name="fade" :staggered="true">		
-			<form v-if="left_pane == 'index'"  @submit.prevent="handle_login" key="1">
-				<div id="left_p_header" class="image_logo column">
-					<img id="slack_logo" src="https://slack.global.ssl.fastly.net/66f9/img/slack_logo_240.png" width="120" height="137" title="Slack">
-				</div>  
-				<div id="left_p_body" class="column is-10 is-offset-1">    	    
-					<div class="box_container has-text-centered" style="margin-top: 220px; ">
-						<h1>Welcome to Shalendar</h1>
-						<a @click="handle_register_button" class="button is-info" id="find_team_link">Sign Up</a>
-						<a @click="handle_login_button" class="button is-primary" id="find_team_link">Login</a>
+  <div id="left_p" class="panel_left column is-5">
+    <transition-group name="fade" :staggered="true">
+      <form v-if="left_pane == 'index'"  @submit.prevent="handle_login" key="1">
+        <div id="left_p_header" class="image_logo column">
+          <img id="slack_logo" src="/assets/images/logo.png">
+        </div>
+        <div id="left_p_body" class="column is-10 is-offset-1">
+          <div class="box_container has-text-centered" style="margin-top: 220px; ">
+            <h1>Do you have a Shalendar?</h1>
+            <a @click="handle_register_button" class="button is-info" id="find_team_link">Sign Up</a>
+            <a @click="handle_login_button" class="button is-primary" id="find_team_link">Login</a>
 
-					</div>
-				</div>
-			</form>
+          </div>
+        </div>
+      </form>
 
-			<form v-if="left_pane == 'login'" @submit.prevent="handle_login" key="2">
-				<div id="left_p_header" class="image_logo column">
-					<img id="slack_logo" src="https://slack.global.ssl.fastly.net/66f9/img/slack_logo_240.png" width="120" height="137" title="Slack">
-				</div>  
-				<div id="left_p_body" class="column is-10 is-offset-1">    	    
-					<div class="box_container" style="margin-top: 220px;">      	
-						<h1>Log In</h1>
-						<label class="label">Your <strong>email address</strong></label>
-						<p><input type="text" v-model="email" class="input"></p>
+      <form v-if="left_pane == 'login'" @submit.prevent="handle_login" key="2">
+        <div id="left_p_header" class="image_logo column">
+          <img id="slack_logo" src="/assets/images/logo.png" width="120" height="137" title="Slack">
+        </div>
+        <div id="left_p_body" class="column is-10 is-offset-1">
+          <div class="box_container" style="margin-top: 220px;">
+            <h1>Log In</h1>
+            <label class="label">Your <strong>email address</strong></label>
+            <p><input type="text" v-model="email" class="input"></p>
 
-						<label class="label">Your <strong>password</strong></label>
-						<p><input type="password" v-model="password" class="input"></p>	    
+            <label class="label">Your <strong>password</strong></label>
+            <p><input type="password" v-model="password" class="input"></p>
 
-						<div class="button_class" style="margin-top: 10px;">
-							<button class="button is-medium is-primary modal_on" @click="handle_login">Next</button>
-							<a class="is-pulled-right" @click="handle_register_button">Or Sign Up</a>
-						</div>
-					</div>
-				</div>
-			</form>
+            <div class="button_class" style="margin-top: 10px;">
+              <button class="button is-medium is-primary modal_on" @click="handle_login">Next</button>
+              <a class="is-pulled-right" @click="handle_register_button">Or Sign Up</a>
+            </div>
+          </div>
+        </div>
+      </form>
 
-			<form v-if="left_pane == 'register'" @submit.prevent="handle_register" key="3">
-				<div id="left_p_header" class="image_logo column">
-					<img id="slack_logo" src="https://slack.global.ssl.fastly.net/66f9/img/slack_logo_240.png" width="120" height="137" title="Slack">
-				</div>  
-				<div id="left_p_body" class="column is-10 is-offset-1">    	    
-					<div class="box_container" style="margin-top: 220px;">      	
-						<h1>Sign Up</h1>
-						<label class="label">Your <strong>email address</strong></label>
-						<p><input type="text" v-model="email" class="input"></p>
+      <form v-if="left_pane == 'register'" @submit.prevent="handle_register" key="3">
+        <div id="left_p_header" class="image_logo column">
+          <img id="slack_logo" src="/assets/images/logo.png" width="120" height="137" title="Slack">
+        </div>
+        <div id="left_p_body" class="column is-10 is-offset-1">
+          <div class="box_container" style="margin-top: 220px;">
+            <h1>Sign Up</h1>
+            <label class="label">Your <strong>email address</strong></label>
+            <p><input type="text" v-model="email" class="input"></p>
 
-						<label class="label">Your <strong>password</strong></label>
-						<p><input type="password" v-model="password" class="input"></p>	    
+            <label class="label">Your <strong>password</strong></label>
+            <p><input type="password" v-model="password" class="input"></p>
 
-						<div class="button_class" style="margin-top: 10px;">
-							<button class="button is-medium is-primary modal_on" @class="handle_register">Next</button>
-							<a class="is-pulled-right" @click="handle_login_button">Or Login</a>
-						</div>
-					</div>
-				</div>
-				<div id="left_p_footer" class="left_p_footer column is-8 is-offset-2">
-					<div id="email_checkbox">
-						<input type="checkbox" id="email_check">
-						<label for="email_check">It's okay to send me (very occasionally) spam
-							email about Shalendar service
-						</label>
-					</div>
-				</div>
-			</form>
+            <div class="button_class" style="margin-top: 10px;">
+              <button class="button is-medium is-primary modal_on" @class="handle_register">Next</button>
+              <a class="is-pulled-right" @click="handle_login_button">Or Login</a>
+            </div>
+          </div>
+        </div>
+        <div id="left_p_footer" class="left_p_footer column is-8 is-offset-2">
+          <div id="email_checkbox">
+            <input type="checkbox" id="email_check">
+            <label for="email_check">It's okay to send me (very occasionally) spam
+              email about Shalendar service
+            </label>
+          </div>
+        </div>
+      </form>
 
-		</transition-group>
+    </transition-group>
 
-	</div> <!-- end left p -->
+  </div> <!-- end left p -->
 
 
-	<div id="right_p" class="panel_right column is-7">
-		<div id="right_p_header" class="column is-12">
-			<div class="nest_container is-pulled-right">
-				<label>Create your Shalendar Today!</label>				
-			</div>
-		</div>
-		<div id="right_p_body" class="left_p_body">
-			<div class="column is-8 is-offset-2">
-				<img src="/site/img/image01.png">
-			</div>
+  <div id="right_p" class="panel_right column is-7">
+    <div id="right_p_header" class="column is-12">
+      <div class="nest_container is-pulled-right">
+        <label>Create your Shalendar Today!</label>
+      </div>
+    </div>
+    <div id="right_p_body" class="left_p_body">
+      <div class="column is-8 is-offset-2">
+        <img src="/site/img/image01.png">
+      </div>
 
-		</div>
-		<div id="right_p_footer" class="left_p_footer">
-			<div class="box_container column is-half is-offset-one-quarter" style="text-align: center;">
-			</div>
-		</div>
+    </div>
+    <div id="right_p_footer" class="left_p_footer">
+      <div class="box_container column is-half is-offset-one-quarter" style="text-align: center;">
+      </div>
+    </div>
 
-	</div> <!-- end right p -->
+  </div> <!-- end right p -->
 
 </div> <!-- end main p -->
 
 <div class="modal">
-	<div class="modal-background"></div>
-	<div class="modal-card">
-		<header class="modal-card-head">
-			<p class="modal-card-title">Modal title</p>
-			<button class="delete close_modal"></button>
-		</header>
-		<section class="modal-card-body">
-			<h2>Hello Everyone</h2>
-			<p>This is a new modal that I created using Bulma</p>
-		</section>
-		<footer class="modal-card-foot">
-			<a class="button is-primary">Save changes</a>
-			<a class="button close_modal">Cancel</a>
-		</footer>
-	</div>
+  <div class="modal-background"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <p class="modal-card-title">Modal title</p>
+      <button class="delete close_modal"></button>
+    </header>
+    <section class="modal-card-body">
+      <h2>Hello Everyone</h2>
+      <p>This is a new modal that I created using Bulma</p>
+    </section>
+    <footer class="modal-card-foot">
+      <a class="button is-primary">Save changes</a>
+      <a class="button close_modal">Cancel</a>
+    </footer>
+  </div>
 </div>
 
 
 
 <script>
 var main = new Vue({
-	el: '#main_p',
-	data: {
-		left_pane: 'index',
-		email: '',
-		password: '',
-		error: false
-	},
-	mounted: function(){
-		$('#main_p').show()
-	},
-	methods: {
-		handle_login: function(e){
-			var _this = this
-			$.post('/api/login', {email: this.email, password: this.password}, function(res){
-				console.log(res)
-				if(res.code == "200"){
-					location.href = res.redir
-				}else{
-					_this.error = "authentication error, please try again"
-				}
-			})
-		},		
-		handle_login_button: function(){
-			this.left_pane = 'login'
-		},
-		handle_register: function(){
-			var _this = this
-			$.post('/api/register', {email: this.email, password: this.password, name: this.name}, function(res){
-				console.log(res)
-				if(res.code == "200"){
-					location.href = res.redir
-				}else{
-					_this.error = "authentication error, please try again"
-				}
-			})
-		},
-		handle_register_button: function(){
-			this.left_pane = 'register'
-		}
-	}
+  el: '#main_p',
+  data: {
+    left_pane: 'index',
+    email: '',
+    password: '',
+    error: false
+  },
+  mounted: function(){
+    $('#main_p').show()
+  },
+  methods: {
+    handle_login: function(e){
+      var _this = this
+      $.post('/api/login', {email: this.email, password: this.password}, function(res){
+        console.log(res)
+        if(res.code == "200"){
+          location.href = res.redir
+        }else{
+          _this.error = "authentication error, please try again"
+        }
+      })
+    },
+    handle_login_button: function(){
+      this.left_pane = 'login'
+    },
+    handle_register: function(){
+      var _this = this
+      $.post('/api/register', {email: this.email, password: this.password, name: this.name}, function(res){
+        console.log(res)
+        if(res.code == "200"){
+          location.href = res.redir
+        }else{
+          _this.error = "authentication error, please try again"
+        }
+      })
+    },
+    handle_register_button: function(){
+      this.left_pane = 'register'
+    }
+  }
 })
 </script>
 
 <script>
 $(document).ready(function(){
-	// $('.modal_on').on('click', function(){
-	// 	$('.modal').addClass("is-active");
-	// })
+  // $('.modal_on').on('click', function(){
+  //  $('.modal').addClass("is-active");
+  // })
 
-	// $('.close_modal').on('click', function(){
-	// 	$('.modal').removeClass("is-active");
-	// })
+  // $('.close_modal').on('click', function(){
+  //  $('.modal').removeClass("is-active");
+  // })
 
-	// $('.modal-background').on('click', function(){
-	// 	$('.modal').removeClass("is-active");
-	// })
+  // $('.modal-background').on('click', function(){
+  //  $('.modal').removeClass("is-active");
+  // })
 })
 </script>
