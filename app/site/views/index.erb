@@ -1,5 +1,4 @@
 <div id="main_p" class="panel_main columns is-flex" style="display: none;">
-
   <div id="left_p" class="panel_left column is-5">
     <transition-group name="fade" :staggered="true">
 
@@ -47,24 +46,24 @@
         <div id="left_p_header" class="image_logo column">
           <img src="/assets/images/logo.png">
         </div>
-        <div id="left_p_body" class="column is-10 is-offset-1">
-          <div class="box_container" style="margin-top: 220px;">
-            <h1>Sign Up</h1>
-            <label class="label">Your <strong>email address</strong></label>
-            <p><input type="text" v-model="email" class="input"></p>
+				<div id="left_p_body" class="column is-10 is-offset-1">
+					<div class="box_container" style="margin-top: 220px;">
+						<h1>Sign Up</h1>
+						<label class="label">Your <strong>email address</strong></label>
+						<p><input type="text" v-model="email" class="input"></p>
 
-            <label class="label">Your <strong>password</strong></label>
-            <p><input type="password" v-model="password" class="input"></p>
+						<label class="label">Your <strong>Username</strong></label>
+						<p><input type="text" v-model="username" class="input"></p>
 
-            <div class="button_class" style="margin-top: 10px;">
-              <button :class="{'is-loading': loading == true}" class="button is-medium is-primary modal_on" @class="handle_register">Next</button>
-              <a class="is-pulled-right" @click="handle_login_button">Or Login</a>
-            </div>
+						<label class="label">Your <strong>password</strong></label>
+						<p><input type="password" v-model="password" class="input"></p>
 
-            <div v-if="error" class="error_message">{{error}}</div>
-
-          </div>
-        </div>
+						<div class="button_class" style="margin-top: 10px;">
+							<button :class="{'is-loading': loading == true}" class="button is-medium is-primary modal_on" @class="handle_register">Next</button>
+							<a class="is-pulled-right" @click="handle_login_button">Or Login</a>
+						</div>
+					</div>
+				</div>
         <div id="left_p_footer" class="left_p_footer column is-8 is-offset-2">
           <div id="email_checkbox">
             <input type="checkbox" id="email_check">
@@ -130,6 +129,7 @@ var main = new Vue({
     left_pane: 'index',
     email: '',
     password: '',
+		username: '',
     error: false,
     loading: false
   },
@@ -159,7 +159,7 @@ var main = new Vue({
       var _this = this
       _this.error = false
       _this.loading = true
-      $.post('/api/register', {email: this.email, password: this.password, name: this.name}, function(res){
+      $.post('/api/register', {email: this.email, password: this.password, username: this.username}, function(res){
         _this.loading = false
         console.log(res)
         if(res.code == "200"){

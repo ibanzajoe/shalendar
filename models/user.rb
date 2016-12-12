@@ -50,7 +50,7 @@ class User < Sequel::Model
     user.zip = params[:zip]
     user.country = params[:country]
     user.email = params[:email]
-    user.username = params[:email]
+    user.username = params[:username]
     user.refid = params[:email]
     user.password = params[:password]
     user.password_confirmation = params[:password_confirmation]
