@@ -47,6 +47,9 @@
 						<label class="label">Your <strong>email address</strong></label>
 						<p><input type="text" v-model="email" class="input"></p>
 
+						<label class="label">Your <strong>Username</strong></label>
+						<p><input type="text" v-model="username" class="input"></p>
+
 						<label class="label">Your <strong>password</strong></label>
 						<p><input type="password" v-model="password" class="input"></p>	    
 
@@ -119,6 +122,7 @@ var main = new Vue({
 		left_pane: 'index',
 		email: '',
 		password: '',
+		username: '',
 		error: false
 	},
 	mounted: function(){
@@ -141,7 +145,7 @@ var main = new Vue({
 		},
 		handle_register: function(){
 			var _this = this
-			$.post('/api/register', {email: this.email, password: this.password, name: this.name}, function(res){
+			$.post('/api/register', {email: this.email, password: this.password, username: this.username}, function(res){
 				console.log(res)
 				if(res.code == "200"){
 					location.href = res.redir
