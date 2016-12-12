@@ -128,11 +128,7 @@
 
               <div class="row">
                 <div id="calendar" class="col-md-12 col-main-content" style="width: 100%;"></div>
-
-                <modal v-if="showModal" @close="showModal = false">
-                  <h3 slot="header">custom header</h3>
-                </modal>
-
+                <modal id="modal_add_event" v-if="modal_add_event" :cal="cal" :close_add_event="close_add_event" :new_event="new_event" @close="modal_add_event = false"></modal>
               </div>
 
             </div>
@@ -154,61 +150,29 @@
             <div class="modal-container">
               <div class="modal-body" @click.stop>
                 <slot name="body">
+
+<form @submit="add_event">
+
                   <h3>What Happened On This Day?</h3>
-                  <label class="label">Name</label>
+                  <label class="label">What</label>
                   <p class="control">
-                    <input class="input" type="text" placeholder="Text input">
+                    <input id="new_event_title" v-model="new_event.title" class="input is-info" type="text" placeholder="A short sentence describing the event">
                   </p>
-                  <label class="label">Username</label>
+                  <label class="label">Description (optional)</label>
+                    <p class="control has-icon has-icon-right">
+                    <textarea v-model="new_event.description" class="textarea" placeholder="Describe what happened"></textarea>
+                  </p>
+                  <label class="label">Where (optional)</label>
                   <p class="control has-icon has-icon-right">
-                    <input class="input is-success" type="text" placeholder="Text input" value="bulma">
-                    <i class="fa fa-check"></i>
-                    <span class="help is-success">This username is available</span>
+                    <input v-model="new_event.location" class="input" type="text" placeholder="city or location">
                   </p>
-                  <label class="label">Email</label>
-                  <p class="control has-icon has-icon-right">
-                    <input class="input is-danger" type="text" placeholder="Email input" value="hello@">
-                    <i class="fa fa-warning"></i>
-                    <span class="help is-danger">This email is invalid</span>
-                  </p>
-                  <label class="label">Subject</label>
-                  <p class="control">
-                    <span class="select">
-                      <select>
-                        <option>Select dropdown</option>
-                        <option>With options</option>
-                      </select>
-                    </span>
-                  </p>
-                  <label class="label">Message</label>
-                  <p class="control">
-                    <textarea class="textarea" placeholder="Textarea"></textarea>
-                  </p>
-                  <p class="control">
-                    <label class="checkbox">
-                      <input type="checkbox">
-                      Remember me
-                    </label>
-                  </p>
-                  <p class="control">
-                    <label class="radio">
-                      <input type="radio" name="question">
-                      Yes
-                    </label>
-                    <label class="radio">
-                      <input type="radio" name="question">
-                      No
-                    </label>
-                  </p>
-                  <p class="control">
-                    <button class="button is-primary">Submit</button>
-                    <button class="button is-link">Cancel</button>
-                  </p>
+
                   <div class="modal_action">
-                    <button class="button is-info is-outlined modal-default-button" @click="$emit('close')">
+                    <button class="button is-info is-outlined modal-default-button">
                       Add Event
                     </button>
                   </div>
+     </form>
 
                 </slot>
               </div>
@@ -221,8 +185,35 @@
 
 
     <script>
+
       Vue.component('modal', {
-        template: '#modal-template'
+        template: '#modal-template',
+        props: ['click_handler', 'new_event', 'date', 'cal', 'close_add_event'],
+        methods: {
+         add_event: function(date){
+           var _this = this
+           if (_this.new_event.title) {
+
+             // setup payload
+             var event = {
+               title: _this.new_event.title,
+               start: _this.new_event.date.utc().format(),
+               end: _this.new_event.date.utc().add(1, 'day').format(),
+             }
+
+             // if calendar selected, add calendar_id to payload
+             if(_this.active_calendar) event.calendar_id = _this.active_calendar.id
+
+             // post to /api/event
+             $.post('/api/event', event, function (res) {
+               _this.close_add_event()
+               _this.cal.fullCalendar('renderEvent', res);
+               swal("Nice!", "Event has been posted on your calendar", "success");
+             })
+
+           }
+         }
+        }
       })
 
      new Vue({
@@ -235,7 +226,8 @@
          eventsources: [],
          cal: {},
          events: [],
-         showModal: false
+         modal_add_event: false,
+         new_event: {}
        },
 
        mounted: function(){
@@ -355,11 +347,7 @@
              },
              displayEventTime: false,
              dayClick: function (date, jsEvent, view) {
-               _this.showModal = true
-               console.log("tu madre es muy gordo")
-               <%#
-               _this.show_add_event(date)%>
-
+               _this.show_add_event(date)
              },
 
              //events: "/api/events?user_id="+_this.user.id,
@@ -370,44 +358,20 @@
          },
 
          show_add_event: function(date){
-           var _this = this;
+           this.new_event = {}
+           if (this.user.id == this.current_user.id){
+             this.new_event.date = date
+             this.modal_add_event = true
 
-           if (_this.user.id == _this.current_user.id)
-             swal({
-               title: "What happened on this day?",
-               type: "input",
-               showCancelButton: true,
-               closeOnConfirm: false,
-               animation: "slide-from-top",
-               inputPlaceholder: "Write something",
-               allowOutsideClick: true
+             setTimeout(function(){
+               $("#new_event_title").focus();
+             }, 500)
 
-             }, function (title) {
-
-               if (title) {
-
-                 // setup payload
-                 var event = {
-                   title: title,
-                   start: date.utc().format(),
-                   end: date.utc().add(1, 'day').format(),
-                 }
-
-                 // if calendar selected, add calendar_id to payload
-                 if(_this.active_calendar) event.calendar_id = _this.active_calendar.id
-
-                 // post to /api/event
-                 $.post('/api/event', event, function (res) {
-                   _this.cal.fullCalendar('renderEvent', res);
-                   swal("Nice!", "Event has been posted on your calendar", "success");
-                 })
-
-               }
-             })
-
-
-
+           }
          },
+         close_add_event: function(){
+           this.modal_add_event = false
+         }
 
        }
      })
