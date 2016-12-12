@@ -2,23 +2,25 @@
 
   <div id="left_p" class="panel_left column is-5">
     <transition-group name="fade" :staggered="true">
+
+      <!-- main pane -->
       <form v-if="left_pane == 'index'"  @submit.prevent="handle_login" key="1">
         <div id="left_p_header" class="image_logo column">
-          <img id="slack_logo" src="/assets/images/logo.png">
+          <img src="/assets/images/logo.png">
         </div>
         <div id="left_p_body" class="column is-10 is-offset-1">
           <div class="box_container has-text-centered" style="margin-top: 220px; ">
             <h1>Do you have a Shalendar?</h1>
             <a @click="handle_register_button" class="button is-info" id="find_team_link">Sign Up</a>
             <a @click="handle_login_button" class="button is-primary" id="find_team_link">Login</a>
-
           </div>
         </div>
       </form>
 
+      <!-- login pane -->
       <form v-if="left_pane == 'login'" @submit.prevent="handle_login" key="2">
         <div id="left_p_header" class="image_logo column">
-          <img id="slack_logo" src="/assets/images/logo.png" width="120" height="137" title="Slack">
+          <img src="/assets/images/logo.png">
         </div>
         <div id="left_p_body" class="column is-10 is-offset-1">
           <div class="box_container" style="margin-top: 220px;">
@@ -30,16 +32,20 @@
             <p><input type="password" v-model="password" class="input"></p>
 
             <div class="button_class" style="margin-top: 10px;">
-              <button class="button is-medium is-primary modal_on" @click="handle_login">Next</button>
+              <button :class="{'is-loading': loading == true}" class="button is-medium is-primary modal_on" @click="handle_login">Next</button>
               <a class="is-pulled-right" @click="handle_register_button">Or Sign Up</a>
             </div>
+
+            <div v-if="error" class="error_message">{{error}}</div>
+
           </div>
         </div>
       </form>
 
+      <!-- register pane -->
       <form v-if="left_pane == 'register'" @submit.prevent="handle_register" key="3">
         <div id="left_p_header" class="image_logo column">
-          <img id="slack_logo" src="/assets/images/logo.png" width="120" height="137" title="Slack">
+          <img src="/assets/images/logo.png">
         </div>
         <div id="left_p_body" class="column is-10 is-offset-1">
           <div class="box_container" style="margin-top: 220px;">
@@ -51,9 +57,12 @@
             <p><input type="password" v-model="password" class="input"></p>
 
             <div class="button_class" style="margin-top: 10px;">
-              <button class="button is-medium is-primary modal_on" @class="handle_register">Next</button>
+              <button :class="{'is-loading': loading == true}" class="button is-medium is-primary modal_on" @class="handle_register">Next</button>
               <a class="is-pulled-right" @click="handle_login_button">Or Login</a>
             </div>
+
+            <div v-if="error" class="error_message">{{error}}</div>
+
           </div>
         </div>
         <div id="left_p_footer" class="left_p_footer column is-8 is-offset-2">
@@ -65,6 +74,8 @@
           </div>
         </div>
       </form>
+
+      <!-- end panes -->
 
     </transition-group>
 
@@ -119,7 +130,8 @@ var main = new Vue({
     left_pane: 'index',
     email: '',
     password: '',
-    error: false
+    error: false,
+    loading: false
   },
   mounted: function(){
     $('#main_p').show()
@@ -127,7 +139,10 @@ var main = new Vue({
   methods: {
     handle_login: function(e){
       var _this = this
+      _this.error = false
+      _this.loading = true
       $.post('/api/login', {email: this.email, password: this.password}, function(res){
+        _this.loading = false
         console.log(res)
         if(res.code == "200"){
           location.href = res.redir
@@ -137,11 +152,15 @@ var main = new Vue({
       })
     },
     handle_login_button: function(){
+      this.error = false
       this.left_pane = 'login'
     },
     handle_register: function(){
       var _this = this
+      _this.error = false
+      _this.loading = true
       $.post('/api/register', {email: this.email, password: this.password, name: this.name}, function(res){
+        _this.loading = false
         console.log(res)
         if(res.code == "200"){
           location.href = res.redir
@@ -151,6 +170,7 @@ var main = new Vue({
       })
     },
     handle_register_button: function(){
+      this.error = false
       this.left_pane = 'register'
     }
   }
