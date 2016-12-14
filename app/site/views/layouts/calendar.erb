@@ -141,7 +141,7 @@
                     <p class="control">
                       <input id="active_event_title" v-model="active_event.title" class="input is-info" type="text" placeholder="A short sentence describing the event">
                     </p>
-                    <label class="label">Description (optional)</label>
+                    <!--<label class="label">Description (optional)</label>
                       <p class="control has-icon has-icon-right">
                       <textarea v-model="active_event.description" class="textarea" placeholder="Describe what happened"></textarea>
                     </p>
@@ -149,9 +149,9 @@
                     <p class="control has-icon has-icon-right">
                       <input v-model="active_event.location" class="input" type="text" placeholder="city or location">
                     </p>
-
+                    -->
                     <div class="modal_action">
-                      <button class="button is-info is-outlined modal-default-button">
+                      <button class="button is-info is-outlined modal-default-button" :class="{'is-loading': active_event.loading}">
                         Save Event
                       </button>
                     </div>
@@ -171,11 +171,17 @@
       Vue.component('event-modal', {
         template: '#event-modal-template',
         props: ['active_event', 'active_calendar', 'close_event', 'date', 'cal'],
+        data: {
+          
+        },
         methods: {
-         save_event: function(date, event){
+         save_event: function(){
            var _this = this
            if (_this.active_event.title) {
 
+            _this.active_event.loading = true
+
+            console.log('active_event', _this.active_event)
              // setup payload
              var event = {
                title: _this.active_event.title,
@@ -192,7 +198,7 @@
              $.post('/api/event', event, function (res) {
                _this.close_event()
                _this.cal.fullCalendar('renderEvent', res);
-               swal("Nice!", "Event has been posted on your calendar", "success");
+               //swal("Nice!", "Event has been posted on your calendar", "success");
              })
 
            }
@@ -331,12 +337,13 @@
              },
              displayEventTime: false,
              dayClick: function (date, jsEvent, view) {
-               _this.show_add_event(date)
+                var event = { date: date }
+                console.log('day clicked')
+                _this.show_add_event(event)
              },
              eventClick: function(calEvent, jsEvent, view) {
-               alert('Event: ' + calEvent.title);
-               alert('Coordinates: ' + jsEvent.pageX + ',' + jsEvent.pageY);
-               alert('View: ' + view.name);
+
+               _this.show_add_event(calEvent)
 
                // change the border color just for fun
                $(this).css('border-color', 'red');
@@ -349,16 +356,24 @@
 
          },
 
-         show_add_event: function(date){
-           this.active_event = {}
+         show_add_event: function(event){
+           this.active_event = event
+           console.log('show_add_event active_event', this.active_event)
            if (this.user.id == this.current_user.id){
-             this.active_event.date = date
              this.modal_event = true
-
              setTimeout(function(){
                $("#active_event_title").focus();
              }, 500)
+           }
+         },
 
+         show_edit_event: function(date, event){
+          this.active_event = event
+           if (this.user.id == this.current_user.id){
+             this.modal_event = true
+             setTimeout(function(){
+               $("#active_event_title").focus();
+             }, 500)
            }
          },
 
