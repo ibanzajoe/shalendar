@@ -37,6 +37,29 @@
   </head>
 
   <body class="calendar full_height">
+    <div class="column is-12">
+      <div class="card is-fullwidth">
+        <div class="card-content">
+          <div class="media" style="margin-bottom: 0px; align-items: center;">
+            <div class="media-left">
+              <figure class="image is-256x256">
+                <img src="/assets/images/logo.png" alt="Image">
+              </figure>
+            </div>
+            <div class="media-content logo_content" >
+              <p class="title is-5">Share Your Calendar</p>
+              <p class="subtitle is-6">We provide a messaging platform that rocks and lets you host rooms
+                and privately share conversations with team members.</p>
+            </div>
+          </div>
+          <footer class="card-footer">
+            <a class="card-footer-item">Save</a>
+            <a class="card-footer-item">Edit</a>
+            <a class="card-footer-item">Delete</a>
+          </footer>
+        </div>
+      </div>
+    </div>
 
     <div id="app" class="full_height">
       <div class="columns full_height" style="margin: 0px;">
@@ -81,37 +104,10 @@
 
         <!-- middle -->
         <div class="column">
-          <div class="columns">
-            <div class="column is-12">
-              <div class="card is-fullwidth">
-                <div class="card-content">
-                  <div class="media" style="margin-bottom: 0px;">
-                    <div class="media-left">
-                      <figure class="image is-256x256">
-                        <img src="/assets/images/logo.png" alt="Image">
-                      </figure>
-                    </div>
-                    <div class="media-content">
-                      <p class="title is-5">Share Your Calendar</p>
-                      <p class="subtitle is-6">We provide a messaging platform that rocks and lets you host rooms
-                        and privately share conversations with team members.</p>
-                    </div>
-                  </div>
-
-                  <div class="content">
-
-                    <br>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
           <div class="column is-12">
 
             <div class="columns">
-              <div id="calendar" class="column is-12"></div>
-              <div class="row">
-                <div id="calendar" class="column is-12"></div>
+              <div id="calendar" class="column is-12" style="height: 700px;">
                 <event-modal id="modal_event" v-if="modal_event" :active_calendar="active_calendar" :cal="cal" :close_event="close_event" :active_event="active_event" @close="modal_event = false"></event-modal>
               </div>
             </div>
