@@ -240,3 +240,33 @@ img#slack_logo {
 /**************************/
 
 .error_message { color: red; margin-top: 20px;}
+
+
+/** calendar left pane **/
+#cal_left_pane{
+    position: relative;
+    min-height: 100%;
+    width: 250px;
+    background-color: #ffffff;
+    display: flex;
+}
+
+.cal_left_head {
+    display: block;
+}
+
+.cal_left_body {
+    display: block;
+
+}
+
+.cal_left_footer {
+    display: block;
+    position: absolute;
+    bottom: 0;
+
+
+}
+
+
+/************************/

@@ -32,7 +32,7 @@
     <script src='/fc/fullcalendar.min.js'></script>
 
     <!-- css -->
-    <link rel="stylesheet" href="/assets/css/styles.css">
+    <!--<link rel="stylesheet" href="/assets/css/styles.css">-->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.2.3/css/bulma.css">
     <link rel="stylesheet" href="/site/css/site.css">
     <!-- webpack -->
@@ -47,42 +47,42 @@
       <div class="columns full_height">
 
         <!-- left -->
-        <div id="left_p" class="column is-narrow left-calendar">
-
+        <div id="cal_left_pane" class="column is-narrow left-calendar">
+          <div class="box" style="width: 250px; box-shadow: 0;">
           <!-- <input type="text" class="form-control" placeholder="Search"> -->
 
-          <div class="left_p_head column" style="width: 250px;">
-            My Calendars  ({{calendars.length}})
-            <span class="left-add-calendar" @click="add_calendar" v-if="has_access()">+</span>
-          </div>
+            <div class="cal_left_head">
+              My Calendars  ({{calendars.length}})
+              <span class="left-add-calendar" @click="add_calendar" v-if="has_access()">+</span>
+            </div>
 
-          <div class="left_p_body column">
-            <ul>
-              <li :class="is_active_calendar('all')">
-                <!-- <i class="fa fa-calendar-o" aria-hidden="true"></i> -->
-                <a @click="set_active_calendar()">All</a>
-              </li>
+            <div class="cal_left_body">
               <ul>
-                <li v-for="calendar in calendars" :class="is_active_calendar(calendar)">
-                  <!-- <i class="fa fa-circle" aria-hidden="true"></i> -->
-                  <a href="#" @click.prevent="set_active_calendar(calendar)">{{calendar.name}}</a>
+                <li :class="is_active_calendar('all')">
+                  <!-- <i class="fa fa-calendar-o" aria-hidden="true"></i> -->
+                  <a @click="set_active_calendar()">All</a>
                 </li>
+                <ul>
+                  <li v-for="calendar in calendars" :class="is_active_calendar(calendar)">
+                    <!-- <i class="fa fa-circle" aria-hidden="true"></i> -->
+                    <a href="#" @click.prevent="set_active_calendar(calendar)">{{calendar.name}}</a>
+                  </li>
+                </ul>
+
               </ul>
 
-            </ul>
-
-          </div>
-
-          <div class="left_p_footer column">
-            <div v-if="current_user">
-              <p>Welcome <%= @user[:username] %>{{current_user.first_name}}, <a href="/user/logout">Logout</a></p>
             </div>
-            <div v-if="!current_user">
-              <p>You are not logged in, <a href="/user/login">Login</a></p>
+
+            <div class="cal_left_footer">
+              <div v-if="current_user">
+                <p>Welcome <%= @user[:username] %>{{current_user.first_name}}, <a href="/user/logout">Logout</a></p>
+              </div>
+              <div v-if="!current_user">
+                <p>You are not logged in, <a href="/user/login">Login</a></p>
+              </div>
             </div>
           </div>
-
-      </div>
+        </div>
 
       <!-- middle -->
         <div class="column">
