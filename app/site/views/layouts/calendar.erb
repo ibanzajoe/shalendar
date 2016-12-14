@@ -143,11 +143,14 @@
 
         </div>
 
-    </div>
+          </div>
 
+        </div>
+      </div>
     </div>
+  </body>
 
-    <script type="text/x-template" id="modal-template">
+        <script type="text/x-template" id="modal-template">
       <transition name="modal">
         <div class="modal-mask" @click="$emit('close')">
           <div class="modal-wrapper" style="height: 100%;">
@@ -155,7 +158,7 @@
               <div class="modal-body" @click.stop>
                 <slot name="body">
 
-<form @submit="add_event">
+                  <form @submit="add_event">
 
                   <h3>What Happened On This Day?</h3>
                   <label class="label">What</label>
@@ -176,7 +179,7 @@
                       Add Event
                     </button>
                   </div>
-     </form>
+                  </form>
 
                 </slot>
               </div>
@@ -382,7 +385,5 @@
 
     </script>
     <!-- <script src='/assets/js/calendar.js'></script> -->
-
-  </body>
 
 </html>
