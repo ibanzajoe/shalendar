@@ -31,8 +31,21 @@
             <p><input type="password" v-model="password" class="input"></p>
 
             <div class="button_class" style="margin-top: 10px;">
-              <button :class="{'is-loading': loading == true}" class="button is-medium is-primary modal_on" @click="handle_login">Next</button>
-              <a class="is-pulled-right" @click="handle_register_button">Or Sign Up</a>
+              <div class="columns">
+                <div class="column is-3 is-pulled-left">
+                  <button :class="{'is-loading': loading == true}" class="button is-medium is-primary modal_on" @click="handle_login">Next</button>
+                </div>
+                <div class="column is-9 is-pulled-right columns is-gapless" style="flex-direction: column;">
+                  <div class="column is-12">
+                    <a class="is-pulled-right" @click="handle_register_button">Or Sign Up</a>
+                  </div>
+                  <div class="column is-12">
+                    <a class="is-pulled-right" @click="showModal = true">Forgot Password?</a>
+                    <modal v-if="showModal" @close="showModal = false"></modal>
+                  </div>
+
+                </div>
+              </div>
             </div>
 
             <div v-if="error" class="error_message">{{error}}</div>
@@ -102,27 +115,51 @@
 
 </div> <!-- end main p -->
 
-<div class="modal">
-  <div class="modal-background"></div>
-  <div class="modal-card">
-    <header class="modal-card-head">
-      <p class="modal-card-title">Modal title</p>
-      <button class="delete close_modal"></button>
-    </header>
-    <section class="modal-card-body">
-      <h2>Hello Everyone</h2>
-      <p>This is a new modal that I created using Bulma</p>
-    </section>
-    <footer class="modal-card-foot">
-      <a class="button is-primary">Save changes</a>
-      <a class="button close_modal">Cancel</a>
-    </footer>
-  </div>
-</div>
+<script type="text/x-template" id="modal-template">
+  <transition name="modal">
+    <div class="modal-mask" @click="$emit('close')">
+      <div class="modal-wrapper" style="height: 100%;">
+        <div class="modal-container">
+          <div class="modal-body" @click.stop>
+            <slot name="body">
+
+              <form @submit="save_event">
+
+                <h3>We will send you a recovery password.</h3>
+                <label class="label">Your <strong>email address</strong></label>
+                <p><input class="input is-info" type="text" placeholder="johndoe@gmail.com"></p>
+
+                <!--<label class="label">Description (optional)</label>
+                  <p class="control has-icon has-icon-right">
+                  <textarea v-model="active_event.description" class="textarea" placeholder="Describe what happened"></textarea>
+                </p>
+                <label class="label">Where (optional)</label>
+                <p class="control has-icon has-icon-right">
+                  <input v-model="active_event.location" class="input" type="text" placeholder="city or location">
+                </p>
+                -->
+                <div class="modal_action">
+                  <button class="button is-info is-outlined modal-default-button">
+                    Send
+                  </button>
+                </div>
+              </form>
+
+            </slot>
+          </div>
+        </div>
+      </div>
+    </div>
+  </transition>
+</script>
 
 
 
 <script>
+  Vue.component('modal', {
+    template: '#modal-template'
+  })
+
 var main = new Vue({
   el: '#main_p',
   data: {
@@ -131,7 +168,8 @@ var main = new Vue({
     password: '',
 		username: '',
     error: false,
-    loading: false
+    loading: false,
+    showModal: false
   },
   mounted: function(){
     $('#main_p').show()
@@ -172,6 +210,9 @@ var main = new Vue({
     handle_register_button: function(){
       this.error = false
       this.left_pane = 'register'
+    },
+    forgot_password: function(){
+      this.forgot_pass = true;
     }
   }
 })
