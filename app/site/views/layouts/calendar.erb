@@ -39,11 +39,11 @@
   <body class="calendar full_height">
 
     <div id="app" class="full_height">
-      <div class="columns full_height">
+      <div class="columns full_height" style="margin: 0px;">
 
         <!-- left -->
         <div id="cal_left_pane" class="column is-narrow left-calendar">
-          <div class="box" style="width: 250px; box-shadow: 0;">
+          <div class="boxes" style="width: 250px; box-shadow: 0;">
           <!-- <input type="text" class="form-control" placeholder="Search"> -->
             <div class="cal_left_head">
               My Calendars  ({{calendars.length}})
@@ -51,7 +51,7 @@
             </div>
 
             <div class="cal_left_body">
-              <ul>
+              <ul class="level-item">
                 <li :class="is_active_calendar('all')">
                   <!-- <i class="fa fa-calendar-o" aria-hidden="true"></i> -->
                   <a @click="set_active_calendar()">All</a>
@@ -81,40 +81,40 @@
 
         <!-- middle -->
         <div class="column">
-
-          <div class="container-fluid">
-            <div class="row">
-
-              <div class="col-md-12 col-main-top top-calendar">
-
-                <div class="row">
-                  <div class="col-md-1 calendar-banner"><img src="/assets/images/profile_img.jpg" height="120"></div>
-                  <div class="col-md-7 col-header-description">
-                    <h2>Slack</h2>
-                    <div class="calendar-description">
-                      We provide a messaging platform that rocks and lets you host rooms
-                      and privately share conversations with team members.
+          <div class="columns">
+            <div class="column is-12">
+              <div class="card is-fullwidth">
+                <div class="card-content">
+                  <div class="media" style="margin-bottom: 0px;">
+                    <div class="media-left">
+                      <figure class="image is-256x256">
+                        <img src="/assets/images/logo.png" alt="Image">
+                      </figure>
                     </div>
-                    <div class="calendar-stats">
-                      <div class=""><h4>34 following | 12 followers</h4></div>
-                    </div>
-                    <div class="calendar-follow">
-                      <div class="calendar-follow-button"><button class="btn btn-warning">Follow</button> </div>
+                    <div class="media-content">
+                      <p class="title is-5">Share Your Calendar</p>
+                      <p class="subtitle is-6">We provide a messaging platform that rocks and lets you host rooms
+                        and privately share conversations with team members.</p>
                     </div>
                   </div>
-                </div>
 
-                <div class="row">
-                  <div id="calendar" class="col-md-12 col-main-content" style="width: 100%;"></div>
-                  <div class="row">
-                    <div id="calendar" class="col-md-12 col-main-content" style="width: 100%;"></div>
-                    <event-modal id="modal_event" v-if="modal_event" :active_calendar="active_calendar" :cal="cal" :close_event="close_event" :active_event="active_event" @close="modal_event = false"></event-modal>
+                  <div class="content">
+
+                    <br>
                   </div>
                 </div>
-
               </div>
+            </div>
+          </div>
+          <div class="column is-12">
 
-            </div> 
+            <div class="columns">
+              <div id="calendar" class="column is-12"></div>
+              <div class="row">
+                <div id="calendar" class="column is-12"></div>
+                <event-modal id="modal_event" v-if="modal_event" :active_calendar="active_calendar" :cal="cal" :close_event="close_event" :active_event="active_event" @close="modal_event = false"></event-modal>
+              </div>
+            </div>
 
           </div>
 
