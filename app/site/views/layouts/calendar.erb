@@ -14,11 +14,6 @@
     <!-- vue -->
     <script src='/bower_components/vue/dist/vue.min.js'></script>
 
-    <!-- bootstrap
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-    -->
     <!-- fontawesome -->
     <link rel="stylesheet" href="/bower_components/font-awesome/css/font-awesome.min.css">
 
@@ -50,7 +45,6 @@
         <div id="left_p" class="column is-narrow left-calendar">
 
           <!-- <input type="text" class="form-control" placeholder="Search"> -->
-
           <div class="left_p_head column" style="width: 250px;">
             My Calendars  ({{calendars.length}})
             <span class="left-add-calendar" @click="add_calendar" v-if="has_access()">+</span>
@@ -68,9 +62,7 @@
                   <a href="#" @click.prevent="set_active_calendar(calendar)">{{calendar.name}}</a>
                 </li>
               </ul>
-
             </ul>
-
           </div>
 
           <div class="left_p_footer column">
@@ -82,31 +74,16 @@
             </div>
           </div>
 
-      </div>
+        </div>
 
-      <!-- middle -->
+        <!-- middle -->
         <div class="column">
 
           <div class="container-fluid">
             <div class="row">
 
-              <!-- top nav -->
-              <!-- <div class="col-md-12 col-header top-nav">
-              <div class="row">
-              <div class="col-md-3">Shalendar</div>
-              <div class="col-md-7 col-header-search text-right">
-              <% if @current_user.blank? %>
-              <a href="">register</a>
-              <a href="">login</a>
-              <% else %>
-              <a href="/user/logout">Hi <%= @current_user[:first_name] %> </a>
-              <% end %>
-              </div>
-              <div class="col-md-2 col-header-login text-right">log in</div>
-              </div>
-              </div> -->
-
               <div class="col-md-12 col-main-top top-calendar">
+
                 <div class="row">
                   <div class="col-md-1 calendar-banner"><img src="/assets/images/profile_img.jpg" height="120"></div>
                   <div class="col-md-7 col-header-description">
@@ -121,36 +98,32 @@
                     <div class="calendar-follow">
                       <div class="calendar-follow-button"><button class="btn btn-warning">Follow</button> </div>
                     </div>
-
                   </div>
-
                 </div>
 
                 <div class="row">
                   <div id="calendar" class="col-md-12 col-main-content" style="width: 100%;"></div>
-
-
-              <div class="row">
-                <div id="calendar" class="col-md-12 col-main-content" style="width: 100%;"></div>
-                <modal id="modal_add_event" v-if="modal_add_event" :cal="cal" :close_add_event="close_add_event" :new_event="new_event" @close="modal_add_event = false"></modal>
-
+                  <div class="row">
+                    <div id="calendar" class="col-md-12 col-main-content" style="width: 100%;"></div>
+                    <event-modal id="modal_event" v-if="modal_event" :active_calendar="active_calendar" :cal="cal" :close_event="close_event" :active_event="active_event" @close="modal_event = false"></event-modal>
+                  </div>
+                </div>
 
               </div>
 
-            </div>
+            </div> 
 
           </div>
 
         </div>
 
-          </div>
+        <!-- end middle -->
 
-        </div>
       </div>
     </div>
-  </body>
 
-        <script type="text/x-template" id="modal-template">
+
+    <script type="text/x-template" id="event-modal-template">
       <transition name="modal">
         <div class="modal-mask" @click="$emit('close')">
           <div class="modal-wrapper" style="height: 100%;">
@@ -158,27 +131,27 @@
               <div class="modal-body" @click.stop>
                 <slot name="body">
 
-                  <form @submit="add_event">
+                  <form @submit="save_event">
 
-                  <h3>What Happened On This Day?</h3>
-                  <label class="label">What</label>
-                  <p class="control">
-                    <input id="new_event_title" v-model="new_event.title" class="input is-info" type="text" placeholder="A short sentence describing the event">
-                  </p>
-                  <label class="label">Description (optional)</label>
+                    <h3>What Happened On This Day?</h3>
+                    <label class="label">What</label>
+                    <p class="control">
+                      <input id="active_event_title" v-model="active_event.title" class="input is-info" type="text" placeholder="A short sentence describing the event">
+                    </p>
+                    <label class="label">Description (optional)</label>
+                      <p class="control has-icon has-icon-right">
+                      <textarea v-model="active_event.description" class="textarea" placeholder="Describe what happened"></textarea>
+                    </p>
+                    <label class="label">Where (optional)</label>
                     <p class="control has-icon has-icon-right">
-                    <textarea v-model="new_event.description" class="textarea" placeholder="Describe what happened"></textarea>
-                  </p>
-                  <label class="label">Where (optional)</label>
-                  <p class="control has-icon has-icon-right">
-                    <input v-model="new_event.location" class="input" type="text" placeholder="city or location">
-                  </p>
+                      <input v-model="active_event.location" class="input" type="text" placeholder="city or location">
+                    </p>
 
-                  <div class="modal_action">
-                    <button class="button is-info is-outlined modal-default-button">
-                      Add Event
-                    </button>
-                  </div>
+                    <div class="modal_action">
+                      <button class="button is-info is-outlined modal-default-button">
+                        Save Event
+                      </button>
+                    </div>
                   </form>
 
                 </slot>
@@ -190,22 +163,23 @@
     </script>
 
 
-
     <script>
 
-      Vue.component('modal', {
-        template: '#modal-template',
-        props: ['click_handler', 'new_event', 'date', 'cal', 'close_add_event'],
+      Vue.component('event-modal', {
+        template: '#event-modal-template',
+        props: ['active_event', 'active_calendar', 'close_event', 'date', 'cal'],
         methods: {
-         add_event: function(date){
+         save_event: function(date, event){
            var _this = this
-           if (_this.new_event.title) {
+           if (_this.active_event.title) {
 
              // setup payload
              var event = {
-               title: _this.new_event.title,
-               start: _this.new_event.date.utc().format(),
-               end: _this.new_event.date.utc().add(1, 'day').format(),
+               title: _this.active_event.title,
+               start: _this.active_event.date.utc().format(),
+               end: _this.active_event.date.utc().add(1, 'day').format(),
+               description: _this.active_event.description || null,
+               location: _this.active_event.location || null
              }
 
              // if calendar selected, add calendar_id to payload
@@ -213,7 +187,7 @@
 
              // post to /api/event
              $.post('/api/event', event, function (res) {
-               _this.close_add_event()
+               _this.close_event()
                _this.cal.fullCalendar('renderEvent', res);
                swal("Nice!", "Event has been posted on your calendar", "success");
              })
@@ -233,8 +207,8 @@
          eventsources: [],
          cal: {},
          events: [],
-         modal_add_event: false,
-         new_event: {}
+         modal_event: false,
+         active_event: {}
        },
 
        mounted: function(){
@@ -246,7 +220,7 @@
 
        methods: {
 
-         add_eventsource: function(source){
+         save_eventsource: function(source){
            this.eventsources.push(source);
            this.cal.fullCalendar('addEventSource', source)
          },
@@ -285,11 +259,11 @@
            if(calendar){
              console.log('active calendar', calendar)
                this.active_calendar = calendar;
-             this.add_eventsource("/api/events?user_id="+this.user.id+"&calendar_id="+calendar.id);
+             this.save_eventsource("/api/events?user_id="+this.user.id+"&calendar_id="+calendar.id);
              //this.cal.fullCalendar.refetchEvents();
              location.hash = calendar.name
            }else{
-             this.add_eventsource("/api/events?user_id="+this.user.id);
+             this.save_eventsource("/api/events?user_id="+this.user.id);
              location.hash = ''
            }
            console.log(this.eventsources)
@@ -356,6 +330,14 @@
              dayClick: function (date, jsEvent, view) {
                _this.show_add_event(date)
              },
+             eventClick: function(calEvent, jsEvent, view) {
+               alert('Event: ' + calEvent.title);
+               alert('Coordinates: ' + jsEvent.pageX + ',' + jsEvent.pageY);
+               alert('View: ' + view.name);
+
+               // change the border color just for fun
+               $(this).css('border-color', 'red');
+             },
 
              //events: "/api/events?user_id="+_this.user.id,
              //eventSources: _this.eventsources,
@@ -365,25 +347,29 @@
          },
 
          show_add_event: function(date){
-           this.new_event = {}
+           this.active_event = {}
            if (this.user.id == this.current_user.id){
-             this.new_event.date = date
-             this.modal_add_event = true
+             this.active_event.date = date
+             this.modal_event = true
 
              setTimeout(function(){
-               $("#new_event_title").focus();
+               $("#active_event_title").focus();
              }, 500)
 
            }
          },
-         close_add_event: function(){
-           this.modal_add_event = false
+
+         close_event: function(){
+           this.modal_event = false
          }
 
        }
      })
 
     </script>
-    <!-- <script src='/assets/js/calendar.js'></script> -->
 
+
+  </body>
+
+  
 </html>
