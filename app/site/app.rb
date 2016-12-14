@@ -236,10 +236,26 @@ module Honeybadger
 
     end
 
+
+    ### get a list of events
+    ### params: id, user_id
+    ### optional: calendar_id
+    get '/api/event' do
+      content_type :json
+      event = Event.where(:id => params[:id]).first
+      if event
+        res = event
+      end
+
+      return res.formatted.values.to_json
+
+    end
+
+
     ### create an event
     ### params: title, start
     ### note: user_id (taken from session)
-    ### optional: calendar_id, end, url, description
+    ### optional: id, calendar_id, end, url, description
     post '/api/event' do
       content_type :json
 
@@ -250,13 +266,22 @@ module Honeybadger
         :calendar_id => params[:calendar_id],
         :title => params[:title],
         :starts_at => params[:start],
-        :ends_at => params[:end],
+        :ends_at => params[:end] || params[:start],
         :url => params[:url],        
         :color => calendar[:color],
         :description => params[:description],
         :location => params[:location],        
       }
-      event = Event.create(data)
+
+      if !params[:id].blank?
+        event = Event[params[:id]]
+        if event
+          event.update(data)
+        end
+      else
+        event = Event.create(data)
+      end
+
       res = event.formatted.values.to_json
       return res
     end

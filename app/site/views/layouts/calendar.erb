@@ -43,6 +43,7 @@
           <a class="nav-item is-brand" href="#">
             <img src="/assets/images/logo.png" alt="Shalendar logo" style="max-height:50px;">
           </a>
+
         </div>
 
         <div class="nav-right nav-menu">
@@ -170,28 +171,47 @@
         },
         methods: {
          save_event: function(){
+
            var _this = this
-           if (_this.active_event.title) {
+           var event_id = _this.active_event.id || null
+
+           if (_this.active_event) {
 
             _this.active_event.loading = true
 
             console.log('active_event', _this.active_event)
+
              // setup payload
-             var event = {
+             var data = {
+               id: _this.active_event.id || null,
+               calendar_id: _this.active_event.calendar_id || null,
                title: _this.active_event.title,
-               start: _this.active_event.date.utc().format(),
-               end: _this.active_event.date.utc().add(1, 'day').format(),
+               start: _this.active_event.start,
+               end: _this.active_event.end,
                description: _this.active_event.description || null,
                location: _this.active_event.location || null
              }
 
-             // if calendar selected, add calendar_id to payload
-             if(_this.active_calendar) event.calendar_id = _this.active_calendar.id
+             $.each(data, function(k, v){
+               $.each(_this.active_event.calEvent, function(k2, v2){
+                 if(k == k2){
+                  _this.active_event.calEvent[k] = v    
+                 }
+               })
+               
+             })
 
              // post to /api/event
-             $.post('/api/event', event, function (res) {
+             console.log('/api/event', data)
+             $.post('/api/event', data, function (res) {
                _this.close_event()
-               _this.cal.fullCalendar('renderEvent', res);
+
+               if(event_id){
+                 _this.cal.fullCalendar('updateEvent', _this.active_event.calEvent);  
+               }else{
+                 _this.cal.fullCalendar('renderEvent', res);
+               }
+               
                //swal("Nice!", "Event has been posted on your calendar", "success");
              })
 
@@ -336,11 +356,14 @@
                 _this.show_add_event(event)
              },
              eventClick: function(calEvent, jsEvent, view) {
-
-               _this.show_add_event(calEvent)
-
-               // change the border color just for fun
-               $(this).css('border-color', 'red');
+              var event_id = calEvent.id
+              if(event_id){
+                $.get("/api/event", {id: event_id, user_id: _this.user.id}, function(res){
+                  console.log('from /api/event', res)
+                  _this.show_edit_event(res, calEvent)
+                })
+              }
+              
              },
 
              //events: "/api/events?user_id="+_this.user.id,
@@ -352,6 +375,16 @@
 
          show_add_event: function(event){
            this.active_event = event
+           var _this = this
+
+           // if calendar selected, add calendar_id to payload
+           if(this.active_calendar) this.active_event.calendar_id = this.active_calendar.id
+          
+
+           // set date
+           this.active_event.start = this.active_event.date.utc().format()           
+           //this.active_event.end = this.active_event.date.utc().add(1, 'day').format()           
+
            console.log('show_add_event active_event', this.active_event)
            if (this.user.id == this.current_user.id){
              this.modal_event = true
@@ -361,8 +394,12 @@
            }
          },
 
-         show_edit_event: function(date, event){
+         show_edit_event: function(event, calEvent){
           this.active_event = event
+          this.active_event.calEvent = calEvent
+          console.log('show edit event', event)         
+
+          console.log('show_add_event active_event', this.active_event)
            if (this.user.id == this.current_user.id){
              this.modal_event = true
              setTimeout(function(){
