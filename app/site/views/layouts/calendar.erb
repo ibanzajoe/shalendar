@@ -98,7 +98,7 @@
 
             <div class="columns">
               <div id="calendar" class="column is-12" style="height: 700px;">
-                <event-modal id="modal_event" v-if="modal_event" :active_calendar="active_calendar" :cal="cal" :close_event="close_event" :active_event="active_event" @close="modal_event = false"></event-modal>
+                <event-modal id="modal_event" v-if="modal_event" :save_event="save_event" :delete_event="delete_event" :active_calendar="active_calendar" :cal="cal" :close_event="close_event" :active_event="active_event" @close="modal_event = false"></event-modal>
               </div>
             </div>
 
@@ -116,30 +116,40 @@
       <transition name="modal">
         <div class="modal-mask" @click="$emit('close')">
           <div class="modal-wrapper" style="height: 100%;">
-            <div class="modal-container">
-              <div class="modal-body" @click.stop>
+            <div class="modal-container" @click.stop>
+              <div class="modal-body">
                 <slot name="body">
 
                   <form @submit="save_event">
 
                     <h3>What Happened On This Day?</h3>
+                   
                     <label class="label">What</label>
                     <p class="control">
                       <input id="active_event_title" v-model="active_event.title" class="input is-info" type="text" placeholder="A short sentence describing the event">
                     </p>
-                    <!--<label class="label">Description (optional)</label>
-                      <p class="control has-icon has-icon-right">
+
+                    <div class="event_extra_actions">
+                    <a :class="{'is-active': show_description || active_event.description}" @click="show_description = show_description ? false : true">add description</a>
+                    <a :class="{'is-active': show_location || active_event.location}" @click="show_location = show_location ? false : true">add location</a>
+                    </div>
+
+                    <p v-if="show_description || active_event.description" class="control has-icon has-icon-right">
                       <textarea v-model="active_event.description" class="textarea" placeholder="Describe what happened"></textarea>
                     </p>
-                    <label class="label">Where (optional)</label>
-                    <p class="control has-icon has-icon-right">
+                    
+                    <p v-if="show_location || active_event.location" class="control has-icon has-icon-right">
                       <input v-model="active_event.location" class="input" type="text" placeholder="city or location">
                     </p>
-                    -->
+                    
                     <div class="modal_action">
                       <button class="button is-info is-outlined modal-default-button" :class="{'is-loading': active_event.loading}">
                         Save Event
                       </button>
+
+                      <a v-if="active_event.id" @click="delete_event(active_event.id)" class="is-pulled-right button is-danger is-outlined modal-default-button" :class="{'is-loading': active_event.loading}">
+                        Delete
+                      </a>
                     </div>
                   </form>
 
@@ -156,66 +166,20 @@
 
       Vue.component('event-modal', {
         template: '#event-modal-template',
-        props: ['active_event', 'active_calendar', 'close_event', 'date', 'cal'],
-        data: {
-          
+        data: function(){
+          return {
+            show_description: false,
+            show_location: false
+          }
         },
-        methods: {
-         save_event: function(){
-
-           var _this = this
-           var event_id = _this.active_event.id || null
-
-           if (_this.active_event) {
-
-            _this.active_event.loading = true
-
-            console.log('active_event', _this.active_event)
-
-             // setup payload
-             var data = {
-               id: _this.active_event.id || null,
-               calendar_id: _this.active_event.calendar_id || null,
-               title: _this.active_event.title,
-               start: _this.active_event.start,
-               end: _this.active_event.end,
-               description: _this.active_event.description || null,
-               location: _this.active_event.location || null
-             }
-
-             $.each(data, function(k, v){
-               $.each(_this.active_event.calEvent, function(k2, v2){
-                 if(k == k2){
-                  _this.active_event.calEvent[k] = v    
-                 }
-               })
-               
-             })
-
-             // post to /api/event
-             console.log('/api/event', data)
-             $.post('/api/event', data, function (res) {
-               _this.close_event()
-
-               if(event_id){
-                 _this.cal.fullCalendar('updateEvent', _this.active_event.calEvent);  
-               }else{
-                 _this.cal.fullCalendar('renderEvent', res);
-               }
-               
-               //swal("Nice!", "Event has been posted on your calendar", "success");
-             })
-
-           }
-         }
-        }
+        props: ['active_event', 'active_calendar', 'close_event', 'save_event', 'delete_event', 'date', 'cal']
       })
 
      new Vue({
        el: '#app',
        data: {
          user: <%== @user.to_json %>,
-         current_user: <%== session[:user].to_json %>,
+         current_user: <%== @current_user.to_json %>,
          calendars: [],
          active_calendar: null,
          eventsources: [],
@@ -331,6 +295,7 @@
              aspectRatio: 2.5,
              firstDay: 1,
              fixedWeekCount: false,
+
              header: {
                left: 'prev,next today',
                center: 'title',
@@ -356,6 +321,15 @@
               }
               
              },
+             eventDrop: function(event, delta, revertFunc) {
+
+               alert(event.title + " was dropped on " + event.start.format());
+
+               if (!confirm("Are you sure about this change?")) {
+                   revertFunc();
+               }
+
+             }
 
              //events: "/api/events?user_id="+_this.user.id,
              //eventSources: _this.eventsources,
@@ -401,7 +375,68 @@
 
          close_event: function(){
            this.modal_event = false
-         }
+         },
+
+         save_event: function(){
+
+           var _this = this
+           var event_id = _this.active_event.id || null
+
+           if (_this.active_event) {
+
+            _this.active_event.loading = true
+
+            console.log('active_event', _this.active_event)
+
+             // setup payload
+             var data = {
+               id: _this.active_event.id || null,
+               calendar_id: _this.active_event.calendar_id || null,
+               title: _this.active_event.title,
+               start: _this.active_event.start,
+               end: _this.active_event.end,
+               description: _this.active_event.description || null,
+               location: _this.active_event.location || null
+             }
+
+             $.each(data, function(k, v){
+               $.each(_this.active_event.calEvent, function(k2, v2){
+                 if(k == k2){
+                  _this.active_event.calEvent[k] = v    
+                 }
+               })
+               
+             })
+
+             // post to /api/event
+             console.log('/api/event', data)
+             $.post('/api/event', data, function (res) {
+               _this.close_event()
+
+               if(event_id){
+                 _this.cal.fullCalendar('updateEvent', _this.active_event.calEvent);  
+               }else{
+                 _this.cal.fullCalendar('renderEvent', res);
+               }
+               
+               //swal("Nice!", "Event has been posted on your calendar", "success");
+             })
+
+           }
+         },
+
+         delete_event: function(id){
+           var _this = this
+           $.post('/api/event/delete', {id: id}, function(res){
+             if(res.code == 200){
+                _this.cal.fullCalendar('removeEvents', [id])
+                _this.close_event()
+             }else{
+                alert('something went wrong')
+             }
+             
+           })
+         } 
 
        }
      })

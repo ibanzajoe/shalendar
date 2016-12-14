@@ -259,16 +259,20 @@ module Honeybadger
     post '/api/event' do
       content_type :json
 
-      calendar = Calendar[params[:calendar_id]]
+      color = nil
+      if !params[:calendar_id].blank?
+        calendar = Calendar[params[:calendar_id]]
+        color = calendar[:color]
+      end
 
       data = {
         :user_id => @current_user[:id],
-        :calendar_id => params[:calendar_id],
+        :calendar_id => params[:calendar_id] || nil,
         :title => params[:title],
         :starts_at => params[:start],
         :ends_at => params[:end] || params[:start],
         :url => params[:url],        
-        :color => calendar[:color],
+        :color => color,
         :description => params[:description],
         :location => params[:location],        
       }
@@ -284,6 +288,30 @@ module Honeybadger
 
       res = event.formatted.values.to_json
       return res
+    end
+
+
+
+    ### create an event
+    ### params: id
+    post '/api/event/delete' do
+      content_type :json
+
+      event = Event.where(:id => params[:id]).first
+      if event
+        event.destroy
+        res = {
+          :status => 'deleted',
+          :code => 200
+        }
+      else
+        res = {
+          :status => 'event not found',
+          :code => 404
+        }
+      end
+
+      return res.to_json
     end
 
 

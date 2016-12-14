@@ -307,3 +307,11 @@ img#slack_logo {
 }
 
 /************************/
+
+
+
+.event_extra_actions { 
+    margin-bottom: 10px;
+}
+.event_extra_actions a { color: #666;}
+.event_extra_actions a.is-active { font-weight: bolder; }
