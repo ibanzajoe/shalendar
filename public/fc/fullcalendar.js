@@ -5653,7 +5653,9 @@ var DayGrid = FC.DayGrid = Grid.extend(DayTableMixin, {
 			}
 		}
 
-		html += '<td class="' + classes.join(' ') + '" data-date="' + date.format() + '">';
+		// jmodi
+		//html += '<td class="' + classes.join(' ') + '" data-date="' + date.format() + '"> <span id="fc-day-'+date.format()+'" ><img style="height: 20px" src="https://www.filepicker.io/api/file/2yEDYazRoZAaeSkIQsNQ"></span> ';
+		html += '<td class="' + classes.join(' ') + '" data-date="' + date.format() + '"> ';
 
 		if (this.view.cellWeekNumbersVisible && (date.day() == weekCalcFirstDoW)) {
 			html += this.view.buildGotoAnchorHtml(

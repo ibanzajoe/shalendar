@@ -24,7 +24,7 @@
     <!-- fc -->
     <link href='/fc/fullcalendar.css' rel='stylesheet' />
     <link href='/fc/fullcalendar.print.css' rel='stylesheet' media='print' />
-    <script src='/fc/fullcalendar.min.js'></script>
+    <script src='/fc/fullcalendar.js'></script>
 
     <!-- css -->
     <!--<link rel="stylesheet" href="/assets/css/styles.css">-->
@@ -100,7 +100,7 @@
 
             <div class="columns">
               <div id="calendar" class="column is-12" style="height: 700px;">
-                <event-modal id="modal_event" v-if="modal_event" :save_event="save_event" :delete_event="delete_event" :active_calendar="active_calendar" :cal="cal" :close_event="close_event" :active_event="active_event" :init_media="init_media" @close="modal_event = false"></event-modal>
+                <event-modal id="modal_event" v-if="modal_event" :current_user="current_user" :user="user" :save_event="save_event" :delete_event="delete_event" :active_calendar="active_calendar" :cal="cal" :close_event="close_event" :active_event="active_event" :init_media="init_media" @close="modal_event = false"></event-modal>
               </div>
             </div>
 
@@ -128,12 +128,12 @@
                    
                     <label class="label">What</label>
                     <p class="control">
-                      <input id="active_event_title" v-model="active_event.title" class="input is-info" type="text" placeholder="A short sentence describing the event">
+                      <input id="active_event_title" v-model="active_event.title" class="input is-info" type="text" placeholder="A short sentence describing the event" :disabled="{'disabled': current_user.id != user.id">
                     </p>
                     
                     <div class="event_extra_actions">                   
                       <div class="has-text-left"><a id="add_media"></a></div>
-                      <div class="has-text-right" style="margin-top: -20px;">
+                      <div class="has-text-right" style="margin-top: -23px;">
                         <a :class="{'is-active': show_description || active_event.description}" @click="show_description = show_description ? false : true">+ add description</a>
                         <a :class="{'is-active': show_location || active_event.location}" @click="show_location = show_location ? false : true">+ add location</a>
                       </div>
@@ -186,7 +186,7 @@
         mounted: function(){
           this.init_media()
         },
-        props: ['active_event', 'active_calendar', 'close_event', 'save_event', 'delete_event', 'init_media', 'date', 'cal'],
+        props: ['active_event', 'active_calendar', 'close_event', 'save_event', 'delete_event', 'init_media', 'date', 'cal', 'current_user', 'user'],
       })
 
      new Vue({
@@ -240,7 +240,7 @@
            this.active_calendar = null;
            this.eventsources = []
            this.cal.fullCalendar('removeEventSources')
-             this.cal.fullCalendar('removeEvents')
+           this.cal.fullCalendar('removeEvents')
          },
 
          set_active_calendar: function(calendar){
@@ -249,7 +249,7 @@
 
            if(calendar){
              console.log('active calendar', calendar)
-               this.active_calendar = calendar;
+             this.active_calendar = calendar;
              this.save_eventsource("/api/events?user_id="+this.user.id+"&calendar_id="+calendar.id);
              //this.cal.fullCalendar.refetchEvents();
              location.hash = calendar.name
@@ -286,10 +286,9 @@
              }
 
              var color = '#e6ecf1'
-
-             $.post("/api/calendar", {user_id: _this.user.id, name: calendar_name, color: color }, function(res){
+             $.post("/api/calendar", { user_id: _this.user.id, name: calendar_name, color: color }, function(res){
                swal("Nice!", "You just created a calendar: " + calendar_name, "success")
-                 _this.get_calendars()
+               _this.get_calendars()
              })
 
            })
@@ -298,8 +297,8 @@
          init_calendar: function(){
            var _this = this
            console.log('init calendar')
-             var cal = $('#calendar')
-             _this.cal = cal
+           var cal = $('#calendar')
+           _this.cal = cal
 
            cal.fullCalendar({
              defaultDate: moment(),
@@ -342,6 +341,18 @@
                    revertFunc();
                }
 
+             },
+             eventRender: function(event, element) {
+                console.log('wtf', event, element)
+                var image_html = ''
+
+                if(event.media){
+                  $.each(event.media, function(k, file){
+                    image_html += "<img src='"+file+"' style='height: 20px;'>"
+                  })
+                }
+                
+                element.find('.fc-title').html(event.title + "<div style='float: right;'>" + image_html + "</div>");
              }
 
              //events: "/api/events?user_id="+_this.user.id,
@@ -358,13 +369,12 @@
            // if calendar selected, add calendar_id to payload
            if(this.active_calendar) this.active_event.calendar_id = this.active_calendar.id
           
-
            // set date
            this.active_event.start = this.active_event.date.utc().format()           
            //this.active_event.end = this.active_event.date.utc().add(1, 'day').format()           
 
            console.log('show_add_event active_event', this.active_event)
-           if (this.user.id == this.current_user.id){
+           if (this.current_user && (this.user.id == this.current_user.id)){
              this.modal_event = true
              setTimeout(function(){
                $("#active_event_title").focus();
@@ -373,17 +383,16 @@
          },
 
          show_edit_event: function(event, calEvent){
-          this.active_event = event
-          this.active_event.calEvent = calEvent
-          console.log('show edit event', event)         
-
-          console.log('show_add_event active_event', this.active_event)
-           if (this.user.id == this.current_user.id){
-             this.modal_event = true
-             setTimeout(function(){
-               $("#active_event_title").focus();
-             }, 500)
-           }
+            this.active_event = event
+            this.active_event.calEvent = calEvent
+            console.log('show edit event', event)         
+            console.log('active_event', this.active_event)
+            //if (this.user.id == this.current_user.id){
+            this.modal_event = true
+            setTimeout(function(){
+              $("#active_event_title").focus();
+            }, 500)
+          //}
          },
 
          close_event: function(){
@@ -448,7 +457,6 @@
              }else{
                 alert('something went wrong')
              }
-             
            })
          },
 
