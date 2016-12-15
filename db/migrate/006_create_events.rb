@@ -8,10 +8,12 @@ Sequel.migration do
 
       String :title, :size => 64
       String :description
-      String :url, :size => 128
+      String :url, :size => 128      
 
       String :location
       String :color
+
+      column :media, 'jsonb'      
 
       DateTime :starts_at
       DateTime :ends_at

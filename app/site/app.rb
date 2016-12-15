@@ -181,7 +181,12 @@ module Honeybadger
     get '/api/calendars' do
       content_type :json
       calendars = Calendar.where(:user_id => params[:user_id]).all
-      return calendars.to_json
+
+      if !calendars.blank?
+        return calendars.to_json
+      else
+        return { :code => 404, :status => 'no calendars' }.to_json
+      end
     end
 
     ### create a calendar
@@ -275,6 +280,7 @@ module Honeybadger
         :color => color,
         :description => params[:description],
         :location => params[:location],        
+        :media => params[:media].to_json,        
       }
 
       if !params[:id].blank?

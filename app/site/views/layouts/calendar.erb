@@ -33,6 +33,8 @@
     <!-- webpack -->
     <!-- <script src='//webpack.shalendar.docker/static/bundle.js'></script> -->
 
+    <script type="text/javascript" src="//api.filepicker.io/v2/filepicker.js"></script>
+
 
   </head>
 
@@ -98,7 +100,7 @@
 
             <div class="columns">
               <div id="calendar" class="column is-12" style="height: 700px;">
-                <event-modal id="modal_event" v-if="modal_event" :save_event="save_event" :delete_event="delete_event" :active_calendar="active_calendar" :cal="cal" :close_event="close_event" :active_event="active_event" @close="modal_event = false"></event-modal>
+                <event-modal id="modal_event" v-if="modal_event" :save_event="save_event" :delete_event="delete_event" :active_calendar="active_calendar" :cal="cal" :close_event="close_event" :active_event="active_event" :init_media="init_media" @close="modal_event = false"></event-modal>
               </div>
             </div>
 
@@ -128,11 +130,19 @@
                     <p class="control">
                       <input id="active_event_title" v-model="active_event.title" class="input is-info" type="text" placeholder="A short sentence describing the event">
                     </p>
-
-                    <div class="event_extra_actions">
-                    <a :class="{'is-active': show_description || active_event.description}" @click="show_description = show_description ? false : true">add description</a>
-                    <a :class="{'is-active': show_location || active_event.location}" @click="show_location = show_location ? false : true">add location</a>
+                    
+                    <div class="event_extra_actions">                   
+                      <div class="has-text-left"><a id="add_media"></a></div>
+                      <div class="has-text-right" style="margin-top: -20px;">
+                        <a :class="{'is-active': show_description || active_event.description}" @click="show_description = show_description ? false : true">+ add description</a>
+                        <a :class="{'is-active': show_location || active_event.location}" @click="show_location = show_location ? false : true">+ add location</a>
+                      </div>
                     </div>
+
+                    <p class="event_media_files" v-if="active_event.media">
+                      <div class="event_media_file" v-for="file in active_event.media"><img :src="file"></div>
+                      <div style="clear: both;" />
+                    </p>
 
                     <p v-if="show_description || active_event.description" class="control has-icon has-icon-right">
                       <textarea v-model="active_event.description" class="textarea" placeholder="Describe what happened"></textarea>
@@ -169,10 +179,14 @@
         data: function(){
           return {
             show_description: false,
-            show_location: false
+            show_location: false,
+            media: []
           }
         },
-        props: ['active_event', 'active_calendar', 'close_event', 'save_event', 'delete_event', 'date', 'cal']
+        mounted: function(){
+          this.init_media()
+        },
+        props: ['active_event', 'active_calendar', 'close_event', 'save_event', 'delete_event', 'init_media', 'date', 'cal'],
       })
 
      new Vue({
@@ -193,7 +207,6 @@
          this.get_calendars();
          this.init_calendar();
          this.set_active_calendar();
-         //this.get_events();
        },
 
        methods: {
@@ -396,7 +409,8 @@
                start: _this.active_event.start,
                end: _this.active_event.end,
                description: _this.active_event.description || null,
-               location: _this.active_event.location || null
+               location: _this.active_event.location || null,
+               media: _this.active_event.media || null,
              }
 
              $.each(data, function(k, v){
@@ -436,12 +450,40 @@
              }
              
            })
-         } 
+         },
+
+         init_media: function(){
+           var _this = this
+           filepicker.setKey("ACGRkMPr9TqmbgPiHBS5Cz");
+           var element = document.getElementById('add_media')
+           element.type="filepicker-dragdrop";
+           element.setAttribute('data-fp-mimetype', 'image/*');
+           element.setAttribute('data-fp-multiple', true);
+           element.setAttribute('data-fp-button-text', '+ photos / videos');
+           element.setAttribute('data-fp-button-class', 'button is-outlined is-primary');
+           element.setAttribute('data-fp-image-max', '800, 600');
+           element.onchange = function(e){
+
+             if(!_this.active_event.media) _this.active_event.media = []
+
+             $.each(e.fpfiles, function(k, v){
+               _this.active_event.media.push(v["url"])  
+             })
+             
+             console.log('after', _this.active_event.media)
+             
+           };
+           filepicker.constructWidget(element);
+         }
+
+         
 
        }
      })
 
     </script>
+
+  
 
 
   </body>

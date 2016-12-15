@@ -161,7 +161,7 @@ img#slack_logo {
 
 .modal-mask {
     position: fixed;
-    z-index: 9998;
+    z-index: 10;
     top: 0;
     left: 0;
     width: 100%;
@@ -309,9 +309,11 @@ img#slack_logo {
 /************************/
 
 
-
+.modal_action { margin-top: 40px;}
 .event_extra_actions { 
     margin-bottom: 10px;
 }
-.event_extra_actions a { color: #666;}
+.event_extra_actions a { color: #ccc; margin-right: 10px; font-size: 12px;}
 .event_extra_actions a.is-active { font-weight: bolder; }
+.event_media_file { float: left; }
+.event_media_file img { height: 100px;}

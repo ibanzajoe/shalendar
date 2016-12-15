@@ -10,6 +10,9 @@ set :auth, {
 :twitter => {:key => '', :secret => ''},
 :instagram => {:key => '', :secret => ''}
 }
+
+set :filepicker, 'ACGRkMPr9TqmbgPiHBS5Cz'
+
 end
 
 #ip = request.ip
