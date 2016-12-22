@@ -125,13 +125,12 @@
                   <form @submit="save_event">
 
                     <h3>What Happened On This Day?</h3>
-                   
                     <label class="label">What</label>
                     <p class="control">
-                      <input id="active_event_title" v-model="active_event.title" class="input is-info" type="text" placeholder="A short sentence describing the event" :disabled="{'disabled': current_user.id != user.id">
+                      <input id="active_event_title" v-model="active_event.title" class="input is-info" type="text" placeholder="A short sentence describing the event" :disabled="current_user.id != user.id">
                     </p>
-                    
-                    <div class="event_extra_actions">                   
+
+                    <div class="event_extra_actions">
                       <div class="has-text-left"><a id="add_media"></a></div>
                       <div class="has-text-right" style="margin-top: -23px;">
                         <a :class="{'is-active': show_description || active_event.description}" @click="show_description = show_description ? false : true">+ add description</a>
@@ -147,11 +146,11 @@
                     <p v-if="show_description || active_event.description" class="control has-icon has-icon-right">
                       <textarea v-model="active_event.description" class="textarea" placeholder="Describe what happened"></textarea>
                     </p>
-                    
+
                     <p v-if="show_location || active_event.location" class="control has-icon has-icon-right">
                       <input v-model="active_event.location" class="input" type="text" placeholder="city or location">
                     </p>
-                    
+
                     <div class="modal_action">
                       <button class="button is-info is-outlined modal-default-button" :class="{'is-loading': active_event.loading}">
                         Save Event
@@ -331,7 +330,7 @@
                   _this.show_edit_event(res, calEvent)
                 })
               }
-              
+
              },
              eventDrop: function(event, delta, revertFunc) {
 
@@ -351,7 +350,7 @@
                     image_html += "<img src='"+file+"' style='height: 20px;'>"
                   })
                 }
-                
+
                 element.find('.fc-title').html(event.title + "<div style='float: right;'>" + image_html + "</div>");
              }
 
@@ -368,10 +367,10 @@
 
            // if calendar selected, add calendar_id to payload
            if(this.active_calendar) this.active_event.calendar_id = this.active_calendar.id
-          
+
            // set date
-           this.active_event.start = this.active_event.date.utc().format()           
-           //this.active_event.end = this.active_event.date.utc().add(1, 'day').format()           
+           this.active_event.start = this.active_event.date.utc().format()
+           //this.active_event.end = this.active_event.date.utc().add(1, 'day').format()
 
            console.log('show_add_event active_event', this.active_event)
            if (this.current_user && (this.user.id == this.current_user.id)){
@@ -385,7 +384,7 @@
          show_edit_event: function(event, calEvent){
             this.active_event = event
             this.active_event.calEvent = calEvent
-            console.log('show edit event', event)         
+            console.log('show edit event', event)
             console.log('active_event', this.active_event)
             //if (this.user.id == this.current_user.id){
             this.modal_event = true
@@ -425,10 +424,10 @@
              $.each(data, function(k, v){
                $.each(_this.active_event.calEvent, function(k2, v2){
                  if(k == k2){
-                  _this.active_event.calEvent[k] = v    
+                  _this.active_event.calEvent[k] = v
                  }
                })
-               
+
              })
 
              // post to /api/event
@@ -437,11 +436,11 @@
                _this.close_event()
 
                if(event_id){
-                 _this.cal.fullCalendar('updateEvent', _this.active_event.calEvent);  
+                 _this.cal.fullCalendar('updateEvent', _this.active_event.calEvent);
                }else{
                  _this.cal.fullCalendar('renderEvent', res);
                }
-               
+
                //swal("Nice!", "Event has been posted on your calendar", "success");
              })
 
@@ -475,26 +474,26 @@
              if(!_this.active_event.media) _this.active_event.media = []
 
              $.each(e.fpfiles, function(k, v){
-               _this.active_event.media.push(v["url"])  
+               _this.active_event.media.push(v["url"])
              })
-             
+
              console.log('after', _this.active_event.media)
-             
+
            };
            filepicker.constructWidget(element);
          }
 
-         
+
 
        }
      })
 
     </script>
 
-  
+
 
 
   </body>
 
-  
+
 </html>
