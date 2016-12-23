@@ -58,7 +58,7 @@
           <span>Setting</span>
         </a>
         <a class="button is-primary" href="/user/logout">
-          <span>Logout <%= @user[:username] %></span>
+          <span>Logout <%= @current_user[:username] %></span>
         </a>
       </span>
         </div>
@@ -100,7 +100,7 @@
 
             <div class="columns">
               <div id="calendar" class="column is-12" style="height: 700px;">
-                <event-modal id="modal_event" v-if="modal_event" :current_user="current_user" :user="user" :save_event="save_event" :delete_event="delete_event" :active_calendar="active_calendar" :cal="cal" :close_event="close_event" :active_event="active_event" :init_media="init_media" @close="modal_event = false"></event-modal>
+                <event-modal id="modal_event" v-if="modal_event" :current_user="current_user" :user="user" :save_event="save_event" :delete_event="delete_event" :active_calendar="active_calendar" :cal="cal" :close_event="close_event" :active_event="active_event" :init_media="init_media" :show_event_preview="show_event_preview" :show_event_form="show_event_form" :handle_show_event_form="handle_show_event_form" @close="modal_event = false"></event-modal>
               </div>
             </div>
 
@@ -120,12 +120,36 @@
           <div class="modal-wrapper" style="height: 100%;">
             <div class="modal-container" @click.stop>
               <div class="modal-body">
-                <slot name="body">
+
+
+                <slot name="body" v-if="show_event_preview()">
+                    
+                    <h3>What Happened On This Day? </h3>
+                    
+                    <label class="label">{{active_event.title}} 
+                      <button v-if="current_user.id == user.id" @click="handle_show_event_form(true)" class="is-pulled-right button is-default is-outlined modal-default-button" :class="{'is-loading': active_event.loading}">Edit Event</button>
+                    </label> 
+                    
+                    <p class="event_media_files" v-if="active_event.media">
+                      <div class="event_media_file" v-for="file in active_event.media"><img :src="file"></div>
+                      <div style="clear: both;" />
+                    </p>
+
+                    <p v-if="show_description || active_event.description" class="control has-icon has-icon-right">
+                      {{active_event.description}}
+                    </p>
+
+                    <p v-if="show_location || active_event.location" class="control has-icon has-icon-right">
+                      <pre>Location: {{active_event.location}}</pre>
+                    </p>                    
+
+                </slot>
+
+                <slot name="body" v-if="show_event_form()">
 
                   <form @submit="save_event">
 
                     <h3>What Happened On This Day?</h3>
-                    <label class="label">What</label>
                     <p class="control">
                       <input id="active_event_title" v-model="active_event.title" class="input is-info" type="text" placeholder="A short sentence describing the event" :disabled="current_user.id != user.id">
                     </p>
@@ -156,9 +180,14 @@
                         Save Event
                       </button>
 
+                      
+
                       <a v-if="active_event.id" @click="delete_event(active_event.id)" class="is-pulled-right button is-danger is-outlined modal-default-button" :class="{'is-loading': active_event.loading}">
                         Delete
                       </a>
+                      
+                      <a @click="handle_show_event_form(false)" class="is-pulled-right button is-warning is-outlined modal-default-button" :class="{'is-loading': active_event.loading}">Cancel</a>
+
                     </div>
                   </form>
 
@@ -185,7 +214,7 @@
         mounted: function(){
           this.init_media()
         },
-        props: ['active_event', 'active_calendar', 'close_event', 'save_event', 'delete_event', 'init_media', 'date', 'cal', 'current_user', 'user'],
+        props: ['active_event', 'active_calendar', 'close_event', 'save_event', 'delete_event', 'init_media', 'date', 'cal', 'current_user', 'user', 'show_event_preview', 'show_event_form', 'handle_show_event_form'],
       })
 
      new Vue({
@@ -199,7 +228,8 @@
          cal: {},
          events: [],
          modal_event: false,
-         active_event: {}
+         active_event: {},
+         edit_event: false
        },
 
        mounted: function(){
@@ -209,6 +239,19 @@
        },
 
        methods: {
+
+         handle_show_event_form: function(show){
+           if(show) this.edit_event = true
+           if(!show) this.edit_event = false
+         },
+
+         show_event_preview: function(){
+           if(this.edit_event == false) return true
+         },
+
+         show_event_form: function(){
+           if(this.edit_event == true) return true
+         },
 
          save_eventsource: function(source){
            this.eventsources.push(source);
@@ -320,6 +363,7 @@
              dayClick: function (date, jsEvent, view) {
                 var event = { date: date }
                 console.log('day clicked')
+                _this.edit_event = true
                 _this.show_add_event(event)
              },
              eventClick: function(calEvent, jsEvent, view) {
@@ -327,7 +371,7 @@
               if(event_id){
                 $.get("/api/event", {id: event_id, user_id: _this.user.id}, function(res){
                   console.log('from /api/event', res)
-                  _this.show_edit_event(res, calEvent)
+                  _this.show_event(res, calEvent)
                 })
               }
 
@@ -381,10 +425,11 @@
            }
          },
 
-         show_edit_event: function(event, calEvent){
+         show_event: function(event, calEvent){
             this.active_event = event
+            this.edit_event = false
             this.active_event.calEvent = calEvent
-            console.log('show edit event', event)
+            console.log('show event', event)
             console.log('active_event', this.active_event)
             //if (this.user.id == this.current_user.id){
             this.modal_event = true
@@ -449,38 +494,45 @@
 
          delete_event: function(id){
            var _this = this
-           $.post('/api/event/delete', {id: id}, function(res){
-             if(res.code == 200){
-                _this.cal.fullCalendar('removeEvents', [id])
-                _this.close_event()
-             }else{
-                alert('something went wrong')
-             }
-           })
+           var c = confirm("Are you sure?")
+           if(c){
+              $.post('/api/event/delete', {id: id}, function(res){
+                 if(res.code == 200){
+                    _this.cal.fullCalendar('removeEvents', [id])
+                    _this.close_event()
+                 }else{
+                    alert('something went wrong')
+                 }
+               })  
+           }
+           
          },
 
          init_media: function(){
            var _this = this
            filepicker.setKey("ACGRkMPr9TqmbgPiHBS5Cz");
            var element = document.getElementById('add_media')
-           element.type="filepicker-dragdrop";
-           element.setAttribute('data-fp-mimetype', 'image/*');
-           element.setAttribute('data-fp-multiple', true);
-           element.setAttribute('data-fp-button-text', '+ photos / videos');
-           element.setAttribute('data-fp-button-class', 'button is-outlined is-primary');
-           element.setAttribute('data-fp-image-max', '800, 600');
-           element.onchange = function(e){
+           if(element){
+              element.type="filepicker-dragdrop";
+              element.setAttribute('data-fp-mimetype', 'image/*');
+              element.setAttribute('data-fp-multiple', true);
+              element.setAttribute('data-fp-button-text', '+ photos / videos');
+              element.setAttribute('data-fp-button-class', 'button is-outlined is-primary');
+              element.setAttribute('data-fp-image-max', '800, 600');
+              element.onchange = function(e){
 
-             if(!_this.active_event.media) _this.active_event.media = []
+                if(!_this.active_event.media) _this.active_event.media = []
 
-             $.each(e.fpfiles, function(k, v){
-               _this.active_event.media.push(v["url"])
-             })
+                $.each(e.fpfiles, function(k, v){
+                  _this.active_event.media.push(v["url"])
+                })
 
-             console.log('after', _this.active_event.media)
+                console.log('after', _this.active_event.media)
 
-           };
-           filepicker.constructWidget(element);
+              };
+              filepicker.constructWidget(element);  
+           }
+           
          }
 
 
