@@ -39,6 +39,7 @@
   </head>
 
   <body class="calendar">
+
     <div id="app" class="full_height">
       <nav class="nav">
         <div class="nav-left">
@@ -48,63 +49,81 @@
 
         </div>
 
+        <% if !@current_user.blank? %>
         <div class="nav-right nav-menu">
-
-        <span class="nav-item">
-        <a class="button" >
-          <span class="icon">
-            <i class="fa fa-cog"></i>
+          <span class="nav-item">
+            <a class="button" href="/<%=@current_user[:username]%>">
+              <span class="icon">
+                <i class="fa fa-cog"></i>
+              </span>
+              <span>My Calendar</span>
+            </a>
+            <a class="button is-primary" href="/user/logout">
+              <span>Logout <%= @current_user[:username] %></span>
+            </a>
           </span>
-          <span>Setting</span>
-        </a>
-        <a class="button is-primary" href="/user/logout">
-          <span>Logout <%= @current_user[:username] %></span>
-        </a>
-      </span>
         </div>
+        <% end %>
+
       </nav>
-      <div class="columns full_height" style="margin: 0px;">
+      <div class="columns" style="margin: 0px;">
 
         <!-- left -->
         <div id="cal_left_pane" class="column is-narrow left-calendar box">
-          <div class="boxes" style="width: 250px; box-shadow: 0;">
+          <div class="boxes" style="width: 250px; box-shadow: 0; padding: 10px;">
           <!-- <input type="text" class="form-control" placeholder="Search"> -->
+            
             <div class="cal_left_head">
-              My Calendars  ({{calendars.length}})
-              <span class="left-add-calendar" @click="add_calendar" v-if="has_access()">+</span>
+              <strong>My Calendars</strong>
+              <a class="left-add-calendar" @click="add_calendar" v-if="has_access()">+</a>
             </div>
-
             <div class="cal_left_body">
               <ul>
-                <li :class="is_active_calendar('all')">
+                <li v-if="calendars[0]" :class="is_active_calendar('all')">
                   <!-- <i class="fa fa-calendar-o" aria-hidden="true"></i> -->
-                  <a class="overflow_ellipsis" @click="set_active_calendar()">&nbsp; All</a>
+                  <a class="overflow_ellipsis" @click="set_active_calendar()">&nbsp; 
+                    <template v-if="location.hash != ''">All</template>
+                    <template v-if="location.hash == ''"><strong>All</strong></template>
+                    <span>{{calendars[0].total_events}}</span>
+                  </a>
                 </li>
-                <ul>
-                  <li class="overflow_ellipsis" v-for="calendar in calendars" :class="is_active_calendar(calendar)">
-                    <!-- <i class="fa fa-circle" aria-hidden="true"></i> -->
-                    <a href="#" @click.prevent="set_active_calendar(calendar)" >&nbsp; {{calendar.name}}</a>
+
+                <ul v-if="calendars[1]">
+                  <li v-if="!calendars.code" class="overflow_ellipsis" v-for="calendar in calendars" :class="is_active_calendar(calendar)" @click.prevent="set_active_calendar(calendar)">
+
+                    <template v-if="calendar.id">
+                      <!-- <i class="fa fa-circle" aria-hidden="true"></i> -->
+                      <!-- <i class="fa fa-square" aria-hidden="true" style="font-size: 10px; margin-top: 4px;" :style="{'color': calendar.color}"></i> -->
+
+                      <span style="float: left; margin-left: 10px; margin-right: 10px; border-radius: 0; width: 3px; height: 18px;" :style="{'backgroundColor': calendar.color}"></span>
+
+                      <template v-if="check_active_calendar(calendar)"><strong>{{calendar.name}}</strong></template>
+                      <template v-if="!check_active_calendar(calendar)">{{calendar.name}}</template>
+                      <span>{{calendar.total_events}}</span>
+
+                      <i v-if="!check_active_calendar(calendar)" class="fa fa-square-o" aria-hidden="true" style="float: right; color: grey; font-size: 14px; margin-top: 4px;"></i>
+                      <i v-if="check_active_calendar(calendar)" class="fa fa-check-square-o" aria-hidden="true" style="float: right; color: grey; font-size: 14px; margin-top: 4px;"></i>
+                      <!-- <input v-model="active_calendars" :checked="check_active_calendar(calendar) == true" style='float: right; margin-right: 10px;' type='checkbox'> -->
+
+                      <a @click="handle_edit_calendar(calendar)" v-if="check_active_calendar(calendar)" style='float: right; margin-right: 10px;'><i class="fa fa-bars" aria-hidden="true" style="font-size: 14px; margin-top: 4px;"></i></a>
+                    </template>
                   </li>
                 </ul>
 
               </ul>
-
             </div>
+
+
+
+
           </div>
 
         </div>
 
         <!-- middle -->
-        <div id="cal_middle_pane" class="column box">
-          <div class="column is-12">
-
-            <div class="columns">
-              <div id="calendar" class="column is-12" style="height: 700px;">
-                <event-modal id="modal_event" v-if="modal_event" :current_user="current_user" :user="user" :save_event="save_event" :delete_event="delete_event" :active_calendar="active_calendar" :cal="cal" :close_event="close_event" :active_event="active_event" :init_media="init_media" :show_event_preview="show_event_preview" :show_event_form="show_event_form" :handle_show_event_form="handle_show_event_form" @close="modal_event = false"></event-modal>
-              </div>
-            </div>
-
-          </div>
+        <div id="cal_middle_pane" class="column box" style="padding-bottom: 100px;">
+          <div class="column is-12" id="calendar"></div>
+          <event-modal id="modal_event" v-if="modal_event" :current_user="current_user" :user="user" :save_event="save_event" :delete_event="delete_event" :active_calendar="active_calendar" :cal="cal" :close_event="close_event" :active_event="active_event" :init_media="init_media" :show_event_preview="show_event_preview" :show_event_form="show_event_form" :handle_show_event_form="handle_show_event_form" :handle_photo_delete="handle_photo_delete" @close="modal_event = false"></event-modal>
 
         </div>
 
@@ -121,13 +140,12 @@
             <div class="modal-container" @click.stop>
               <div class="modal-body">
 
-
                 <slot name="body" v-if="show_event_preview()">
                     
                     <h3>What Happened On This Day? </h3>
                     
                     <label class="label">{{active_event.title}} 
-                      <button v-if="current_user.id == user.id" @click="handle_show_event_form(true)" class="is-pulled-right button is-default is-outlined modal-default-button" :class="{'is-loading': active_event.loading}">Edit Event</button>
+                      <button v-if="user && current_user && current_user.id == user.id" @click="handle_show_event_form(true)" class="is-pulled-right button is-default is-outlined modal-default-button" :class="{'is-loading': active_event.loading}">Edit Event</button>
                     </label> 
                     
                     <p class="event_media_files" v-if="active_event.media">
@@ -136,7 +154,7 @@
                     </p>
 
                     <p v-if="show_description || active_event.description" class="control has-icon has-icon-right">
-                      {{active_event.description}}
+                      {{active_event.description |nl2br}}
                     </p>
 
                     <p v-if="show_location || active_event.location" class="control has-icon has-icon-right">
@@ -147,7 +165,7 @@
 
                 <slot name="body" v-if="show_event_form()">
 
-                  <form @submit="save_event">
+                  <form @submit.prevent="save_event">
 
                     <h3>What Happened On This Day?</h3>
                     <p class="control">
@@ -163,7 +181,10 @@
                     </div>
 
                     <p class="event_media_files" v-if="active_event.media">
-                      <div class="event_media_file" v-for="file in active_event.media"><img :src="file"></div>
+                      <div class="event_media_file" v-for="(file, index) in active_event.media" style="position: relative;">
+                        <img :src="file">
+                        <a @click="handle_photo_delete(file)" class="button is-warning is-small" style="position: absolute; right: 0; top: 0;">x</a>
+                      </div>
                       <div style="clear: both;" />
                     </p>
 
@@ -212,9 +233,9 @@
           }
         },
         mounted: function(){
-          this.init_media()
+          
         },
-        props: ['active_event', 'active_calendar', 'close_event', 'save_event', 'delete_event', 'init_media', 'date', 'cal', 'current_user', 'user', 'show_event_preview', 'show_event_form', 'handle_show_event_form'],
+        props: ['active_event', 'active_calendar', 'close_event', 'save_event', 'delete_event', 'init_media', 'date', 'cal', 'current_user', 'user', 'show_event_preview', 'show_event_form', 'handle_show_event_form', 'handle_photo_delete'],
       })
 
      new Vue({
@@ -224,12 +245,15 @@
          current_user: <%== @current_user.to_json %>,
          calendars: [],
          active_calendar: null,
+         active_calendars: [],
          eventsources: [],
          cal: {},
          events: [],
          modal_event: false,
          active_event: {},
-         edit_event: false
+         edit_event: false,
+         calendar_burger: null,
+         show_left_pane: false
        },
 
        mounted: function(){
@@ -237,12 +261,53 @@
          this.init_calendar();
          this.set_active_calendar();
        },
-
+       computed: {
+          
+       },
        methods: {
 
+          handle_edit_calendar: function(calendar){
+            alert('edit calendar ' + calendar.id)
+          },
+          handle_calendar_burger: function(calendar){
+            console.log('hovering on', calendar.id)
+            this.calendar_burger = calendar
+          },
+          show_calendar_burger: function(calendar){
+            if(this.calendar_burger && calendar.id == this.calendar_burger.id){
+              return true
+            }
+          },
+
+         check_active_calendar: function(calendar){
+            if(this.active_calendar && this.active_calendar.id == calendar.id){
+              console.log('it is active', calendar.id, calendar.name)
+              return true
+            }else{
+              console.log('not active', calendar.id, calendar.name)
+              return false
+            }
+         },
          handle_show_event_form: function(show){
            if(show) this.edit_event = true
            if(!show) this.edit_event = false
+            var _this = this
+            if(this.edit_event == true) { 
+              setTimeout(function(){
+                _this.init_media()
+              }, 300)
+            }
+         },
+
+         handle_photo_delete: function(file){
+
+           var _this = this
+           $.each(this.active_event.media, function(index, value){
+              if(value == file){
+                _this.active_event.media.splice(index, 1)  
+              }              
+           })
+
          },
 
          show_event_preview: function(){
@@ -250,7 +315,11 @@
          },
 
          show_event_form: function(){
-           if(this.edit_event == true) return true
+           var _this = this
+           if(this.edit_event == true) { 
+             return true
+           }
+
          },
 
          save_eventsource: function(source){
@@ -306,10 +375,9 @@
            var _this = this
            $.get("/api/calendars", {user_id: this.user.id}, function(res){
              _this.calendars = res
-             console.log(res)
+             console.log('/api/calendars', res)
            })
          },
-
          add_calendar: function(){
            var _this = this
            swal({
@@ -327,8 +395,7 @@
                  return false
              }
 
-             var color = '#e6ecf1'
-             $.post("/api/calendar", { user_id: _this.user.id, name: calendar_name, color: color }, function(res){
+             $.post("/api/calendar", { user_id: _this.user.id, name: calendar_name }, function(res){
                swal("Nice!", "You just created a calendar: " + calendar_name, "success")
                _this.get_calendars()
              })
@@ -345,8 +412,8 @@
            cal.fullCalendar({
              defaultDate: moment(),
              editable: true,
-             eventLimit: true, // allow "more" link when too many events
-             aspectRatio: 2.5,
+             eventLimit: true, // allow "more" link when too many events             
+             height: 'parent',
              firstDay: 1,
              fixedWeekCount: false,
 
@@ -364,14 +431,14 @@
                 var event = { date: date }
                 console.log('day clicked')
                 _this.edit_event = true
-                _this.show_add_event(event)
+                _this.handle_day_click(event)
              },
              eventClick: function(calEvent, jsEvent, view) {
               var event_id = calEvent.id
               if(event_id){
-                $.get("/api/event", {id: event_id, user_id: _this.user.id}, function(res){
+                $.get("/api/event", {id: event_id}, function(res){
                   console.log('from /api/event', res)
-                  _this.show_event(res, calEvent)
+                  _this.handle_event_click(res, calEvent)
                 })
               }
 
@@ -386,7 +453,7 @@
 
              },
              eventRender: function(event, element) {
-                console.log('wtf', event, element)
+                //console.log('wtf', event, element)
                 var image_html = ''
 
                 if(event.media){
@@ -405,35 +472,31 @@
 
          },
 
-         show_add_event: function(event){
-           this.active_event = event
+         handle_day_click: function(event){
            var _this = this
-
-           // if calendar selected, add calendar_id to payload
+           this.active_event = event
            if(this.active_calendar) this.active_event.calendar_id = this.active_calendar.id
-
-           // set date
            this.active_event.start = this.active_event.date.utc().format()
-           //this.active_event.end = this.active_event.date.utc().add(1, 'day').format()
-
-           console.log('show_add_event active_event', this.active_event)
+           console.log('handle_day_click', this.active_event)
            if (this.current_user && (this.user.id == this.current_user.id)){
              this.modal_event = true
              setTimeout(function(){
+               _this.init_media()
                $("#active_event_title").focus();
              }, 500)
            }
          },
 
-         show_event: function(event, calEvent){
+         handle_event_click: function(event, calEvent){
+            var _this = this
             this.active_event = event
             this.edit_event = false
             this.active_event.calEvent = calEvent
-            console.log('show event', event)
-            console.log('active_event', this.active_event)
+            console.log('handle_event_click', event, this.active_event)
             //if (this.user.id == this.current_user.id){
             this.modal_event = true
             setTimeout(function(){
+              _this.init_media()
               $("#active_event_title").focus();
             }, 500)
           //}
@@ -486,6 +549,7 @@
                  _this.cal.fullCalendar('renderEvent', res);
                }
 
+               _this.get_calendars()
                //swal("Nice!", "Event has been posted on your calendar", "success");
              })
 
@@ -516,7 +580,7 @@
               element.type="filepicker-dragdrop";
               element.setAttribute('data-fp-mimetype', 'image/*');
               element.setAttribute('data-fp-multiple', true);
-              element.setAttribute('data-fp-button-text', '+ photos / videos');
+              element.setAttribute('data-fp-button-text', '+ media');
               element.setAttribute('data-fp-button-class', 'button is-outlined is-primary');
               element.setAttribute('data-fp-image-max', '800, 600');
               element.onchange = function(e){

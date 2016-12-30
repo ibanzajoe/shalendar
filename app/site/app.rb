@@ -180,10 +180,24 @@ module Honeybadger
     ### params: user_id
     get '/api/calendars' do
       content_type :json
-      calendars = Calendar.where(:user_id => params[:user_id]).all
 
-      if !calendars.blank?
-        return calendars.to_json
+      res = []
+      res << { :id => nil, :name => 'all', :total_events => Event.where(:calendar_id => nil, :user_id => params[:user_id]).count }
+      calendars = Calendar.where(:user_id => params[:user_id]).all
+      calendars.each {|row|
+
+        item = row.values
+        item[:total_events] = Event.where(:calendar_id => row[:id], :user_id => params[:user_id]).count
+        
+        res << item
+        p '--calendar loop--'
+        p "#{row[:calendar_id]}: #{item[:total_events]}"
+
+      }
+
+      if !res.blank?
+        
+        return res.to_json
       else
         return { :code => 404, :status => 'no calendars' }.to_json
       end
@@ -194,7 +208,7 @@ module Honeybadger
     post '/api/calendar' do
       content_type :json
 
-      colors = ['#e38d13', '#009dac', '#ff9f89', 'green', 'yellow', 'red', 'purple', 'brown', 'black']
+      colors = ['#ffd2ac', '#BCF4EF']
       data = {
         :user_id => params[:user_id],
         :name => params[:name],
@@ -243,7 +257,7 @@ module Honeybadger
 
 
     ### get a list of events
-    ### params: id, user_id
+    ### params: id
     ### optional: calendar_id
     get '/api/event' do
       content_type :json
@@ -251,9 +265,7 @@ module Honeybadger
       if event
         res = event
       end
-
       return res.formatted.values.to_json
-
     end
 
 
@@ -264,7 +276,7 @@ module Honeybadger
     post '/api/event' do
       content_type :json
 
-      color = nil
+      color = '#ffffff'
       if !params[:calendar_id].blank?
         calendar = Calendar[params[:calendar_id]]
         color = calendar[:color]
