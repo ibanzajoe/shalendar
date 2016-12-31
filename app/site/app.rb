@@ -208,14 +208,17 @@ module Honeybadger
     post '/api/calendar' do
       content_type :json
 
-      colors = ['#ffd2ac', '#BCF4EF']
+      colors = Calendar.colors
       data = {
         :user_id => params[:user_id],
         :name => params[:name],
         :color => colors.sample
       }
       calendar = Calendar.create(data)
-      return calendar.to_json
+      return {
+        :calendar => calendar,
+        :code => 200
+      }.to_json
     end
 
     ### get a list of events
@@ -263,9 +266,9 @@ module Honeybadger
       content_type :json
       event = Event.where(:id => params[:id]).first
       if event
-        res = event
+        res = event.formatted.values
       end
-      return res.formatted.values.to_json
+      return res.to_json
     end
 
 

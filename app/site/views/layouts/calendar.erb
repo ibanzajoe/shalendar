@@ -123,7 +123,7 @@
         <!-- middle -->
         <div id="cal_middle_pane" class="column box" style="padding-bottom: 100px;">
           <div class="column is-12" id="calendar"></div>
-          <event-modal id="modal_event" v-if="modal_event" :current_user="current_user" :user="user" :save_event="save_event" :delete_event="delete_event" :active_calendar="active_calendar" :cal="cal" :close_event="close_event" :active_event="active_event" :init_media="init_media" :show_event_preview="show_event_preview" :show_event_form="show_event_form" :handle_show_event_form="handle_show_event_form" :handle_photo_delete="handle_photo_delete" @close="modal_event = false"></event-modal>
+          <event-modal id="modal_event" v-if="modal_event" :current_user="current_user" :user="user" :save_event="save_event" :delete_event="delete_event" :active_calendar="active_calendar" :cal="cal" :close_event="close_event" :active_event="active_event" :init_media="init_media" :show_event_preview="show_event_preview" :show_event_form="show_event_form" :handle_show_event_form="handle_show_event_form" :handle_photo_delete="handle_photo_delete" :this_day="this_day" @close="modal_event = false"></event-modal>
 
         </div>
 
@@ -133,8 +133,29 @@
     </div>
 
 
+
+    <script type="text/x-template" id="calendar-modal-template">
+      <div class="modal">
+        <div class="modal-background"></div>
+        <div class="modal-card">
+          <header class="modal-card-head">
+            <p class="modal-card-title">Modal title</p>
+            <button class="delete"></button>
+          </header>
+          <section class="modal-card-body">
+            stuff goes ere
+          </section>
+          <footer class="modal-card-foot">
+            <a class="button is-primary">Save changes</a>
+            <a class="button">Cancel</a>
+          </footer>
+        </div>
+      </div>
+    </script>
+
     <script type="text/x-template" id="event-modal-template">
       <transition name="modal">
+
         <div class="modal-mask" @click="$emit('close')">
           <div class="modal-wrapper" style="height: 100%;">
             <div class="modal-container" @click.stop>
@@ -142,14 +163,16 @@
 
                 <slot name="body" v-if="show_event_preview()">
                     
-                    <h3>What Happened On This Day? </h3>
+                    <h3>What Happened On {{this_day(active_event.start)}}?</h3>
                     
                     <label class="label">{{active_event.title}} 
-                      <button v-if="user && current_user && current_user.id == user.id" @click="handle_show_event_form(true)" class="is-pulled-right button is-default is-outlined modal-default-button" :class="{'is-loading': active_event.loading}">Edit Event</button>
+                      <a v-if="user && current_user && current_user.id == user.id" @click="handle_show_event_form(true)" class="is-pulled-right link is-default is-outlined modal-default-button" :class="{'is-loading': active_event.loading}" >edit</a>
                     </label> 
                     
                     <p class="event_media_files" v-if="active_event.media">
-                      <div class="event_media_file" v-for="file in active_event.media"><img :src="file"></div>
+                      <div class="event_media_file" v-for="file in active_event.media">
+                        <img class="image" :src="file">
+                      </div>
                       <div style="clear: both;" />
                     </p>
 
@@ -167,7 +190,7 @@
 
                   <form @submit.prevent="save_event">
 
-                    <h3>What Happened On This Day?</h3>
+                    <h3>What Happened On {{this_day(active_event.start)}}?</h3>
                     <p class="control">
                       <input id="active_event_title" v-model="active_event.title" class="input is-info" type="text" placeholder="A short sentence describing the event" :disabled="current_user.id != user.id">
                     </p>
@@ -196,18 +219,18 @@
                       <input v-model="active_event.location" class="input" type="text" placeholder="city or location">
                     </p>
 
-                    <div class="modal_action">
-                      <button class="button is-info is-outlined modal-default-button" :class="{'is-loading': active_event.loading}">
-                        Save Event
-                      </button>
 
-                      
+                    <div class="modal_action ">
 
-                      <a v-if="active_event.id" @click="delete_event(active_event.id)" class="is-pulled-right button is-danger is-outlined modal-default-button" :class="{'is-loading': active_event.loading}">
-                        Delete
+                      <a v-if="active_event.id" @click="delete_event(active_event.id)" class="is-pulled-left link is-danger is-outlined modal-default-button" :class="{'is-loading': active_event.loading}" style="color: red;">
+                        delete
                       </a>
                       
-                      <a @click="handle_show_event_form(false)" class="is-pulled-right button is-warning is-outlined modal-default-button" :class="{'is-loading': active_event.loading}">Cancel</a>
+                      <!--<a @click="handle_show_event_form(false)" class="is-pulled-right link is-warning is-outlined modal-default-button" :class="{'is-loading': active_event.loading}">Cancel</a>-->
+
+                      <button class="button is-success modal-default-button is-pulled-right" :class="{'is-loading': active_event.loading}" style="float: right;">
+                        save
+                      </button>
 
                     </div>
                   </form>
@@ -223,6 +246,7 @@
 
     <script>
 
+      // event modal 
       Vue.component('event-modal', {
         template: '#event-modal-template',
         data: function(){
@@ -234,10 +258,25 @@
         },
         mounted: function(){
           
-        },
-        props: ['active_event', 'active_calendar', 'close_event', 'save_event', 'delete_event', 'init_media', 'date', 'cal', 'current_user', 'user', 'show_event_preview', 'show_event_form', 'handle_show_event_form', 'handle_photo_delete'],
+        },        
+        props: ['active_event', 'active_calendar', 'close_event', 'save_event', 'delete_event', 'init_media', 'date', 'cal', 'current_user', 'user', 'show_event_preview', 'show_event_form', 'handle_show_event_form', 'handle_photo_delete', 'this_day'],
       })
 
+      // calendar modal
+      Vue.component('calendar-modal', {
+        template: '#calendar-modal-template',
+        data: function(){
+          return {
+            
+          }
+        },
+        mounted: function(){
+          
+        },
+        props: []
+      })
+
+      // vue app
      new Vue({
        el: '#app',
        data: {
@@ -250,6 +289,7 @@
          cal: {},
          events: [],
          modal_event: false,
+         modal_calendar: false,
          active_event: {},
          edit_event: false,
          calendar_burger: null,
@@ -268,6 +308,7 @@
 
           handle_edit_calendar: function(calendar){
             alert('edit calendar ' + calendar.id)
+
           },
           handle_calendar_burger: function(calendar){
             console.log('hovering on', calendar.id)
@@ -288,6 +329,12 @@
               return false
             }
          },
+
+         this_day: function(date){
+
+            return moment(date).format("MM/DD/YY")
+         },
+
          handle_show_event_form: function(show){
            if(show) this.edit_event = true
            if(!show) this.edit_event = false
@@ -397,7 +444,11 @@
 
              $.post("/api/calendar", { user_id: _this.user.id, name: calendar_name }, function(res){
                swal("Nice!", "You just created a calendar: " + calendar_name, "success")
-               _this.get_calendars()
+               if(res.code == 200){
+                  _this.get_calendars()
+                  _this.set_active_calendar(res.calendar)  
+               }
+               
              })
 
            })
@@ -412,7 +463,7 @@
            cal.fullCalendar({
              defaultDate: moment(),
              editable: true,
-             eventLimit: true, // allow "more" link when too many events             
+             eventLimit: false, // allow "more" link when too many events             
              height: 'parent',
              firstDay: 1,
              fixedWeekCount: false,
@@ -578,11 +629,10 @@
            var element = document.getElementById('add_media')
            if(element){
               element.type="filepicker-dragdrop";
-              element.setAttribute('data-fp-mimetype', 'image/*');
+              // element.setAttribute('data-fp-mimetype', 'image/*');
               element.setAttribute('data-fp-multiple', true);
               element.setAttribute('data-fp-button-text', '+ media');
               element.setAttribute('data-fp-button-class', 'button is-outlined is-primary');
-              element.setAttribute('data-fp-image-max', '800, 600');
               element.onchange = function(e){
 
                 if(!_this.active_event.media) _this.active_event.media = []
