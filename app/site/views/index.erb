@@ -40,8 +40,8 @@
                     <a class="is-pulled-right" @click="handle_register_button">Or Sign Up</a>
                   </div>
                   <div class="column is-12">
-                    <a class="is-pulled-right" @click="showModal = true">Forgot Password?</a>
-                    <modal v-if="showModal" @close="showModal = false"></modal>
+                    <a class="is-pulled-right" @click="modals.forgot_pass = true">Forgot Password?</a>
+                    <modal v-if="modals.forgot_pass" @close="modals.forgot_pass = false"></modal>
                   </div>
 
                 </div>
@@ -156,9 +156,9 @@
 
 
 <script>
-  Vue.component('modal', {
-    template: '#modal-template'
-  })
+Vue.component('modal', {
+  template: '#modal-template'
+})
 
 var main = new Vue({
   el: '#main_p',
@@ -169,7 +169,9 @@ var main = new Vue({
 		username: '',
     error: false,
     loading: false,
-    showModal: false
+    modals: {
+      forgot_pass: false
+    }
   },
   mounted: function(){
     $('#main_p').show()
@@ -218,18 +220,3 @@ var main = new Vue({
 })
 </script>
 
-<script>
-$(document).ready(function(){
-  // $('.modal_on').on('click', function(){
-  //  $('.modal').addClass("is-active");
-  // })
-
-  // $('.close_modal').on('click', function(){
-  //  $('.modal').removeClass("is-active");
-  // })
-
-  // $('.modal-background').on('click', function(){
-  //  $('.modal').removeClass("is-active");
-  // })
-})
-</script>
