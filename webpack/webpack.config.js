@@ -3,20 +3,25 @@ var webpack = require('webpack');
 
 const ExtractTextPlugin = require("extract-text-webpack-plugin")
 
-const url = `http://${process.env.VIRTUAL_HOST}`
-console.log(url)
 var settings = {
   'dev': {
-    devtool: 'source-map',
-    entry: [
-      `webpack-dev-server/client?${url}`,
-      'webpack/hot/dev-server',
-      './src/index'
-    ],
+    devtool: 'eval-source-map',
+    entry: {
+      site: [
+        'webpack-dev-server/client?http://webpack.shalendar.docker',
+        'webpack/hot/dev-server',
+        './src/site'
+      ],
+      calendar: [
+        'webpack-dev-server/client?http://webpack.shalendar.docker',
+        'webpack/hot/dev-server',
+        './src/calendar'
+      ]
+    },
     output: {
       path: path.join(__dirname, 'static'),
-      filename: 'bundle.js',
-      publicPath: url + '/static/'
+      filename: '[name].js',
+      publicPath: 'http://webpack.shalendar.docker/static/'
     },
     module: {
       loaders: [
@@ -26,27 +31,39 @@ var settings = {
           include: path.join(__dirname, 'src')
         },{
           test: /\.scss$/,
-          loaders: ["style", "css?sourceMap", "sass?sourceMap"]
+          loaders: ["style", "css?sourceMap", "resolve-url", "sass?sourceMap"]
+          //loaders: ["style", "css", "resolve-url", "sass?sourceMap"]
         },
         { test: /\.css$/, loader: "style!css" },
-        { test: /\.png$/, loader: 'url-loader?limit=10240' },
-        { test: /\.html$/, loader: 'html' }
+        { test: /\.png|gif|jpg|svg|woff2$/, loader: 'url-loader?limit=10240' },
+        { test: /\.html$/, loader: 'html' },
+        {
+          test: /\.vue$/,
+          loader: 'vue'
+        }
       ]
     },
     plugins: [
-      new webpack.HotModuleReplacementPlugin()
-    ]
+      new webpack.HotModuleReplacementPlugin(),
+      new webpack.optimize.CommonsChunkPlugin("common", "common.js")
+    ],
+    resolve: {
+      alias: {
+        'vue$': 'vue/dist/vue.js'
+      }
+    }
   },
 
   'prod': {
     devtool: 'eval',
-    entry: [
-      './src/index'
-    ],
+    entry: {
+      site: './src/site',
+      calendar: './src/calendar'
+    },
     output: {
       path: '/app/public/static',
-      filename: 'bundle.js',
-      publicPath: 'http://webpack.shalendar.docker/static/'
+      filename: '[name].js',
+      publicPath: '/static/'
     },
     module: {
       loaders: [
@@ -55,19 +72,26 @@ var settings = {
           loaders: ['babel'],
           include: path.join(__dirname, 'src')
         },
-        { test: /\.css|scss$/, loader: ExtractTextPlugin.extract("style", "css!sass") },
+        { test: /\.css|scss$/, loader: ExtractTextPlugin.extract("style", "css!resolve-url!sass?sourceMap") },
         { test: /\.css$/, loader: "style!css" },
-        { test: /\.png$/, loader: 'url-loader?limit=10240' },
-        { test: /\.html$/, loader: 'html' }
+        { test: /\.png|gif|jpg|svg|woff2$/, loader: 'url-loader?limit=10240' },
+        { test: /\.html$/, loader: 'html' },
+        {
+          test: /\.vue$/,
+          loader: 'vue'
+        }
       ]
     },
     plugins: [
-      new ExtractTextPlugin("styles.css")
-    ]
+      new webpack.optimize.CommonsChunkPlugin("common", "common.js"),
+      new ExtractTextPlugin("[name].css")
+    ],
+    resolve: {
+      alias: {
+        'vue$': 'vue/dist/vue.js'
+      }
+    }
   }
 }
-
-
-console.log("WTF", settings[process.env.ENV])
 
 module.exports = settings[process.env.ENV]

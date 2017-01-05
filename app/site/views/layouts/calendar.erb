@@ -11,8 +11,8 @@
     <!-- utilities -->
     <script src='/fc/lib/moment.min.js'></script>
 
-    <!-- vue -->
-    <script src='/bower_components/vue/dist/vue.min.js'></script>
+    <script src="//webpack.shalendar.docker/static/common.js"></script>
+    <script src="//webpack.shalendar.docker/static/calendar.js"></script>
 
     <!-- fontawesome -->
     <link rel="stylesheet" href="/bower_components/font-awesome/css/font-awesome.min.css">
@@ -26,10 +26,6 @@
     <link href='/fc/fullcalendar.print.css' rel='stylesheet' media='print' />
     <script src='/fc/fullcalendar.js'></script>
 
-    <!-- css -->
-    <!--<link rel="stylesheet" href="/assets/css/styles.css">-->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.2.3/css/bulma.css">
-    <link rel="stylesheet" href="/site/css/site.css">
     <!-- webpack -->
     <!-- <script src='//webpack.shalendar.docker/static/bundle.js'></script> -->
 
@@ -72,7 +68,7 @@
         <div id="cal_left_pane" class="column is-narrow left-calendar box">
           <div class="boxes" style="width: 250px; box-shadow: 0; padding: 10px;">
           <!-- <input type="text" class="form-control" placeholder="Search"> -->
-            
+
             <div class="cal_left_head">
               <strong>My Calendars</strong>
               <a class="left-add-calendar" @click="add_calendar" v-if="has_access()">+</a>
@@ -81,7 +77,7 @@
               <ul>
                 <li v-if="calendars[0]" :class="is_active_calendar('all')">
                   <!-- <i class="fa fa-calendar-o" aria-hidden="true"></i> -->
-                  <a class="overflow_ellipsis" @click="set_active_calendar()">&nbsp; 
+                  <a class="overflow_ellipsis" @click="set_active_calendar()">&nbsp;
                     <template v-if="location.hash != ''">All</template>
                     <template v-if="location.hash == ''"><strong>All</strong></template>
                     <span>{{calendars[0].total_events}}</span>
@@ -125,6 +121,9 @@
           <div class="column is-12" id="calendar"></div>
           <event-modal id="modal_event" v-if="modal_event" :current_user="current_user" :user="user" :save_event="save_event" :delete_event="delete_event" :active_calendar="active_calendar" :cal="cal" :close_event="close_event" :active_event="active_event" :init_media="init_media" :show_event_preview="show_event_preview" :show_event_form="show_event_form" :handle_show_event_form="handle_show_event_form" :handle_photo_delete="handle_photo_delete" :this_day="this_day" @close="modal_event = false"></event-modal>
 
+
+          <calendar-modal id="modal_calendar" v-if="modal_calendar" :save_calendar="save_calendar" :calendar="active_calendar" @close="modal_calendar = false"></calendar-modal>
+
         </div>
 
         <!-- end middle -->
@@ -135,22 +134,23 @@
 
 
     <script type="text/x-template" id="calendar-modal-template">
-      <div class="modal">
-        <div class="modal-background"></div>
-        <div class="modal-card">
-          <header class="modal-card-head">
-            <p class="modal-card-title">Modal title</p>
-            <button class="delete"></button>
-          </header>
-          <section class="modal-card-body">
-            stuff goes ere
-          </section>
-          <footer class="modal-card-foot">
-            <a class="button is-primary">Save changes</a>
-            <a class="button">Cancel</a>
-          </footer>
+      <transition name="modal">
+        <div class="modal-mask" @click="$emit('close')">
+          <div class="modal-wrapper" style="height: 100%;">
+            <div class="modal-container" @click.stop>
+              <div class="modal-body">
+
+     <form @submit.prevent="save_calendar">
+     <p>Calendar: <input type="text" v-model="calendar.name"></p>
+     <p>Color: <input type="text" v-model="calendar.color"></p>
+     <button>Save</button>
+     </form>
+
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
+      </transition>
     </script>
 
     <script type="text/x-template" id="event-modal-template">
@@ -162,13 +162,13 @@
               <div class="modal-body">
 
                 <slot name="body" v-if="show_event_preview()">
-                    
+
                     <h3>What Happened On {{this_day(active_event.start)}}?</h3>
-                    
-                    <label class="label">{{active_event.title}} 
+
+                    <label class="label">{{active_event.title}}
                       <a v-if="user && current_user && current_user.id == user.id" @click="handle_show_event_form(true)" class="is-pulled-right link is-default is-outlined modal-default-button" :class="{'is-loading': active_event.loading}" >edit</a>
-                    </label> 
-                    
+                    </label>
+
                     <p class="event_media_files" v-if="active_event.media">
                       <div class="event_media_file" v-for="file in active_event.media">
                         <img class="image" :src="file">
@@ -182,7 +182,7 @@
 
                     <p v-if="show_location || active_event.location" class="control has-icon has-icon-right">
                       <pre>Location: {{active_event.location}}</pre>
-                    </p>                    
+                    </p>
 
                 </slot>
 
@@ -225,7 +225,7 @@
                       <a v-if="active_event.id" @click="delete_event(active_event.id)" class="is-pulled-left link is-danger is-outlined modal-default-button" :class="{'is-loading': active_event.loading}" style="color: red;">
                         delete
                       </a>
-                      
+
                       <!--<a @click="handle_show_event_form(false)" class="is-pulled-right link is-warning is-outlined modal-default-button" :class="{'is-loading': active_event.loading}">Cancel</a>-->
 
                       <button class="button is-success modal-default-button is-pulled-right" :class="{'is-loading': active_event.loading}" style="float: right;">
@@ -246,7 +246,7 @@
 
     <script>
 
-      // event modal 
+      // event modal
       Vue.component('event-modal', {
         template: '#event-modal-template',
         data: function(){
@@ -257,23 +257,23 @@
           }
         },
         mounted: function(){
-          
-        },        
+
+        },
         props: ['active_event', 'active_calendar', 'close_event', 'save_event', 'delete_event', 'init_media', 'date', 'cal', 'current_user', 'user', 'show_event_preview', 'show_event_form', 'handle_show_event_form', 'handle_photo_delete', 'this_day'],
       })
 
       // calendar modal
       Vue.component('calendar-modal', {
         template: '#calendar-modal-template',
+        props: ['calendar', 'save_calendar'],
         data: function(){
           return {
-            
+
           }
         },
         mounted: function(){
-          
-        },
-        props: []
+
+        }
       })
 
       // vue app
@@ -297,18 +297,20 @@
        },
 
        mounted: function(){
+        console.log('wtfoiwjefiowjfiwoejf')
          this.get_calendars();
          this.init_calendar();
          this.set_active_calendar();
        },
        computed: {
-          
+          location: function(){
+            return location
+          }
        },
        methods: {
 
           handle_edit_calendar: function(calendar){
-            alert('edit calendar ' + calendar.id)
-
+            this.modal_calendar = true
           },
           handle_calendar_burger: function(calendar){
             console.log('hovering on', calendar.id)
@@ -339,7 +341,7 @@
            if(show) this.edit_event = true
            if(!show) this.edit_event = false
             var _this = this
-            if(this.edit_event == true) { 
+            if(this.edit_event == true) {
               setTimeout(function(){
                 _this.init_media()
               }, 300)
@@ -351,8 +353,8 @@
            var _this = this
            $.each(this.active_event.media, function(index, value){
               if(value == file){
-                _this.active_event.media.splice(index, 1)  
-              }              
+                _this.active_event.media.splice(index, 1)
+              }
            })
 
          },
@@ -363,7 +365,7 @@
 
          show_event_form: function(){
            var _this = this
-           if(this.edit_event == true) { 
+           if(this.edit_event == true) {
              return true
            }
 
@@ -446,9 +448,9 @@
                swal("Nice!", "You just created a calendar: " + calendar_name, "success")
                if(res.code == 200){
                   _this.get_calendars()
-                  _this.set_active_calendar(res.calendar)  
+                  _this.set_active_calendar(res.calendar)
                }
-               
+
              })
 
            })
@@ -463,7 +465,7 @@
            cal.fullCalendar({
              defaultDate: moment(),
              editable: true,
-             eventLimit: false, // allow "more" link when too many events             
+             eventLimit: false, // allow "more" link when too many events
              height: 'parent',
              firstDay: 1,
              fixedWeekCount: false,
@@ -618,9 +620,9 @@
                  }else{
                     alert('something went wrong')
                  }
-               })  
+               })
            }
-           
+
          },
 
          init_media: function(){
@@ -644,9 +646,9 @@
                 console.log('after', _this.active_event.media)
 
               };
-              filepicker.constructWidget(element);  
+              filepicker.constructWidget(element);
            }
-           
+
          }
 
 
