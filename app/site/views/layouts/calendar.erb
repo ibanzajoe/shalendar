@@ -122,7 +122,7 @@
           <event-modal id="modal_event" v-if="modal_event" :current_user="current_user" :user="user" :save_event="save_event" :delete_event="delete_event" :active_calendar="active_calendar" :cal="cal" :close_event="close_event" :active_event="active_event" :init_media="init_media" :show_event_preview="show_event_preview" :show_event_form="show_event_form" :handle_show_event_form="handle_show_event_form" :handle_photo_delete="handle_photo_delete" :this_day="this_day" @close="modal_event = false"></event-modal>
 
 
-          <calendar-modal id="modal_calendar" v-if="modal_calendar" :calendar="active_calendar" @close="modal_calendar = false"></calendar-modal>
+          <calendar-modal id="modal_calendar" v-if="modal_calendar" :calendar="active_calendar" :cal="cal" @close="modal_calendar = false"></calendar-modal>
 
         </div>
 

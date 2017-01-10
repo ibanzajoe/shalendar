@@ -26,7 +26,7 @@ const { Compact } = require('vue-color')
 
 // calendar modal
 module.exports = {
-  props: ['calendar'],
+  props: ['calendar', 'cal'],
   components: {
     'colorpicker': Compact
   },
@@ -34,26 +34,7 @@ module.exports = {
     return {
       show_colorpicker: false,
       colors: {
-        hex: '#194d33',
-        hsl: {
-          h: 150,
-          s: 0.5,
-          l: 0.2,
-          a: 1
-        },
-        hsv: {
-          h: 150,
-          s: 0.66,
-          v: 0.30,
-          a: 1
-        },
-        rgba: {
-          r: 25,
-          g: 77,
-          b: 51,
-          a: 1
-        },
-        a: 1
+        hex: this.calendar.color
       }
     }
   },
@@ -68,12 +49,12 @@ module.exports = {
       $.post("/api/calendar", this.calendar, function(res){
         console.log(res)
         _this.$emit("close")
-        alert('wtf')
+        _this.cal.fullCalendar("refetchEvents")
       })
     }
   },
   mounted: function(){
-
+    this.calendar.colors
   }
 }
 </script>

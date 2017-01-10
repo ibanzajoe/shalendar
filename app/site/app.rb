@@ -258,7 +258,9 @@ module Honeybadger
 
       res = []
       events.each {|event|
-        res << event.formatted.values.except(:starts_at, :ends_at)
+        data = event.formatted.values.except(:starts_at, :ends_at)
+        data[:color] = Calendar[event[:calendar_id]][:color] || Calendar.colors[0]
+        res << data
       }
 
       p res
@@ -287,7 +289,7 @@ module Honeybadger
     post '/api/event' do
       content_type :json
 
-      color = '#ffffff'
+      color = Calendar.colors[0]
       if !params[:calendar_id].blank?
         calendar = Calendar[params[:calendar_id]]
         color = calendar[:color]
