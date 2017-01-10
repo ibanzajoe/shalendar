@@ -122,7 +122,7 @@
           <event-modal id="modal_event" v-if="modal_event" :current_user="current_user" :user="user" :save_event="save_event" :delete_event="delete_event" :active_calendar="active_calendar" :cal="cal" :close_event="close_event" :active_event="active_event" :init_media="init_media" :show_event_preview="show_event_preview" :show_event_form="show_event_form" :handle_show_event_form="handle_show_event_form" :handle_photo_delete="handle_photo_delete" :this_day="this_day" @close="modal_event = false"></event-modal>
 
 
-          <calendar-modal id="modal_calendar" v-if="modal_calendar" :save_calendar="save_calendar" :calendar="active_calendar" @close="modal_calendar = false"></calendar-modal>
+          <calendar-modal id="modal_calendar" v-if="modal_calendar" :calendar="active_calendar" @close="modal_calendar = false"></calendar-modal>
 
         </div>
 
@@ -265,10 +265,19 @@
       // calendar modal
       Vue.component('calendar-modal', {
         template: '#calendar-modal-template',
-        props: ['calendar', 'save_calendar'],
+        props: ['calendar'],
         data: function(){
           return {
 
+          }
+        },
+        methods: {
+          save_calendar: function(){
+            var _this = this
+            $.post("/api/calendar", this.calendar, function(res){
+              console.log(res)
+              _this.$emit("close")
+            })
           }
         },
         mounted: function(){
@@ -312,10 +321,12 @@
           handle_edit_calendar: function(calendar){
             this.modal_calendar = true
           },
+
           handle_calendar_burger: function(calendar){
             console.log('hovering on', calendar.id)
             this.calendar_burger = calendar
           },
+
           show_calendar_burger: function(calendar){
             if(this.calendar_burger && calendar.id == this.calendar_burger.id){
               return true

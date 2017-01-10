@@ -188,7 +188,7 @@ module Honeybadger
 
         item = row.values
         item[:total_events] = Event.where(:calendar_id => row[:id], :user_id => params[:user_id]).count
-        
+
         res << item
         p '--calendar loop--'
         p "#{row[:calendar_id]}: #{item[:total_events]}"
@@ -196,7 +196,7 @@ module Honeybadger
       }
 
       if !res.blank?
-        
+
         return res.to_json
       else
         return { :code => 404, :status => 'no calendars' }.to_json
@@ -214,7 +214,14 @@ module Honeybadger
         :name => params[:name],
         :color => colors.sample
       }
-      calendar = Calendar.create(data)
+
+      if params[:id].blank?
+        calendar = Calendar.create(data)
+      else
+        calendar = Calendar.where(:id => params[:id]).first
+        calendar.update(data)
+      end
+
       return {
         :calendar => calendar,
         :code => 200
@@ -291,11 +298,11 @@ module Honeybadger
         :title => params[:title],
         :starts_at => params[:start],
         :ends_at => params[:end] || params[:start],
-        :url => params[:url],        
+        :url => params[:url],
         :color => color,
         :description => params[:description],
-        :location => params[:location],        
-        :media => params[:media].to_json,        
+        :location => params[:location],
+        :media => params[:media].to_json,
       }
 
       if !params[:id].blank?
