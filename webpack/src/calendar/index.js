@@ -9,3 +9,7 @@ const components = require('./components/index')
 
 window.Vue = Vue
 
+/* auto register all components */
+_.forOwn(components, (value, key) => {
+  Vue.component(key, value)
+})

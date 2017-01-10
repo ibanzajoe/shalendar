@@ -208,11 +208,12 @@ module Honeybadger
     post '/api/calendar' do
       content_type :json
 
-      colors = Calendar.colors
+      color = params[:color] || Calendar.colors.sample
+
       data = {
         :user_id => params[:user_id],
         :name => params[:name],
-        :color => colors.sample
+        :color => color
       }
 
       if params[:id].blank?

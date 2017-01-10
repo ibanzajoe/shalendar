@@ -132,27 +132,6 @@
     </div>
 
 
-
-    <script type="text/x-template" id="calendar-modal-template">
-      <transition name="modal">
-        <div class="modal-mask" @click="$emit('close')">
-          <div class="modal-wrapper" style="height: 100%;">
-            <div class="modal-container" @click.stop>
-              <div class="modal-body">
-
-     <form @submit.prevent="save_calendar">
-     <p>Calendar: <input type="text" v-model="calendar.name"></p>
-     <p>Color: <input type="text" v-model="calendar.color"></p>
-     <button>Save</button>
-     </form>
-
-              </div>
-            </div>
-          </div>
-        </div>
-      </transition>
-    </script>
-
     <script type="text/x-template" id="event-modal-template">
       <transition name="modal">
 
@@ -262,28 +241,7 @@
         props: ['active_event', 'active_calendar', 'close_event', 'save_event', 'delete_event', 'init_media', 'date', 'cal', 'current_user', 'user', 'show_event_preview', 'show_event_form', 'handle_show_event_form', 'handle_photo_delete', 'this_day'],
       })
 
-      // calendar modal
-      Vue.component('calendar-modal', {
-        template: '#calendar-modal-template',
-        props: ['calendar'],
-        data: function(){
-          return {
 
-          }
-        },
-        methods: {
-          save_calendar: function(){
-            var _this = this
-            $.post("/api/calendar", this.calendar, function(res){
-              console.log(res)
-              _this.$emit("close")
-            })
-          }
-        },
-        mounted: function(){
-
-        }
-      })
 
       // vue app
      new Vue({
