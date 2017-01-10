@@ -26,6 +26,10 @@
     <link href='/fc/fullcalendar.print.css' rel='stylesheet' media='print' />
     <script src='/fc/fullcalendar.js'></script>
 
+    <!-- blueimp -->
+    <script src="/assets/js/gallery/js/blueimp-gallery.min.js"></script>
+    <link rel="stylesheet" href="/assets/js/gallery/css/blueimp-gallery.min.css">
+
     <!-- webpack -->
     <!-- <script src='//webpack.shalendar.docker/static/bundle.js'></script> -->
 
@@ -148,9 +152,9 @@
                       <a v-if="user && current_user && current_user.id == user.id" @click="handle_show_event_form(true)" class="is-pulled-right link is-default is-outlined modal-default-button" :class="{'is-loading': active_event.loading}" >edit</a>
                     </label>
 
-                    <p class="event_media_files" v-if="active_event.media">
+                    <p id="links" class="event_media_files" v-if="active_event.media">
                       <div class="event_media_file" v-for="file in active_event.media">
-                        <img class="image" :src="file">
+                        <a :href="file" target="_blank"><img class="image" :src="file"></a>
                       </div>
                       <div style="clear: both;" />
                     </p>
@@ -184,7 +188,7 @@
 
                     <p class="event_media_files" v-if="active_event.media">
                       <div class="event_media_file" v-for="(file, index) in active_event.media" style="position: relative;">
-                        <img :src="file">
+                        <img :src="file" class="">
                         <a @click="handle_photo_delete(file)" class="button is-warning is-small" style="position: absolute; right: 0; top: 0;">x</a>
                       </div>
                       <div style="clear: both;" />
