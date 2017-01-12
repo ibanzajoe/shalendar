@@ -11,9 +11,6 @@
     <!-- utilities -->
     <script src='/fc/lib/moment.min.js'></script>
 
-    <script src="//webpack.shalendar.docker/static/common.js"></script>
-    <script src="//webpack.shalendar.docker/static/calendar.js"></script>
-
     <!-- fontawesome -->
     <link rel="stylesheet" href="/bower_components/font-awesome/css/font-awesome.min.css">
 
@@ -26,8 +23,15 @@
     <link href='/fc/fullcalendar.print.css' rel='stylesheet' media='print' />
     <script src='/fc/fullcalendar.js'></script>
 
-    <!-- webpack -->
-    <!-- <script src='//webpack.shalendar.docker/static/bundle.js'></script> -->
+    <!-- webpack | <%=Padrino.env%> -->
+    <% if Padrino.env == :development %>
+      <script src="//webpack.shalendar.docker/static/common.js"></script>
+      <script src="//webpack.shalendar.docker/static/calendar.js"></script>
+    <% else %>
+      <script src="/static/common.js"></script>
+      <script src="/static/calendar.js"></script>
+      <script src='/static/bundle.js'></script>
+    <% end %>
 
     <script type="text/javascript" src="//api.filepicker.io/v2/filepicker.js"></script>
 
