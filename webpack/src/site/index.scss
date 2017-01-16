@@ -101,6 +101,12 @@ img#slack_logo {
   font-family: lato-light;
 }
 
+#left_p_body .box_container {
+  @include desktop {
+    margin-top: 30%;
+  }
+}
+
 .left_p_footer #email_checkbox{
   margin-bottom: 0px;
 }
