@@ -4,138 +4,140 @@
 
 
 @font-face {
-    font-family: lato-light;
-    src: url(../shared/font/lato-light.woff2);
+  font-family: lato-light;
+  src: url(../shared/font/lato-light.woff2);
 }
 
 html {
-    height: 100vh;
-    font-family: lato-light;
-    padding: 0;
-    margin: 0;
-    
+  height: 100vh;
+  font-family: lato-light;
+  padding: 0;
+  margin: 0;
+
 }
 html, body {
+ @include desktop {
     padding: 50px;
-    margin: 0;
-    height: 100%;
-    overflow: hidden;
+  }
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
 }
 .full_height {
-    height: 100%;
+  height: 100%;
 }
 
 #main_p{
-    min-height: 100%;
-    background-color: #21b2fe;
-    margin: 0;
+  min-height: 100%;
+  background-color: #21b2fe;
+  margin: 0;
 }
 
 /*left pane */
 
 #left_p{
-    min-height: 100%;
-    background-color: #ffffff;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 0;
+  min-height: 100%;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 0;
 }
 
 img#slack_logo {
-    flex-grow: 0;
-    background-image: initial;
-    background-position-x: 0px;
-    background-position-y: 0px;
-    background-size: initial;
-    background-repeat-x: initial;
-    background-repeat-y: initial;
-    background-attachment: initial;
-    background-origin: initial;
-    background-clip: initial;
-    background-color: initial;
-    margin: 1rem;
-    width: 120px;
-    height: 37px;
-    max-width: 100%;
-    vertical-align: middle;
-    border: 0;
+  flex-grow: 0;
+  background-image: initial;
+  background-position-x: 0px;
+  background-position-y: 0px;
+  background-size: initial;
+  background-repeat-x: initial;
+  background-repeat-y: initial;
+  background-attachment: initial;
+  background-origin: initial;
+  background-clip: initial;
+  background-color: initial;
+  margin: 1rem;
+  width: 120px;
+  height: 37px;
+  max-width: 100%;
+  vertical-align: middle;
+  border: 0;
 }
 
 
 #left_p_body {
-    margin-bottom: 150px;
+  margin-bottom: 150px;
 }
 
 #left_p_body h1{
-    font-size: 2.625rem;
-    line-height: 3rem;
-    font-weight: 300;
-    margin-bottom: 1.25rem;
-    font-family: lato-light;
+  font-size: 2.625rem;
+  line-height: 3rem;
+  font-weight: 300;
+  margin-bottom: 1.25rem;
+  font-family: lato-light;
 }
 #left_p_body label{
-    font-weight: 700;
-    margin: 0 auto;
-    display: block;
-    font-size: 1rem;
-    line-height: 1.5rem;
-    font-family: lato-light;
+  font-weight: 700;
+  margin: 0 auto;
+  display: block;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  font-family: lato-light;
 }
 #left_p_body input{
-    font-size: 1.25rem;
-    line-height: normal;
-    padding: 0.75rem;
-    border: 1px solid #c5c5c5;
-    fborder-radius: 0.25rem;
-    outline: 0;
-    color: #555459;
-    width: 100%;
-    max-width: 100%;
-    margin:0 0 0.5rem;
-    height: auto;
-    font-family: lato-light;
+  font-size: 1.25rem;
+  line-height: normal;
+  padding: 0.75rem;
+  border: 1px solid #c5c5c5;
+  fborder-radius: 0.25rem;
+  outline: 0;
+  color: #555459;
+  width: 100%;
+  max-width: 100%;
+  margin:0 0 0.5rem;
+  height: auto;
+  font-family: lato-light;
 }
 
 .left_p_footer #email_checkbox{
-    margin-bottom: 0px;
+  margin-bottom: 0px;
 }
 .left_p_footer input {
-    display: inline;
-    margin:3px 3px 3px 4px;
-    word-wrap: break-word;
+  display: inline;
+  margin:3px 3px 3px 4px;
+  word-wrap: break-word;
 }
 .left_p_footer label {
-    font-size: 1rem;
-    line-height: 1.5rem;
-    display: inline;
-    text-align: center;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  display: inline;
+  text-align: center;
 }
 
 .left_p_footer .button_class{
-    margin-bottom: 0px;
+  margin-bottom: 0px;
 }
 
 
 /* right pane */
 
 #right_p{
-    min-height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    font-family: lato-light;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-family: lato-light;
 }
 
 #right_p_header label {
-    font-weight: 600;
-    color: #fff;
+  font-weight: 600;
+  color: #fff;
 }
 
 
 /* modal style stuff*/
 .modal footer {
-    margin-top: 0px;
+  margin-top: 0px;
 }
 
 
@@ -161,87 +163,87 @@ img#slack_logo {
 
 /* modal css stuff */
 * {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 .modal-mask {
-    position: fixed;
-    z-index: 10;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, .5);
-    transition: opacity .3s ease;
+  position: fixed;
+  z-index: 10;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, .5);
+  transition: opacity .3s ease;
 }
 
 .modal-container {
-    width: 40%;
-    min-height: 30%;
-    max-height: 80%;
-    overflow: auto;
-    margin-top: 75px;
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: 0;
-    padding: 20px 30px;
-    background-color: #fff;
-    border-radius: 2px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
-    transition: all .3s ease;
-    font-family: Helvetica, Arial, sans-serif;
+  width: 40%;
+  min-height: 30%;
+  max-height: 80%;
+  overflow: auto;
+  margin-top: 75px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 0;
+  padding: 20px 30px;
+  background-color: #fff;
+  border-radius: 2px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
+  transition: all .3s ease;
+  font-family: Helvetica, Arial, sans-serif;
 }
 
 .modal-header h3 {
-    padding-bottom: 100px;
-    margin-top: 0;
-    color: #42b983;
+  padding-bottom: 100px;
+  margin-top: 0;
+  color: #42b983;
 }
 
 .modal-body {
-    margin: 20px 0;
+  margin: 20px 0;
 }
 
 
 .modal-body h3 {
-    font-size: 24px;
-    margin-bottom: 20px;
+  font-size: 24px;
+  margin-bottom: 20px;
 }
 
 .modal-body label {
-    text-align: left;
-    padding: 0;
+  text-align: left;
+  padding: 0;
 }
 
 .text-right {
-    text-align: right;
+  text-align: right;
 }
 
 .form-label {
-    display: block;
-    margin-bottom: 1em;
+  display: block;
+  margin-bottom: 1em;
 }
 
 .form-label > .form-control {
-    margin-top: 0.5em;
+  margin-top: 0.5em;
 }
 
 .form-control {
-    display: block;
-    width: 100%;
-    padding: 0.5em 1em;
-    line-height: 1.5;
-    border: 1px solid #ddd;
+  display: block;
+  width: 100%;
+  padding: 0.5em 1em;
+  line-height: 1.5;
+  border: 1px solid #ddd;
 }
 
 .modal-enter, .modal-leave {
-    opacity: 0;
+  opacity: 0;
 }
 
 .modal-enter .modal-container,
 .modal-leave .modal-container {
-    -webkit-transform: scale(1.1);
-    transform: scale(1.1);
+  -webkit-transform: scale(1.1);
+  transform: scale(1.1);
 }
 
 /**************************/
@@ -251,78 +253,78 @@ img#slack_logo {
 
 /** calendar left pane **/
 #cal_left_pane{
-    position: relative;
-    height: 90%;
-    width: 200px;
-    background-color: #ffffff;
-    display: flex;
-    margin-top: 10px;
-    margin-left: 10px;
-    margin-right: 10px;
-    margin-bottom: 20px;
-    padding-right: 0px;
+  position: relative;
+  height: 90%;
+  width: 200px;
+  background-color: #ffffff;
+  display: flex;
+  margin-top: 10px;
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-bottom: 20px;
+  padding-right: 0px;
 }
 
 .cal_left_head {
-    display: block;
-    color: #ab9ba9;
+  display: block;
+  color: #ab9ba9;
 }
 
 .cal_left_body {
-    display: block;
-    min-height: 95%;
-    padding-bottom: 10px;
+  display: block;
+  min-height: 95%;
+  padding-bottom: 10px;
 }
 
 .cal_left_body li {
-    margin-top: 6px;    
-    cursor: pointer;
+  margin-top: 6px;
+  cursor: pointer;
 }
 
 .cal_left_body li a {
-    color: grey;
+  color: grey;
 }
 
 .cal_left_body li input {
-    margin-top: 2px;
+  margin-top: 2px;
 }
 
 .cal_left_head {
-    margin-bottom: 10px;   
+  margin-bottom: 10px;
 }
 
 .cal_left_body span { color: lightgrey; }
 .cal_left_body input { border: 0; }
 
 .cal_left_footer {
-    display: block;
+  display: block;
 }
 
 .boxes {
-    display: block;
-    padding: 0px;
+  display: block;
+  padding: 0px;
 }
 
 .card .content {
-    display: inline;
+  display: inline;
 }
 
 #cal_middle_pane {
-    
-    margin-top: 10px;
-    margin-right: 10px;
+
+  margin-top: 10px;
+  margin-right: 10px;
 }
 
 .overflow_ellipsis {
-    display: block;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-    /*border-radius: 10px;*/
+  display: block;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  /*border-radius: 10px;*/
 }
 
 .overflow_ellipsis:hover {
-    color: grey;
+  color: grey;
 }
 
 .overflow_ellipsis:active {
@@ -333,8 +335,8 @@ img#slack_logo {
 
 
 .modal_action { margin-top: 40px;}
-.event_extra_actions { 
-    margin-bottom: 10px;
+.event_extra_actions {
+  margin-bottom: 10px;
 }
 .event_extra_actions a { color: #ccc; margin-right: 10px; font-size: 12px;}
 .event_extra_actions a.is-active { font-weight: bolder; }
