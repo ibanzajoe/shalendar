@@ -16,13 +16,15 @@ html {
 
 }
 html, body {
- @include desktop {
-    padding: 50px;
+  @include desktop {
+   padding: 50px;
+   overflow: hidden;
   }
   margin: 0;
   height: 100%;
-  overflow: hidden;
+
 }
+
 .full_height {
   height: 100%;
 }
