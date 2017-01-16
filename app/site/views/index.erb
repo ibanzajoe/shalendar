@@ -59,32 +59,32 @@
         <div id="left_p_header" class="image_logo column">
           <img src="/assets/images/logo.png">
         </div>
-				<div id="left_p_body" class="column is-10 is-offset-1">
-					<div class="box_container" style="margin-top: 30%;">
-						<h1>Sign Up</h1>
-						<label class="label">Your <strong>email address</strong></label>
-						<p><input type="text" v-model="email" class="input"></p>
+        <div id="left_p_body" class="column is-10 is-offset-1">
+          <div class="box_container" style="margin-top: 30%;">
+            <h1>Sign Up</h1>
+            <label class="label">Your <strong>email address</strong></label>
+            <p><input type="text" v-model="email" class="input"></p>
 
-						<label class="label">Your <strong>Username</strong></label>
-						<p><input type="text" v-model="username" class="input"></p>
+            <label class="label">Your <strong>Username</strong></label>
+            <p><input type="text" v-model="username" class="input"></p>
 
-						<label class="label">Your <strong>password</strong></label>
-						<p><input type="password" v-model="password" class="input"></p>
+            <label class="label">Your <strong>password</strong></label>
+            <p><input type="password" v-model="password" class="input"></p>
 
-						<div class="button_class" style="margin-top: 10px;">
-							<button :class="{'is-loading': loading == true}" class="button is-medium is-primary modal_on" @class="handle_register">Next</button>
-							<a class="is-pulled-right" @click="handle_login_button">Or Login</a>
-						</div>
-					</div>
-				</div>
-        <div id="left_p_footer" class="left_p_footer column is-8 is-offset-2">
-          <div id="email_checkbox">
-            <input type="checkbox" id="email_check">
-            <label for="email_check">It's okay to send me (very occasionally) spam
-              email about Shalendar service
-            </label>
+            <div class="button_class" style="margin-top: 10px;">
+              <button :class="{'is-loading': loading == true}" class="button is-medium is-primary modal_on" @class="handle_register">Next</button>
+              <a class="is-pulled-right" @click="handle_login_button">Or Login</a>
+            </div>
           </div>
         </div>
+        <!-- <div id="left_p_footer" class="left_p_footer column is-8 is-offset-2">
+        <div id="email_checkbox">
+        <input type="checkbox" id="email_check">
+        <label for="email_check">It's okay to send me (very occasionally) spam
+        email about Shalendar service
+        </label>
+        </div>
+        </div> -->
       </form>
 
       <!-- end panes -->
@@ -166,7 +166,7 @@ var main = new Vue({
     left_pane: 'index',
     email: '',
     password: '',
-		username: '',
+    username: '',
     error: false,
     loading: false,
     modals: {
@@ -219,4 +219,3 @@ var main = new Vue({
   }
 })
 </script>
-
