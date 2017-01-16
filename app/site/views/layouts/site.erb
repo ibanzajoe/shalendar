@@ -7,9 +7,18 @@
     <%=@title%>
     </title>
 
-    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>  
+    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+
+    <!-- webpack | <%=Padrino.env%> -->
+    <% if Padrino.env == :development %>
     <script src="//webpack.shalendar.docker/static/common.js"></script>
-    <script src="//webpack.shalendar.docker/static/site.js"></script>
+    <script src="//webpack.shalendar.docker/static/calendar.js"></script>
+    <% else %>
+    <script src="/static/common.js"></script>
+    <script src="/static/calendar.js"></script>
+    <link href='/static/common.css' rel='stylesheet' />
+    <link href='/static/calendar.css' rel='stylesheet' />
+    <% end %>
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
 
