@@ -35,11 +35,10 @@ memcache:
 
 webpack:
  build: ./webpack
+ command: npm run prod
  environment:
- - VIRTUAL_HOST=webpack.shalendar.com
  - ENV=production
  volumes:
  - ./webpack:/webpack
  volumes_from:
  - app
- restart: always

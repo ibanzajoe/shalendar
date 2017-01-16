@@ -1,24 +1,24 @@
 <template>
-  <transition name="modal">
-    <div class="modal-mask" @click="$emit('close')">
-      <div class="modal-wrapper" style="height: 100%;">
-        <div class="modal-container" @click.stop>
-          <div class="modal-body">
+    <transition name="modal">
+        <div class="modal-mask" @click="$emit('close')">
+            <div class="modal-wrapper" style="height: 100%;">
+                <div class="modal-container" @click.stop>
+                    <div class="modal-body">
 
-            <form @submit.prevent="save_calendar">
-              <p>Calendar: <input type="text" v-model="calendar.name"></p>
-              <p>Color: <input type="text" v-model="calendar.color" @click="show_colorpicker = true"></p>
-              <colorpicker v-if="show_colorpicker" v-model="colors" @change-color="handle_color"></colorpicker>
+                        <form @submit.prevent="save_calendar">
+                            <p>Label: <input type="text" v-model="calendar.name"></p>
+                            <p>Color: <input type="text" v-model="calendar.color" @click="show_colorpicker = true"></p>
+                            <colorpicker v-if="show_colorpicker" v-model="colors" @change-color="handle_color"></colorpicker>
 
-              <button>Save</button>
-            </form>
+                            <button>Save</button>
+                        </form>
 
-          </div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  </transition>
-</template>
+    </transition>
+  </template>
 
 <script>
 
@@ -57,4 +57,4 @@ module.exports = {
     this.calendar.colors
   }
 }
-</script>
+   </script>
