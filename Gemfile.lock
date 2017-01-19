@@ -7,6 +7,7 @@ GEM
       minitest (~> 5.1)
       thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
+    awesome_print (1.7.0)
     backports (3.6.7)
     bcrypt (3.1.10)
     better_errors (2.1.1)
@@ -211,6 +212,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  awesome_print
   bcrypt
   better_errors
   binding_of_caller

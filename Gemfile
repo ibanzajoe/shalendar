@@ -14,6 +14,7 @@ gem 'will_paginate'
 gem 'will_paginate-bootstrap'
 gem 'redcarpet'
 gem 'coderay'
+gem 'awesome_print'
 
 # social
 gem 'instagram'
