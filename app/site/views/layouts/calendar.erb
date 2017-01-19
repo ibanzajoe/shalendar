@@ -88,7 +88,6 @@
                     <span>{{calendars[0].total_events}}</span>
                   </a>
                 </li>
-
                 <ul v-if="calendars[1]">
                   <li v-if="!calendars.code" class="overflow_ellipsis" v-for="calendar in calendars" :class="is_active_calendar(calendar)" @click.prevent="set_active_calendar(calendar)">
 
@@ -110,16 +109,52 @@
                     </template>
                   </li>
                 </ul>
-
               </ul>
-            </div>
 
 
 
 
-          </div>
+              <div class="cal_left_head" style="margin-top: 30px;">
+                <strong>Connect</strong>
+              </div>
+              <ul>
+                <ul>
+                  <li class="overflow_ellipsis">
+                    <template>
+                      <span style="float: left; margin-left: 0px; margin-right: 10px; border-radius: 0; width: 3px; height: 18px;"></span>
+                      <template><i style="font-size: 16px; margin-top: 2px;" class="fa fa-instagram"></i> Instagram</template>
+                      <a href="/connect/instagram" class="button is-small" style="float: right; font-size: 11px; margin-top: 0px;">Connect</a>
+                      <!-- <i class="fa fa-check-square-o" aria-hidden="true" style="float: right; color: grey; font-size: 14px; margin-top: 4px;"></i> -->
 
-        </div>
+                    </template>
+                  </li>
+                  <!-- <li class="overflow_ellipsis">
+                  <template>
+                  <span style="float: left; margin-left: 0px; margin-right: 10px; border-radius: 0; width: 3px; height: 18px;"></span>
+                  <template><i style="font-size: 16px; margin-top: 2px;" class="fa fa-facebook"></i> Facebook</template>
+                  <i class="fa fa-square" aria-hidden="true" style="float: right; color: grey; font-size: 14px; margin-top: 4px;"></i>
+
+                  </template>
+                  </li>
+                  <li class="overflow_ellipsis">
+                  <template>
+                  <span style="float: left; margin-left: 0px; margin-right: 10px; border-radius: 0; width: 3px; height: 18px;"></span>
+                  <template><i style="font-size: 16px; margin-top: 2px;" class="fa fa-twitter"></i> Twitter</template>
+                  <i class="fa fa-square" aria-hidden="true" style="float: right; color: grey; font-size: 14px; margin-top: 4px;"></i>
+
+                  </template>
+                  </li> -->
+                </ul>
+              </ul>
+
+
+            </div> <!-- .cal_left_body -->
+
+
+          </div> <!-- .boxes -->
+
+        </div> <!-- #cal_left_pane -->
+
 
         <!-- middle -->
         <div id="cal_middle_pane" class="column box" style="padding-bottom: 100px;">
@@ -405,7 +440,7 @@ new Vue({
         _this.calendars = res
         console.log('/api/calendars', res)
       })
-    },
+     },
     add_calendar: function(){
       var _this = this
       swal({
@@ -433,7 +468,12 @@ new Vue({
         })
 
       })
-    },
+     },
+
+     add_integration: function(){
+
+     },
+
 
     init_calendar: function(){
       var _this = this

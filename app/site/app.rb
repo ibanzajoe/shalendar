@@ -19,6 +19,10 @@ module Honeybadger
       @page = (params[:page] || 1).to_i
       @per_page = params[:per_page] || 5
       @current_user = session[:user] if !session[:user].blank?
+
+      if !session[:integrations].blank? && !session[:integrations][:instagram].blank?
+        @instagram = Instagram.client(:access_token => session[:integrations][:instagram][:access_token])
+      end
     end
 
     ### authentication routes ###
@@ -49,6 +53,25 @@ module Honeybadger
       else
         output(user.values)
       end
+    end
+
+    get '/connect/instagram' do
+      redirect Instagram.authorize_url(:redirect_uri => "#{settings.base_url}/cb/instagram")
+    end
+
+    get '/cb/instagram' do
+      response = Instagram.get_access_token(params[:code], :redirect_uri => "#{settings.base_url}/cb/instagram")
+
+      session[:integrations] = {}
+      session[:integrations][:instagram] = { :access_token => response.access_token }
+      redirect "/sync/instagram"
+    end
+
+    get '/sync/instagram' do
+      instagram = Shalendar::Instagram.new(@instagram, @current_user)
+      res = instagram.import
+      content_type :json
+      return res.to_json
     end
 
     get "/user/account" do
@@ -245,16 +268,9 @@ module Honeybadger
         p calendar
         conditions[:calendar_id] = calendar[:id] if calendar
       end
-
       starts_at = params[:start] || Date.today.at_beginning_of_month
       ends_at = params[:end] || Date.today.at_beginning_of_month.next_month
       events = Event.where(conditions).where('ends_at >= ?', starts_at).where('ends_at <= ?', ends_at).all
-
-      p 'events sql'
-      p Event.where(conditions).where('ends_at >= ?', starts_at).where('ends_at <= ?', ends_at)
-
-      p 'conditions'
-      p conditions
 
       res = []
       events.each {|event|

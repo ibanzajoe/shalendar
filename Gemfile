@@ -15,6 +15,9 @@ gem 'will_paginate-bootstrap'
 gem 'redcarpet'
 gem 'coderay'
 
+# social
+gem 'instagram'
+
 # authentication
 gem 'omniauth'
 gem 'omniauth-twitter'
