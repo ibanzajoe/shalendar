@@ -20,6 +20,11 @@ module Honeybadger
       @per_page = params[:per_page] || 5
       @current_user = session[:user] if !session[:user].blank?
 
+      Instagram.configure do |config|
+        config.client_id = settings.auth[:instagram][:key]
+        config.client_secret = settings.auth[:instagram][:secret]
+      end
+
       if !session[:integrations].blank? && !session[:integrations][:instagram].blank?
         @instagram = Instagram.client(:access_token => session[:integrations][:instagram][:access_token])
       end
@@ -68,7 +73,7 @@ module Honeybadger
     end
 
     get '/sync/instagram' do
-      instagram = Shalendar::Instagram.new(@instagram, @current_user)
+      instagram = Shalendar::Instagram.new(@instagram , @current_user)
       res = instagram.import
       content_type :json
       return res.to_json
