@@ -30,8 +30,42 @@ module Shalendar
         end
 
         res = @client.user_recent_media(uid, opts)
+
         for media_item in res
+
+          # default to image
+          type = 'image'
+          image_url = media_item.images.standard_resolution.url
+          video_url = nil
+
+          # if video provided
+          if !media_item.videos.blank?
+            video_url = media_item.videos.standard_resolution.url
+            type = 'video'
+          end
+
+          # if caption provided, set title
+          title = media_item.caption[:text] || ''
+
           html << "<div style='float:left;'><img src='#{media_item.images.thumbnail.url}'><br/> Created: #{media_item.created_time}  <br/>LikesCount=#{media_item.likes[:count]}</div>"
+
+          payload = {
+            :user_id => user[:id],
+            :provider => 'instagram',
+            :refid => media_item.id,
+            :type => type,
+            :title => title,
+            :description => '',
+            :image_url => image_url,
+            :video_url => video_url,
+            :data => media_item.to_json,
+            :origin_at => Time.at(media_item.created_time.to_i).to_datetime,
+          }
+
+          p "wtf is this"
+          p payload
+
+          Media.create(payload)
         end
 
         if res.pagination.nil? && res.pagination.next_max_id.nil?
