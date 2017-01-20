@@ -65,7 +65,11 @@ module Shalendar
           p "wtf is this"
           p payload
 
-          Media.create(payload)
+          begin
+            Media.create(payload)
+          rescue => e
+          end
+
         end
 
         if res.pagination.nil? && res.pagination.next_max_id.nil?
