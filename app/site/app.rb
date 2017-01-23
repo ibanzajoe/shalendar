@@ -75,12 +75,13 @@ module Honeybadger
     get '/sync/instagram' do
 
       next_id = params[:next_id] || nil
-      instagram = Shalendar::Instagram.new(@instagram)
-      res = instagram.sync(@current_user)
-      return res
-      content_type :json
-      ap res
-      return res.to_json
+
+      Thread.new {
+        instagram = Shalendar::Instagram.new(@instagram)
+        res = instagram.sync(@current_user)
+      }
+
+      return "importing instagram"
     end
 
     get "/user/account" do

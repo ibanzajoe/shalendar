@@ -84,7 +84,7 @@ module Shalendar
 
       end
 
-      html = "<h3>wtf</h3> #{html}"
+      html = "#{html}"
       return html
 
 

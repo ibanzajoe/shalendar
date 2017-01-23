@@ -126,7 +126,7 @@
                     <template>
                       <span style="float: left; margin-left: 0px; margin-right: 10px; border-radius: 0; width: 3px; height: 18px;"></span>
                       <template><i style="font-size: 16px; margin-top: 2px;" class="fa fa-instagram"></i> Instagram</template>
-                      <a href="/connect/instagram" class="button is-small" style="float: right; font-size: 11px; margin-top: 0px;">Connect</a>
+                      <a @click="handle_connect_instagram" class="button is-small" style="float: right; font-size: 11px; margin-top: 0px;">Connect</a>
                       <!-- <i class="fa fa-check-square-o" aria-hidden="true" style="float: right; color: grey; font-size: 14px; margin-top: 4px;"></i> -->
 
                     </template>
@@ -324,6 +324,14 @@ new Vue({
   },
   methods: {
 
+    handle_connect_instagram: function(){
+
+      swal("Syncing with Instagram", "Please wait...", "success")
+      $.get("/connect/instagram", function(res){
+
+      })
+
+    },
     handle_edit_calendar: function(calendar){
       this.modal_calendar = true
     },
