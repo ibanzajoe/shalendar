@@ -35,10 +35,6 @@
     <% end %>
 
     <script type="text/javascript" src="//api.filepicker.io/v2/filepicker.js"></script>
-    <script type="text/javascript" src="//api.filepicker.io/v2/filepicker.js"></script>
-    <script type="text/javascript" src="//api.filepicker.io/v2/filepicker.js"></script>
-    <script type="text/javascript" src="//api.filepicker.io/v2/filepicker.js"></script>
-
 
   </head>
 
@@ -162,7 +158,7 @@
         <!-- middle -->
         <div id="cal_middle_pane" class="column box" style="padding-bottom: 100px;">
           <div class="column is-12" id="calendar"></div>
-          <event-modal id="modal_event" v-if="modal_event" :current_user="current_user" :user="user" :save_event="save_event" :delete_event="delete_event" :calendars="calendars" :active_calendar="active_calendar" :cal="cal" :close_event="close_event" :active_event="active_event" :init_media="init_media" :show_event_preview="show_event_preview" :show_event_form="show_event_form" :handle_show_event_form="handle_show_event_form" :handle_photo_delete="handle_photo_delete" :this_day="this_day" @close="modal_event = false"></event-modal>
+          <event-modal id="modal_event" v-if="modal_event" :current_user="current_user" :user="user" :save_event="save_event" :delete_event="delete_event" :calendars="calendars" :active_calendar="active_calendar" :cal="cal" :close_event="close_event" :active_event="active_event" :init_media="init_media" :show_event_preview="show_event_preview" :show_event_form="show_event_form" :handle_show_event_form="handle_show_event_form" :handle_add_media="handle_add_media" :handle_delete_media="handle_delete_media" :this_day="this_day" @close="modal_event = false"></event-modal>
 
 
           <calendar-modal id="modal_calendar" v-if="modal_calendar" :calendar="active_calendar" :cal="cal" @close="modal_calendar = false"></calendar-modal>
@@ -223,7 +219,7 @@
                     </p>
 
                     <div class="event_extra_actions">
-                      <div class="has-text-left"><a id="add_media"></a></div>
+                      <div class="has-text-left"><a @click="handle_add_media" id="add_media" class="button is-primary is-outlined">+ add media</a></div>
                       <div class="has-text-right" style="margin-top: -23px;">
                         <a :class="{'is-active': show_description || active_event.description}" @click="show_description = show_description ? false : true">+ add description</a>
                         <a :class="{'is-active': show_location || active_event.location}" @click="show_location = show_location ? false : true">+ add location</a>
@@ -233,7 +229,7 @@
                     <p class="event_media_files" v-if="active_event.media">
                       <div class="event_media_file" v-for="(file, index) in active_event.media" style="position: relative;">
                         <img :src="file" class="">
-                        <a @click="handle_photo_delete(file)" class="button is-warning is-small" style="position: absolute; right: 0; top: 0;">x</a>
+                        <a @click="handle_delete_media(file)" class="button is-warning is-small" style="position: absolute; right: 0; top: 0;">x</a>
                       </div>
                       <div style="clear: both;" />
                     </p>
@@ -271,7 +267,7 @@
     </script>
 
 
-    <script>
+  <script>
 
 // event modal
 Vue.component('event-modal', {
@@ -286,10 +282,8 @@ Vue.component('event-modal', {
   mounted: function(){
 
   },
-  props: ['active_event', 'active_calendar', 'close_event', 'save_event', 'delete_event', 'init_media', 'date', 'cal', 'calendars', 'current_user', 'user', 'show_event_preview', 'show_event_form', 'handle_show_event_form', 'handle_photo_delete', 'this_day'],
-})
-
-
+  props: ['active_event', 'active_calendar', 'close_event', 'save_event', 'delete_event', 'init_media', 'date', 'cal', 'calendars', 'current_user', 'user', 'show_event_preview', 'show_event_form', 'handle_show_event_form', 'handle_add_media', 'handle_delete_media', 'this_day'],
+});
 
 // vue app
 new Vue({
@@ -316,6 +310,7 @@ new Vue({
     this.get_calendars();
     this.init_calendar();
     this.set_active_calendar();
+    filepicker.setKey("<%= config('filepicker') %>");
   },
   computed: {
     location: function(){
@@ -373,7 +368,29 @@ new Vue({
       }
     },
 
-    handle_photo_delete: function(file){
+    handle_add_media: function(){
+      var _this = this
+      filepicker.pickMultiple(
+        {
+          mimetype: 'image/*',
+          maxFiles: 3
+        },
+        function(Blobs){
+
+          if(!_this.active_event.media) _this.active_event.media = []
+
+          $.each(Blobs, function(k, v){
+            _this.active_event.media.push(v["url"])
+          });
+          console.log('after', _this.active_event.media)
+          console.log(JSON.stringify(Blobs));
+        },
+        function(FPError){
+          console.log(FPError.toString());
+        }
+      );
+    },
+    handle_delete_media: function(file){
 
       var _this = this
       $.each(this.active_event.media, function(index, value){
@@ -451,7 +468,7 @@ new Vue({
         _this.calendars = res
         console.log('/api/calendars', res)
       })
-     },
+    },
     add_calendar: function(){
       var _this = this
       swal({
@@ -479,11 +496,11 @@ new Vue({
         })
 
       })
-     },
+    },
 
-     add_integration: function(){
+    add_integration: function(){
 
-     },
+    },
 
 
     init_calendar: function(){
@@ -656,10 +673,11 @@ new Vue({
     },
 
     init_media: function(){
-      var _this = this
-      filepicker.setKey("ACGRkMPr9TqmbgPiHBS5Cz");
-      var element = document.getElementById('add_media')
-      if(element){
+      /*
+        var _this = this
+        filepicker.setKey("<%= config('filepicker') %>");
+        var element = document.getElementById('add_media');
+        if(element){
         element.type="filepicker-dragdrop";
         // element.setAttribute('data-fp-mimetype', 'image/*');
         element.setAttribute('data-fp-multiple', true);
@@ -667,35 +685,37 @@ new Vue({
         element.setAttribute('data-fp-button-class', 'button is-outlined is-primary');
         element.onchange = function(e){
 
-          if(!_this.active_event.media) _this.active_event.media = []
+         if(!_this.active_event.media) _this.active_event.media = []
 
-          $.each(e.fpfiles, function(k, v){
-            _this.active_event.media.push(v["url"])
-          })
+         $.each(e.fpfiles, function(k, v){
+         _this.active_event.media.push(v["url"])
+         });
 
-            console.log('after', _this.active_event.media)
+         console.log('after', _this.active_event.media)
 
         };
         filepicker.constructWidget(element);
-      }
+
+        }
+      */
 
     }
 
 
 
   }
-})
+});
 
-       </script>
+</script>
 
-    <script>
-     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-                              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-     })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-     ga('create', 'UA-90180102-1', 'auto');
-     ga('send', 'pageview');
-     </script>
+  <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                           m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+                          })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-90180102-1', 'auto');
+ga('send', 'pageview');
+</script>
 
   </body>
 

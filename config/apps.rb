@@ -13,14 +13,16 @@ Padrino.configure_apps do
     set :auth, {
           :instagram => {:key => '79756588aba4487e9c3947a6f033db0d', :secret => 'c77405cd424847cb921873c2e15ceb29'},
         }
+    set :filepicker, 'ACGRkMPr9TqmbgPiHBS5Cz'
   else
     set :base_url, "https://www.shalendar.com"
     set :auth, {
           :instagram => {:key => '79756588aba4487e9c3947a6f033db0d', :secret => 'c77405cd424847cb921873c2e15ceb29'},
         }
+    set :filepicker, 'ACGRkMPr9TqmbgPiHBS5Cz'
   end
 
-  set :filepicker, 'ACGRkMPr9TqmbgPiHBS5Cz'
+
 
 end
 
