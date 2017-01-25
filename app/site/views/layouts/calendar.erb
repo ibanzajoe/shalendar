@@ -46,21 +46,24 @@
           <a class="nav-item is-brand" href="#">
             <img src="/assets/images/logo.png" alt="Shalendar logo" style="max-height:50px;">
           </a>
-
         </div>
 
         <% if !@current_user.blank? %>
         <div class="nav-right nav-menu">
           <span class="nav-item">
-            <a class="button" href="/<%=@current_user[:username]%>">
-              <span class="icon">
-                <i class="fa fa-cog"></i>
-              </span>
-              <span>My Calendar</span>
-            </a>
-            <a class="button is-primary" href="/user/logout">
-              <span>Logout <%= @current_user[:username] %></span>
-            </a>
+            <!-- <a class="button" @click="handle_settings()">
+            <span class="icon">
+            <i class="fa fa-cog"></i>
+            </span>
+            <span>My Settings</span>
+            </a> -->
+            <a class="button is-primary" href="/user/logout"><span>Logout <%= @current_user[:username] %></span></a>
+          </span>
+        </div>
+        <% else %>
+        <div class="nav-right nav-menu">
+          <span class="nav-item">
+            <a class="button is-primary" href="/"><span>Login</span></a>
           </span>
         </div>
         <% end %>
@@ -110,12 +113,10 @@
                 </ul>
               </ul>
 
-
-
-
               <div class="cal_left_head" style="margin-top: 30px;">
                 <strong>Connect</strong>
               </div>
+
               <ul>
                 <ul>
                   <li class="overflow_ellipsis">
@@ -158,7 +159,7 @@
         <!-- middle -->
         <div id="cal_middle_pane" class="column box" style="padding-bottom: 100px;">
           <div class="column is-12" id="calendar"></div>
-          <event-modal id="modal_event" v-if="modal_event" :current_user="current_user" :user="user" :save_event="save_event" :delete_event="delete_event" :calendars="calendars" :active_calendar="active_calendar" :cal="cal" :close_event="close_event" :active_event="active_event" :init_media="init_media" :show_event_preview="show_event_preview" :show_event_form="show_event_form" :handle_show_event_form="handle_show_event_form" :handle_add_media="handle_add_media" :handle_delete_media="handle_delete_media" :this_day="this_day" @close="modal_event = false"></event-modal>
+          <event-modal id="modal_event" v-if="modal_event" :current_user="current_user" :user="user" :save_event="save_event" :delete_event="delete_event" :calendars="calendars" :active_calendar="active_calendar" :cal="cal" :close_event="close_event" :active_event="active_event" :show_event_preview="show_event_preview" :show_event_form="show_event_form" :handle_show_event_form="handle_show_event_form" :handle_add_media="handle_add_media" :handle_delete_media="handle_delete_media" :this_day="this_day" @close="modal_event = false"></event-modal>
 
 
           <calendar-modal id="modal_calendar" v-if="modal_calendar" :calendar="active_calendar" :cal="cal" @close="modal_calendar = false"></calendar-modal>
@@ -226,7 +227,7 @@
                       </div>
                     </div>
 
-                    <p class="event_media_files" v-if="active_event.media">
+                    <p class="event_media_files">
                       <div class="event_media_file" v-for="(file, index) in active_event.media" style="position: relative;">
                         <img :src="file" class="">
                         <a @click="handle_delete_media(file)" class="button is-warning is-small" style="position: absolute; right: 0; top: 0;">x</a>
@@ -282,7 +283,7 @@ Vue.component('event-modal', {
   mounted: function(){
 
   },
-  props: ['active_event', 'active_calendar', 'close_event', 'save_event', 'delete_event', 'init_media', 'date', 'cal', 'calendars', 'current_user', 'user', 'show_event_preview', 'show_event_form', 'handle_show_event_form', 'handle_add_media', 'handle_delete_media', 'this_day'],
+  props: ['active_event', 'active_calendar', 'close_event', 'save_event', 'delete_event', 'date', 'cal', 'calendars', 'current_user', 'user', 'show_event_preview', 'show_event_form', 'handle_show_event_form', 'handle_add_media', 'handle_delete_media', 'this_day'],
 });
 
 // vue app
@@ -360,26 +361,19 @@ new Vue({
     handle_show_event_form: function(show){
       if(show) this.edit_event = true
       if(!show) this.edit_event = false
-      var _this = this
-      if(this.edit_event == true) {
-        setTimeout(function(){
-          _this.init_media()
-        }, 300)
-      }
     },
 
     handle_add_media: function(){
       var _this = this
       filepicker.pickMultiple(
         {
-          mimetype: 'image/*',
-          maxFiles: 3
+          mimetype: 'image/*'
         },
         function(Blobs){
 
           if(!_this.active_event.media) _this.active_event.media = []
-
           $.each(Blobs, function(k, v){
+            console.log('blob!', k, v)
             _this.active_event.media.push(v["url"])
           });
           console.log('after', _this.active_event.media)
@@ -399,7 +393,7 @@ new Vue({
         }
       })
 
-        },
+    },
 
     show_event_preview: function(){
       if(this.edit_event == false) return true
@@ -502,7 +496,6 @@ new Vue({
 
     },
 
-
     init_calendar: function(){
       var _this = this
       console.log('init calendar')
@@ -510,6 +503,7 @@ new Vue({
       _this.cal = cal
 
       cal.fullCalendar({
+
         defaultDate: moment(),
         editable: true,
         eventLimit: false, // allow "more" link when too many events
@@ -522,17 +516,21 @@ new Vue({
           center: 'title',
           right: 'listDay,listWeek,month'
         },
+
         views: {
           listDay: { buttonText: 'day' },
           listWeek: { buttonText: 'week' }
         },
+
         displayEventTime: false,
+
         dayClick: function (date, jsEvent, view) {
           var event = { date: date }
           console.log('day clicked')
           _this.edit_event = true
           _this.handle_day_click(event)
         },
+
         eventClick: function(calEvent, jsEvent, view) {
           var event_id = calEvent.id
           if(event_id){
@@ -541,8 +539,8 @@ new Vue({
               _this.handle_event_click(res, calEvent)
             })
           }
-
         },
+
         eventDrop: function(event, delta, revertFunc) {
 
           alert(event.title + " was dropped on " + event.start.format());
@@ -552,6 +550,7 @@ new Vue({
           }
 
         },
+
         eventRender: function(event, element) {
           //console.log('wtf', event, element)
           var image_html = ''
@@ -560,9 +559,11 @@ new Vue({
             $.each(event.media, function(k, file){
               image_html += "<img src='"+file+"' style='height: 20px;'>"
             })
-              }
+          }
 
-          element.find('.fc-title').html(event.title + "<div style='float: right;'>" + image_html + "</div>");
+          var title = ''
+          if(event.title){ title = event.title }
+          element.find('.fc-title').html(title + " <div style='float: right;'>" + image_html + "</div>");
         }
 
         //events: "/api/events?user_id="+_this.user.id,
@@ -574,14 +575,13 @@ new Vue({
 
     handle_day_click: function(event){
       var _this = this
-      this.active_event = event
+      this.init_active_event()
       if(this.active_calendar) this.active_event.calendar_id = this.active_calendar.id
-      this.active_event.start = this.active_event.date.utc().format()
+      this.active_event.start = event.date.format()
       console.log('handle_day_click', this.active_event)
       if (this.current_user && (this.user.id == this.current_user.id)){
         this.modal_event = true
         setTimeout(function(){
-          _this.init_media()
           $("#active_event_title").focus();
         }, 500)
       }
@@ -596,12 +596,20 @@ new Vue({
       //if (this.user.id == this.current_user.id){
       this.modal_event = true
       setTimeout(function(){
-        _this.init_media()
         $("#active_event_title").focus();
       }, 500)
       //}
     },
 
+    handle_settings: function(){
+      alert('hi')
+    },
+
+    init_active_event: function(){
+      this.active_event = {
+        media: []
+      }
+    },
     close_event: function(){
       this.modal_event = false
     },
@@ -670,38 +678,7 @@ new Vue({
         })
       }
 
-    },
-
-    init_media: function(){
-      /*
-        var _this = this
-        filepicker.setKey("<%= config('filepicker') %>");
-        var element = document.getElementById('add_media');
-        if(element){
-        element.type="filepicker-dragdrop";
-        // element.setAttribute('data-fp-mimetype', 'image/*');
-        element.setAttribute('data-fp-multiple', true);
-        element.setAttribute('data-fp-button-text', '+ media');
-        element.setAttribute('data-fp-button-class', 'button is-outlined is-primary');
-        element.onchange = function(e){
-
-         if(!_this.active_event.media) _this.active_event.media = []
-
-         $.each(e.fpfiles, function(k, v){
-         _this.active_event.media.push(v["url"])
-         });
-
-         console.log('after', _this.active_event.media)
-
-        };
-        filepicker.constructWidget(element);
-
-        }
-      */
-
     }
-
-
 
   }
 });
