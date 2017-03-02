@@ -6,7 +6,7 @@ module Shalendar
       @client = client
     end
 
-    def sync(user)
+    def sync(user, calendar)
 
       html = ''
       uid = @client.user.id
@@ -62,12 +62,28 @@ module Shalendar
             :origin_at => Time.at(media_item.created_time.to_i).to_datetime,
           }
 
-          p "wtf is this"
+          p "shalendar::instagram::sync payload"
           p payload
 
           begin
-            Media.create(payload)
+            media = Media.create(payload)
+            media_files = []
+            media_files << media[:image_url]
+
+            event = Event.create(
+              :user_id => media[:user_id],
+              :calendar_id => calendar[:id],
+              :title => media[:title],
+              :description => media[:description],
+              :media => media_files.to_json,
+              :starts_at => media[:origin_at],
+              :ends_at => media[:origin_at],
+            )
+
+            media.update(:event_id => event[:id])
           rescue => e
+            p 'errorrrrr'
+            p e
           end
 
         end

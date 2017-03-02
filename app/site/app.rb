@@ -18,15 +18,18 @@ module Honeybadger
       @title = "Shalendar | Digital Calendar for your life"
       @page = (params[:page] || 1).to_i
       @per_page = params[:per_page] || 5
-      @current_user = session[:user] if !session[:user].blank?
+
+      if !session[:user_id].blank?
+        @current_user = User[session[:user_id]]
+      end
 
       Instagram.configure do |config|
         config.client_id = settings.auth[:instagram][:key]
         config.client_secret = settings.auth[:instagram][:secret]
       end
 
-      if !session[:integrations].blank? && !session[:integrations][:instagram].blank?
-        @instagram = Instagram.client(:access_token => session[:integrations][:instagram][:access_token])
+      if !@current_user[:integrations].blank? && !@current_user[:integrations]["instagram"].blank?
+        @instagram = Instagram.client(:access_token => @current_user[:integrations]["instagram"]["access_token"])
       end
     end
 
@@ -48,13 +51,15 @@ module Honeybadger
       user = User.login_with_omniauth(auth)
 
       if user
-        session[:user] = user
+        integrations = @current_user[:integrations] || {}
+        integrations[user.provider] = {:user_id => user.id }
+        @current_user.update(:integrations => integrations.to_json).reload
 
-        if user.email.blank?
-          redirect("/user/account", :notice => 'Please fill in required informations')
-        end
+        # if user.email.blank?
+        #   redirect("/user/account", :notice => 'Please fill in required informations')
+        # end
 
-        redirect("/")
+        # redirect("/")
       else
         output(user.values)
       end
@@ -67,27 +72,35 @@ module Honeybadger
     get '/cb/instagram' do
       response = Instagram.get_access_token(params[:code], :redirect_uri => "#{settings.base_url}/cb/instagram")
 
-      session[:integrations] = {}
-      session[:integrations][:instagram] = { :access_token => response.access_token }
+      user_id = session[:user_id]
+      user = User[user_id]
+
+      integrations = user[:integrations] || {}
+      integrations["instagram"] = { :access_token => response.access_token }
+
+      user[:integrations] = integrations.to_json
+      user.save.reload
+
       redirect "/sync/instagram"
     end
 
     get '/sync/instagram' do
 
-      next_id = params[:next_id] || nil
+      calendar = Calendar.where(:name => "Instagram", :user_id => @current_user[:id]).first
+
+      calendar = Calendar.create(:user_id => @current_user[:id], :name => "Instagram", :color => Calendar.colors.sample) if calendar.blank?
 
       Thread.new {
         instagram = Shalendar::Instagram.new(@instagram)
-        res = instagram.sync(@current_user)
+        res = instagram.sync(@current_user, calendar)
       }
 
-      return "importing instagram"
+      redirect "/#{@current_user[:username]}"
     end
 
     get "/user/account" do
-      @user = session[:user]
-
-      render "account"
+      # @user = session[:user]
+      # render "account"
     end
 
     post "/user/account" do
@@ -131,7 +144,7 @@ module Honeybadger
       else
         user = User.login(params)
         if user.errors.empty?
-          session[:user] = user
+          session[:user_id] = user[:id]
           flash[:success] = "You are now logged in"
           redirect("/#{user[:username]}")
         else
@@ -167,7 +180,7 @@ module Honeybadger
 
         user = User.register_with_email(params)
         if user.errors.empty?
-          session[:user] = user
+          session[:user_id] = user[:id]
           redirect("/user/account")
         else
           flash.now[:notice] = user.errors[:validation][0]
@@ -181,6 +194,9 @@ module Honeybadger
 
     ### put your routes here ###
     get '/' do
+      if !@current_user.blank?
+        redirect "/#{@current_user.username}"
+      end
       render "index"
     end
 
@@ -200,14 +216,6 @@ module Honeybadger
       render "error"
     end
 
-    ### calendar page ###
-    get '/:username' do
-      @user = User.where(:username => params[:username]).first
-      if @user.blank?
-        return "error"
-      end
-      render "user_calendar", :layout => "calendar"
-    end
 
     ### get a list of calendars
     ### params: user_id
@@ -391,7 +399,7 @@ module Honeybadger
       else
         user = User.login(params)
         if user.errors.empty?
-          session[:user] = user
+          session[:user_id] = user[:id]
 
           res = {
             :status => 'auth success',
@@ -433,7 +441,7 @@ module Honeybadger
       else
         user = User.register_with_email(params)
         if user.errors.empty?
-          session[:user] = user
+          session[:user_id] = user[:id]
 
           res = {
               :status => 'auth success',
@@ -454,6 +462,18 @@ module Honeybadger
 
       res.to_json
 
+    end
+
+
+    ### calendar page ###
+    get '/:username' do
+      @user = User.where(:username => params[:username]).first
+      p 'user error wtf'
+      p @user
+      if @user.blank?
+        return "error"
+      end
+      render "user_calendar", :layout => "calendar"
     end
 
 

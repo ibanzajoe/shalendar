@@ -87,7 +87,7 @@
                   <a class="overflow_ellipsis" @click="set_active_calendar()">&nbsp;
                     <template v-if="location.hash != ''">All</template>
                     <template v-if="location.hash == ''"><strong>All</strong></template>
-                    <span>{{calendars[0].total_events}}</span>
+                    <span>{{num_total_events}}</span>
                   </a>
                 </li>
                 <ul v-if="calendars[1]">
@@ -114,7 +114,7 @@
               </ul>
 
               <div class="cal_left_head" style="margin-top: 30px;">
-                <strong>Connect</strong>
+                <strong>Social</strong>
               </div>
 
               <ul>
@@ -123,7 +123,8 @@
                     <template>
                       <span style="float: left; margin-left: 0px; margin-right: 10px; border-radius: 0; width: 3px; height: 18px;"></span>
                       <template><i style="font-size: 16px; margin-top: 2px;" class="fa fa-instagram"></i> Instagram</template>
-                      <a @click="handle_connect_instagram" class="button is-small" style="float: right; font-size: 11px; margin-top: 0px;">Connect</a>
+                      <a v-if="!is_social_connected('instagram')" @click="handle_connect_instagram" class="button is-small" style="float: right; font-size: 11px; margin-top: 0px;">Connect</a>
+                      <a v-if="is_social_connected('instagram')" disabled class="button is-success is-small" style="float: right; font-size: 11px; margin-top: 0px;">Connected</a>
                       <!-- <i class="fa fa-check-square-o" aria-hidden="true" style="float: right; color: grey; font-size: 14px; margin-top: 4px;"></i> -->
 
                     </template>
@@ -307,7 +308,6 @@ new Vue({
   },
 
   mounted: function(){
-    console.log('wtfoiwjefiowjfiwoejf')
     this.get_calendars();
     this.init_calendar();
     this.set_active_calendar();
@@ -316,16 +316,29 @@ new Vue({
   computed: {
     location: function(){
       return location
-    }
+    },
+     num_total_events: function(){
+       var total = 0
+       $.each(this.calendars, function(k, v){
+         total += v.total_events
+       })
+       return total
+     }
+
   },
   methods: {
+     is_social_connected: function(name){
+       if(this.current_user.integrations && this.current_user.integrations[name]){
+         return true
+       }else{
+         return false
+       }
+     },
 
     handle_connect_instagram: function(){
 
       swal("Syncing with Instagram", "Please wait...", "success")
-      $.get("/connect/instagram", function(res){
-
-      })
+      window.location.href = "/connect/instagram"
 
     },
     handle_edit_calendar: function(calendar){
