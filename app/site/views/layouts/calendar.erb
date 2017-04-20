@@ -380,7 +380,8 @@ new Vue({
       var _this = this
       filepicker.pickMultiple(
         {
-          mimetype: 'image/*'
+          mimetype: 'image/*',
+          storeTo: { location: 's3', access: 'public', container: 'shalendar' }
         },
         function(Blobs){
 
