@@ -6,6 +6,7 @@ app:
  command: /app/bin/docker/init.sh
  environment:
  - VIRTUAL_HOST=shalendar.docker
+ - VIRTUAL_PORT=3000
  - RACK_ENV=development
  - BUNDLE_PATH=/app/volumes/bundler
  - PASSENGER_POOL_IDLE_TIME=0
@@ -21,6 +22,7 @@ db:
  - POSTGRES_DB=honeybadger_development
  volumes:
  #- pgdata:/var/lib/postgresql/data
+ - ./volumes/db/postgresql:/var/lib/postgresql
  - ./sql:/sql
  tty: true
  ports:

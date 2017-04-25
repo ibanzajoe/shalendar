@@ -156,7 +156,7 @@ module Honeybadger
     end
 
     get "/user/logout" do
-      session.delete(:user)
+      session.destroy
       redirect("/")
     end
 

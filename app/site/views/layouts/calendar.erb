@@ -34,7 +34,8 @@
     <link href='/static/calendar.css' rel='stylesheet' />
     <% end %>
 
-    <script type="text/javascript" src="//api.filepicker.io/v2/filepicker.js"></script>
+    <script src="https://api.filestackapi.com/filestack.js"></script>
+
 
   </head>
 
@@ -113,22 +114,22 @@
                 </ul>
               </ul>
 
-              <div class="cal_left_head" style="margin-top: 30px;">
-                <strong>Social</strong>
-              </div>
+              <!-- <div class="cal_left_head" style="margin-top: 30px;">
+                   <strong>Social</strong>
+                   </div> -->
 
               <ul>
                 <ul>
-                  <li class="overflow_ellipsis">
-                    <template>
-                      <span style="float: left; margin-left: 0px; margin-right: 10px; border-radius: 0; width: 3px; height: 18px;"></span>
-                      <template><i style="font-size: 16px; margin-top: 2px;" class="fa fa-instagram"></i> Instagram</template>
-                      <a v-if="!is_social_connected('instagram')" @click="handle_connect_instagram" class="button is-small" style="float: right; font-size: 11px; margin-top: 0px;">Connect</a>
-                      <a v-if="is_social_connected('instagram')" disabled class="button is-success is-small" style="float: right; font-size: 11px; margin-top: 0px;">Connected</a>
-                      <!-- <i class="fa fa-check-square-o" aria-hidden="true" style="float: right; color: grey; font-size: 14px; margin-top: 4px;"></i> -->
+                  <!-- <li class="overflow_ellipsis">
+                       <template>
+                       <span style="float: left; margin-left: 0px; margin-right: 10px; border-radius: 0; width: 3px; height: 18px;"></span>
+                       <template><i style="font-size: 16px; margin-top: 2px;" class="fa fa-instagram"></i> Instagram</template>
+                       <a v-if="!is_social_connected('instagram')" @click="handle_connect_instagram" class="button is-small" style="float: right; font-size: 11px; margin-top: 0px;">Connect</a>
+                       <a v-if="is_social_connected('instagram')" disabled class="button is-success is-small" style="float: right; font-size: 11px; margin-top: 0px;">Connected</a>
+                       <i class="fa fa-check-square-o" aria-hidden="true" style="float: right; color: grey; font-size: 14px; margin-top: 4px;"></i>
 
-                    </template>
-                  </li>
+                       </template>
+                       </li> -->
                   <!-- <li class="overflow_ellipsis">
                   <template>
                   <span style="float: left; margin-left: 0px; margin-right: 10px; border-radius: 0; width: 3px; height: 18px;"></span>
@@ -328,6 +329,7 @@ new Vue({
   },
   methods: {
      is_social_connected: function(name){
+       return false
        if(this.current_user.integrations && this.current_user.integrations[name]){
          return true
        }else{
@@ -381,7 +383,7 @@ new Vue({
       filepicker.pickMultiple(
         {
           mimetype: 'image/*',
-          storeTo: { location: 's3', access: 'public', container: 'shalendar' }
+          storeTo: { location: 's3'}
         },
         function(Blobs){
 

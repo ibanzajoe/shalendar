@@ -20,6 +20,7 @@ db:
  - POSTGRES_PASSWORD=j
  - POSTGRES_DB=honeybadger_production
  volumes:
+ - ./volumes/db/postgresql:/var/lib/postgresql
  #- pgdata:/var/lib/postgresql/data
  - ./sql:/sql
  tty: true
