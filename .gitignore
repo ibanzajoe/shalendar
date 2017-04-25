@@ -10,3 +10,4 @@ db/*.db
 .idea
 public/uploads/*
 .vagrant
+volumes/bundler/*
