@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" class="full_height">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+    <%=@title%>
+    </title>
+
+    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+
+    <!-- webpack | <%=Padrino.env%> -->
+    <% if Padrino.env == :development %>
+    <script src="//webpack.shalendar.docker/static/common.js"></script>
+    <script src="//webpack.shalendar.docker/static/site.js"></script>
+    <% else %>
+    <script src="/static/common.js"></script>
+    <script src="/static/site.js"></script>
+    <link href='/static/common.css' rel='stylesheet' />
+    <link href='/static/site.css' rel='stylesheet' />
+    <% end %>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+
+  </head>
+  <body class="full_height no_margin full_bleed">
+
+      <%=yield%>
+
+  </body>
+</html>

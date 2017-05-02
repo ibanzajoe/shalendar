@@ -1,21 +1,221 @@
-<section class="hero is-fullheight fold">
-  <div class="hero-body">
-    <div class="container has-text-centered">
-      <p>Login</p>
+<div id="main_p" class="panel_main columns is-flex" style="display: none;">
+  <div id="left_p" class="panel_left column is-5">
+    <transition-group name="fade" :staggered="true">
 
-      <form role="form" method="POST" class="form-horizontal" action="/user/login">
-
-
-        <input type="text" name="email" id="email" class="input" value="<%= params[:email] %>">
-
-        <input type="password" name="password" id="password" class="input" value="<%= params[:password] %>">
-
-
-        <button type="submit" class="input">Login</button>
-
+      <!-- main pane -->
+      <form v-if="left_pane == 'index'"  @submit.prevent="handle_login" key="1">
+        <div id="left_p_header" class="image_logo column">
+          <img src="/assets/images/logo.png">
+        </div>
+        <div id="left_p_body" class="column is-10 is-offset-1">
+          <div class="box_container has-text-centered">
+            <h1>Do you have a Shalendar?</h1>
+            <a @click="handle_register_button" class="button is-info" id="find_team_link">Sign Up</a>
+            <a @click="handle_login_button" class="button is-primary" id="find_team_link">Login</a>
+          </div>
+        </div>
       </form>
 
-      <p>Or click here to <a href="/user/register">Sign Up</a></p>
+      <!-- login pane -->
+      <form v-if="left_pane == 'login'" @submit.prevent="handle_login" key="2">
+        <div id="left_p_header" class="image_logo column">
+          <img src="/assets/images/logo.png">
+        </div>
+        <div id="left_p_body" class="column is-10 is-offset-1">
+          <div class="box_container">
+            <h1>Log In</h1>
+            <label class="label">Your <strong>email address</strong></label>
+            <p><input type="text" v-model="email" class="input"></p>
+
+            <label class="label">Your <strong>password</strong></label>
+            <p><input type="password" v-model="password" class="input"></p>
+
+            <div class="button_class" style="margin-top: 10px;">
+              <div class="columns">
+                <div class="column is-3 is-pulled-left">
+                  <button :class="{'is-loading': loading == true}" class="button is-medium is-primary modal_on" @click="handle_login">Next</button>
+                </div>
+                <div class="column is-9 is-pulled-right columns is-gapless" style="flex-direction: column;">
+                  <div class="column is-12">
+                    <a class="is-pulled-right" @click="handle_register_button">Or Sign Up</a>
+                  </div>
+                  <div class="column is-12">
+                    <a class="is-pulled-right" @click="modals.forgot_pass = true">Forgot Password?</a>
+                    <modal v-if="modals.forgot_pass" @close="modals.forgot_pass = false"></modal>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+
+            <div v-if="error" class="error_message">{{error}}</div>
+
+          </div>
+        </div>
+      </form>
+
+      <!-- register pane -->
+      <form v-if="left_pane == 'register'" @submit.prevent="handle_register" key="3">
+        <div id="left_p_header" class="image_logo column">
+          <img src="/assets/images/logo.png">
+        </div>
+        <div id="left_p_body" class="column is-10 is-offset-1">
+          <div class="box_container" >
+            <h1>Sign Up</h1>
+            <label class="label">Your <strong>email address</strong></label>
+            <p><input type="text" v-model="email" class="input"></p>
+
+            <label class="label">Your <strong>Username</strong></label>
+            <p><input type="text" v-model="username" class="input"></p>
+
+            <label class="label">Your <strong>password</strong></label>
+            <p><input type="password" v-model="password" class="input"></p>
+
+            <div class="button_class" style="margin-top: 10px;">
+              <button :class="{'is-loading': loading == true}" class="button is-medium is-primary modal_on" @class="handle_register">Next</button>
+              <a class="is-pulled-right" @click="handle_login_button">Or Login</a>
+            </div>
+          </div>
+        </div>
+        <!-- <div id="left_p_footer" class="left_p_footer column is-8 is-offset-2">
+        <div id="email_checkbox">
+        <input type="checkbox" id="email_check">
+        <label for="email_check">It's okay to send me (very occasionally) spam
+        email about Shalendar service
+        </label>
+        </div>
+        </div> -->
+      </form>
+
+      <!-- end panes -->
+
+    </transition-group>
+
+  </div> <!-- end left p -->
+
+
+  <div id="right_p" class="panel_right column is-7 is-hidden-mobile">
+    <div id="right_p_header" class="column is-12">
+      <div class="nest_container is-pulled-right">
+        <label>Create your Shalendar Today!</label>
+      </div>
     </div>
-  </div>
-</section>
+    <div id="right_p_body" class="left_p_body">
+      <div class="column is-8 is-offset-2">
+        <img src="/site/img/image01.png">
+      </div>
+
+    </div>
+    <div id="right_p_footer" class="left_p_footer">
+      <div class="box_container column is-half is-offset-one-quarter" style="text-align: center;">
+      </div>
+    </div>
+
+  </div> <!-- end right p -->
+
+</div> <!-- end main p -->
+
+<script type="text/x-template" id="modal-template">
+  <transition name="modal">
+    <div class="modal-mask" @click="$emit('close')">
+      <div class="modal-wrapper" style="height: 100%;">
+        <div class="modal-container">
+          <div class="modal-body" @click.stop>
+            <slot name="body">
+
+              <form @submit="save_event">
+
+                <h3>We will send you a recovery password.</h3>
+                <label class="label">Your <strong>email address</strong></label>
+                <p><input class="input is-info" type="text" placeholder="johndoe@gmail.com"></p>
+
+                <!--<label class="label">Description (optional)</label>
+                  <p class="control has-icon has-icon-right">
+                  <textarea v-model="active_event.description" class="textarea" placeholder="Describe what happened"></textarea>
+                </p>
+                <label class="label">Where (optional)</label>
+                <p class="control has-icon has-icon-right">
+                  <input v-model="active_event.location" class="input" type="text" placeholder="city or location">
+                </p>
+                -->
+                <div class="modal_action">
+                  <button class="button is-info is-outlined modal-default-button">
+                    Send
+                  </button>
+                </div>
+              </form>
+
+            </slot>
+          </div>
+        </div>
+      </div>
+    </div>
+  </transition>
+</script>
+
+
+
+<script>
+Vue.component('modal', {
+  template: '#modal-template'
+})
+
+var main = new Vue({
+  el: '#main_p',
+  data: {
+    left_pane: 'index',
+    email: '',
+    password: '',
+    username: '',
+    error: false,
+    loading: false,
+    modals: {
+      forgot_pass: false
+    }
+  },
+  mounted: function(){
+    $('#main_p').show()
+  },
+  methods: {
+    handle_login: function(e){
+      var _this = this
+      _this.error = false
+      _this.loading = true
+      $.post('/api/login', {email: this.email, password: this.password}, function(res){
+        _this.loading = false
+        console.log(res)
+        if(res.code == "200"){
+          location.href = res.redir
+        }else{
+          _this.error = "authentication error, please try again"
+        }
+      })
+    },
+    handle_login_button: function(){
+      this.error = false
+      this.left_pane = 'login'
+    },
+    handle_register: function(){
+      var _this = this
+      _this.error = false
+      _this.loading = true
+      $.post('/api/register', {email: this.email, password: this.password, username: this.username}, function(res){
+        _this.loading = false
+        console.log(res)
+        if(res.code == "200"){
+          location.href = res.redir
+        }else{
+          _this.error = "authentication error, please try again"
+        }
+      })
+    },
+    handle_register_button: function(){
+      this.error = false
+      this.left_pane = 'register'
+    },
+    forgot_password: function(){
+      this.forgot_pass = true;
+    }
+  }
+})
+</script>

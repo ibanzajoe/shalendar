@@ -46,6 +46,10 @@ module Honeybadger
 
     end
 
+    get '/beta' do
+      render "login", :layout => 'beta'
+    end
+          
     get '/auth/:name/callback' do
       auth    = request.env["omniauth.auth"]
       user = User.login_with_omniauth(auth)
@@ -127,8 +131,8 @@ module Honeybadger
 
     end
 
-    get "/user/login" do
-      render "login", :layout => 'site'
+    get "/login" do
+      render "login", :layout => 'beta'
     end
 
     post "/user/login" do

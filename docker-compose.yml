@@ -12,6 +12,7 @@ app:
  - PASSENGER_POOL_IDLE_TIME=0
  volumes:
  - .:/app
+# - ./bin/docker/db:/docker-entrypoint-initdb.d
  #tty: true
  #restart: always
 

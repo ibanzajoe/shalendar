@@ -6,12 +6,14 @@ app:
  command: /app/bin/docker/init.sh
  environment:
  - VIRTUAL_HOST=shalendar.com,www.shalendar.com
- - VIRTUAL_PORT=3000 
+ - VIRTUAL_PORT=3000
  - RACK_ENV=production
  - BUNDLE_PATH=/app/volumes/bundler
  - PASSENGER_POOL_IDLE_TIME=0
  volumes:
  - .:/app
+# - ./bin/docker/db:/docker-entrypoint-initdb.d
+
  #tty: true
  restart: always
 

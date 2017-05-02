@@ -1,34 +1,210 @@
 <!DOCTYPE html>
-<html lang="en" class="full_height">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>
-    <%=@title%>
-    </title>
+<html lang="en">
 
-    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+<head>
 
-    <!-- webpack | <%=Padrino.env%> -->
-    <% if Padrino.env == :development %>
-    <script src="//webpack.shalendar.docker/static/common.js"></script>
-    <script src="//webpack.shalendar.docker/static/site.js"></script>
-    <% else %>
-    <script src="/static/common.js"></script>
-    <script src="/static/site.js"></script>
-    <link href='/static/common.css' rel='stylesheet' />
-    <link href='/static/site.css' rel='stylesheet' />
-    <% end %>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+    <title>Freelancer - Start Bootstrap Theme</title>
 
-  </head>
-  <body class="full_height no_margin full_bleed">
-      <%= flash_tag(:notice, :class => 'alert alert-warning') %>
-      <%= flash_tag(:error, :class => 'alert alert-error') %>
-      <%= flash_tag(:success, :class => 'alert alert-success') %>
+    <!-- Bootstrap Core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
-      <%=yield%>
+    <!-- Theme CSS -->
+    <link href="css/freelancer.css" rel="stylesheet">
 
-  </body>
-</html>
+    <!-- Custom Fonts -->
+    <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+    </head>
+
+    <body id="page-top" class="index">
+        <div id="skipnav"><a href="#maincontent">Skip to main content</a></div>
+
+        <!-- Navigation -->
+        <nav id="mainNav" class="navbar navbar-default navbar-fixed-top navbar-custom">
+            <div class="container">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header page-scroll">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                        <span class="sr-only">Toggle navigation</span> <i class="fa fa-bars"></i>
+                    </button>
+                    <a class="navbar-brand" href="index.html">Sqrap</a>
+                </div>
+
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="hidden">
+                            <a href="#page-top"></a>
+                        </li>
+                        <li class="page-scroll">
+                            <a  href="#portfolioModal1" data-toggle="modal">About</a>
+                        </li>
+                        <li class="page-scroll">
+                            <a href="/login">Beta Login</a>
+                        </li>                    
+                    </ul>
+                </div>
+                <!-- /.navbar-collapse -->
+            </div>
+            <!-- /.container-fluid -->
+        </nav>
+
+        <!-- Header -->
+        <header>
+            <div class="container" id="maincontent" tabindex="-1" n>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="intro-text">
+                            <h1 class="name" style="text-transform: none; font-size: 2em;">We are in a private beta</h1>
+                            <span class="skills">enter your email below to receive an invite</span>
+                        </div>
+
+                        <!-- Contact Section -->
+
+                        <div class="container join-beta" style="padding-top: 80px;">
+
+                            <div class="col-lg-8 col-lg-offset-2" style="text-align: center;">
+
+                                <form name="sentMessage" id="" novalidate>                     
+                                    <div class="row control-group" >
+                                        <div class="form-group col-xs-12 floating-label-form-group controls" >
+                                            <input type="email" class="form-control" placeholder="Email Address" id="email" >
+                                            
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div id="success"></div>
+                                    <div class="row">
+                                        <div class="form-group col-xs-12">
+                                            <a href="#" class="btn btn-lg btn-outline"> Request for Beta</a>
+                                        </div>
+                                    </div>
+                                </form> 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+
+
+        <!-- image Section -->
+        <section >
+            <div class="container" id="maincontent" tabindex="-1" style="position: relative;">
+                <div class="row" class="text-center">
+                    <div class="col-lg-12">
+                        <img class="img-responsive" src="img/profile.png" alt="">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center">
+
+            <div class="footer-below">
+                <div class="container">
+                    <div class="row">
+                        <div class="company col-lg-12" style="text-align: center;">
+                            Sqrap
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="row">
+                                Made in Los Angeles, CA                            
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+        <!-- Scroll to Top Button (Only visible on small and extra-small screen sizes) -->
+        <div class="scroll-top page-scroll hidden-sm hidden-xs hidden-lg hidden-md">
+            <a class="btn btn-primary" href="#page-top">
+                <i class="fa fa-chevron-up"></i>
+            </a>
+        </div>
+
+
+
+
+
+
+
+
+
+        <!-- Portfolio Modals -->
+        <div class="portfolio-modal modal fade" id="portfolioModal1" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-content">
+                <div class="close-modal" data-dismiss="modal">
+                    <div class="lr">
+                        <div class="rl">
+                        </div>
+                    </div>
+                </div>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-8 col-lg-offset-2">
+                            <div class="modal-body">
+                                <h2>About Us</h2>
+                                <hr class="star-primary">
+                                
+                                <p>Sqrap is a fun and an easy alternative to a log or a journal.</p>
+                                <p>We believe we found the perfect medium for it.</p>
+                                
+                                <ul class="list-inline item-details">
+                                    <li>From 
+                                        <strong>Santa Monica, CA</strong>                                        
+                                    </li><br><br>
+                                    <li>
+                                        Incubated By
+                                        <strong><a href="http://techbeach.la">Techbeach.LA</a></strong>
+                                    </li>
+                                </ul>
+                                <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+        <!-- jQuery -->
+        <script src="vendor/jquery/jquery.min.js"></script>
+
+        <!-- Bootstrap Core JavaScript -->
+        <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+
+        <!-- Plugin JavaScript -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
+
+        <!-- Contact Form JavaScript -->
+        <script src="js/jqBootstrapValidation.js"></script>
+        <script src="js/contact_me.js"></script>
+
+        <!-- Theme JavaScript -->
+        <script src="js/freelancer.min.js"></script>
+
+    </body>
+
+    </html>
