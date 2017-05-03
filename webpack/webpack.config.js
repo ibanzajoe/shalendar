@@ -43,6 +43,7 @@ var settings = {
         }
       ]
     },
+    devServer: { disableHostCheck: true },
     plugins: [
       new webpack.HotModuleReplacementPlugin(),
       new webpack.optimize.CommonsChunkPlugin("common", "common.js")
