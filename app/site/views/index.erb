@@ -1,0 +1,62 @@
+<header>
+  <div class="container" id="maincontent" tabindex="-1" n>
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="intro-text">
+          <h1 class="name" style="text-transform: none; font-size: 3em;">We are in a private beta</h1>
+          <span class="skills">enter your email below to receive an invite</span>
+        </div>
+
+        <!-- Contact Section -->
+
+        <div class="container join-beta" style="padding-top: 80px;">
+
+          <div class="col-lg-8 col-lg-offset-2" style="text-align: center;">
+
+            <form name="sentMessage" id="" novalidate>
+              <div class="row control-group" >
+                <div class="form-group col-xs-12 floating-label-form-group controls" >
+                  <input v-model="beta_email" type="email" class="form-control" placeholder="Email Address" id="email" >
+
+                </div>
+              </div>
+              <br>
+              <div id="success"></div>
+              <div class="row">
+                <div class="form-group col-xs-12">
+                  <a @click="join_beta(beta_email)" class="btn btn-lg btn-outline"> Request for Beta</a>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section >
+  <div class="container" id="maincontent" tabindex="-1" style="position: relative;">
+    <div class="row" class="text-center">
+      <div class="col-lg-12">
+        <img class="img-responsive" src="/img/profile.png" alt="">
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+ new Vue({
+   el: '#app',
+   data: {
+     beta_email: null
+   },
+   methods: {
+
+     join_beta: function(beta_email){
+       alert('hi' + beta_email)
+     },
+
+   }
+ })
+</script>

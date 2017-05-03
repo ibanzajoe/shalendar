@@ -49,7 +49,7 @@ module Honeybadger
     get '/beta' do
       render "login", :layout => 'beta'
     end
-          
+
     get '/auth/:name/callback' do
       auth    = request.env["omniauth.auth"]
       user = User.login_with_omniauth(auth)
@@ -468,15 +468,104 @@ module Honeybadger
 
     end
 
+    post '/api/follow/:username' do
+
+      content_type :json
+
+      friend = User.where(:username => params[:username]).first
+      return { :status => 'error', :code => 400, :msg => 'cant follow yourself'}.to_json if friend.id == @current_user.id
+      begin
+
+        user_follow = UserFollow.create(:user_id => @current_user.id, :friend_id => friend.id)
+        res = {
+          :status => 'ok',
+          :code => 200,
+          :friend => friend,
+        }
+
+      rescue => e
+        res = {
+          :status => 'error',
+          :code => 500,
+          :msg => 'duplicate relation'
+        }
+      end
+
+      res.to_json
+
+    end
+
+
+    post '/api/unfollow/:username' do
+
+      content_type :json
+      friend = User.where(:username => params[:username]).first
+
+      userfollow = UserFollow.where(:user_id => @current_user.id, :friend_id => friend.id).destroy
+      if userfollow == 1
+        res = {
+          :status => 'ok',
+          :code => 200,
+        }
+      else
+        res = {
+          :status => 'error',
+          :code => 500,
+          :msg => 'user not following'
+        }
+      end
+      res.to_json
+
+    end
+
+    get '/api/friends' do
+      friends = UserFollow.where(:user_id => @current_user.id).all
+
+      content_type :json
+      return {
+        :status => 'ok',
+        :code => 200,
+        :friends => friends
+      }.to_json
+
+    end
+
+    post '/api/request_beta/:email' do
+      email = params[:email]
+
+      content_type :json
+
+      if email.blank?
+        return {
+          :status => 'error',
+          :code => 404,
+          :msg => 'email required'
+        }.to_json
+      end
+
+      if !Util::valid_email?(email)
+        return {
+          :status => 'error',
+          :code => 400,
+          :msg => 'email not valid'
+        }.to_json
+      end
+
+
+    end
 
     ### calendar page ###
     get '/:username' do
-      @user = User.where(:username => params[:username]).first
-      p 'user error wtf'
-      p @user
-      if @user.blank?
-        return "error"
+      @user = User.where(:username => params[:username].downcase).first
+      @friends = []
+      @friend = nil
+
+      if !@user.blank?
+        @friends = UserFollow.left_join(:users, :id => :user_id).where(:user_follows__user_id => @user.id).all
+        @friend = UserFollow.where(:user_id => @current_user.id, :friend_id =>@user.id).first
       end
+
+      return "error" if @user.blank?
       render "user_calendar", :layout => "calendar"
     end
 

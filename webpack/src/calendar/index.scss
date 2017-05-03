@@ -13,7 +13,7 @@ html {
     font-family: lato-light;
     padding: 0;
     margin: 0;
-    
+
 }
 html, body {
     padding: 0px;
@@ -275,7 +275,7 @@ img#slack_logo {
 }
 
 .cal_left_body li {
-    margin-top: 6px;    
+    margin-top: 6px;
     cursor: pointer;
 }
 
@@ -288,7 +288,7 @@ img#slack_logo {
 }
 
 .cal_left_head {
-    margin-bottom: 10px;   
+    margin-bottom: 10px;
 }
 
 .cal_left_body span { color: lightgrey; }
@@ -308,7 +308,7 @@ img#slack_logo {
 }
 
 #cal_middle_pane {
-    
+
     margin-top: 10px;
     margin-right: 10px;
 }
@@ -333,7 +333,7 @@ img#slack_logo {
 
 
 .modal_action { margin-top: 40px;}
-.event_extra_actions { 
+.event_extra_actions {
     margin-bottom: 10px;
 }
 .event_extra_actions a { color: #ccc; margin-right: 10px; font-size: 12px;}
@@ -345,3 +345,5 @@ img#slack_logo {
 .left-add-calendar:hover { cursor: pointer;  }
 
 #calendar { padding: 10px; border: 0px solid; height: 83vh; }
+
+v-cloak { display: none; }

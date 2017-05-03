@@ -15,11 +15,11 @@ class User < Sequel::Model
       end
     end
 
-    if user
-#      session[:user] = user
-    end
-
     return user
+  end
+
+  def before_create
+    super
   end
 
   def before_save
@@ -27,6 +27,9 @@ class User < Sequel::Model
     if self[:provider] == "email" && !self[:email].nil? && self[:refid].nil?
       self[:refid] = self[:email]
     end
+
+    self[:username] = self[:username].downcase if !self[:username].blank?
+    self[:email] = self[:email].downcase if !self[:email].blank?
 
     if !self[:avatar_url].blank? && self[:avatar_url].class == Hash
       tempfile = self[:avatar_url][:tempfile]
