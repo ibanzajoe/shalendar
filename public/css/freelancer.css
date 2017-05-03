@@ -105,7 +105,7 @@ header .intro-text .skills {
 }
 .navbar-custom {
   background: #ff7278;
-  background: #ed5d63;
+  /*background: #ed5d63;*/
   font-family: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif;
   text-transform: uppercase;
   font-weight: 700;
