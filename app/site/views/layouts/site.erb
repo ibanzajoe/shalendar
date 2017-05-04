@@ -35,12 +35,12 @@
 
     <% if Padrino.env == :development %>
       <script src="//webpack.shalendar.docker/static/common.js"></script>
-      <script src="//webpack.shalendar.docker/static/site.js"></script>
+      <script src="//webpack.shalendar.docker/static/home.js"></script>
     <% else %>
       <script src="/static/common.js"></script>
-      <script src="/static/site.js"></script>
+      <script src="/static/home.js"></script>
       <link href='/static/common.css' rel='stylesheet' />
-      <link href='/static/sitecalendar.css' rel='stylesheet' />
+      <link href='/static/home.css' rel='stylesheet' />
     <% end %>
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -90,8 +90,9 @@
 
 
         <!-- Main -->
+        <div id="app">
         <%= yield %>
-
+        </div>
 
         <!-- Footer -->
         <footer class="text-center">

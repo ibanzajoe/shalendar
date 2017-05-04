@@ -12,6 +12,11 @@ var settings = {
         'webpack/hot/dev-server',
         './src/site'
       ],
+      home: [
+        'webpack-dev-server/client?http://webpack.shalendar.docker',
+        'webpack/hot/dev-server',
+        './src/home'
+      ],
       calendar: [
         'webpack-dev-server/client?http://webpack.shalendar.docker',
         'webpack/hot/dev-server',
@@ -58,6 +63,7 @@ var settings = {
   'prod': {
     devtool: 'eval',
     entry: {
+      home: './src/home',
       site: './src/site',
       calendar: './src/calendar'
     },

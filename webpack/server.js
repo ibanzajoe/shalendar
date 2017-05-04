@@ -5,7 +5,8 @@ var config = require('./webpack.config');
 new WebpackDevServer(webpack(config), {
   publicPath: config.output.publicPath,
   hot: true,
-  historyApiFallback: true
+  historyApiFallback: true,
+  disableHostCheck: true
 }).listen(8080, '0.0.0.0', function (err, result) {
   if (err) {
     return console.log(err);
