@@ -1397,3 +1397,55 @@ be a descendant of the grid when it is being dragged.
 }
 
 .fc-title { color: black;}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.fc th {
+  text-align: center;
+  font-weight: normal;
+  padding: 8px;
+  color: #999999;
+  font-size: 12px;
+}
+
+.fc td { color: #626262;}
+
+.fc th, .fc td { border: 0; border-top: 1px solid #ccc; }
+
+.fc-content { padding: 6px;}
+.fc-event { border-radius: 0;}
+
+.fc-day-number { color: #999; padding-top: 9px !important; padding-bottom: 9px !important;}
+
+.fc-toolbar h2 { font-weight: 300;}
+
+.h2, h2 {
+  font-size: 22px;
+  color: #666;
+}
+
+button.fc-button {
+	background: white;
+}	
+
+button.fc-button:hover {
+	color: #41d0bc;
+}	
+
+button.fc-button.fc-state-active {
+	color: #41d0bc;
+}	
+
+.fc-state-default { border: 1px solid #ccc; }

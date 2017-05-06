@@ -1,0 +1,375 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="calendar.css">
+
+
+
+</head>
+
+<body>
+
+
+    <div class="container-fluid" style="background-image: url("bg.png")">
+      <div class="row" >
+       <div class="col-md-12 col-header2">
+          <div class="row">
+            <div class="col-md-4 col-xs-4">SHALENDAR</div>
+            <div class="col-md-4 col-xs-4 col-header-profile" style="text-align:center;">
+              <a class="tooltips" href="#"><img class="img-profile-circle" src="/v1/profile.png"><span>Tooltip</span></a>
+              <div class="profile-name">Jiena Lee</div> 
+              <div class="profile-city">Los Angeles, CA</div> 
+            </div>
+            <div class="col-md-4 col-xs-4 col-header-follow" style="text-align:right;">log out</div>
+          </div>
+      </div>
+
+      <div class="col-md-12 col-header-top">
+          <div class="row" >
+            <div class="col-md-5 col-xs-6" style="text-align:right;"><span class="grn-lg">2387</span> <span class="gray-text">memories</span></div>
+            <div class="col-md-2 col-xs-0" ></div>
+            <div class="col-md-5 col-xs-6" style="text-align:left;"><span class="grn-lg">713</span> <span class="gray-text">followers</span> <a href="#" style="margin-left:13px;" class="btn-follow">follow me</a></div>
+          </div>
+       </div>
+
+      </div>
+    </div>
+
+
+    <div class="container-fluid">
+        <div class="row">
+
+           <div class="col-md-2 col-xs-4 col-left-menu">
+              <div class="col-md-12 " >
+                <div class="row" style="padding-right:10px; padding-bottom:13px;">
+                  <div class="col-md-9 col-xs-9 " style="padding-left:15px; "><h5>MY CALENDAR</h5></div>
+                  <div class="col-md-3 col-xs-3 right-container  " style="padding-top:6px; "><a href="#" class="rbtn" >+</a></div>
+                </div>
+             </div>
+              <table class="catgmenu">
+                <tr>
+                  <td style="background-color:#5fd9f4; width-fixed:12px; padding: 0px;"></td>
+                  <td >Daily Workout <span class="profile-city">(41)</span></td>
+                  <td ><input type="checkbox" class="checkbox" checked></td>
+                  <td ><a href="#"><div class="more-vertical-solid icon" id="edit" style="margin-right:8px;"></a></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td style="background-color:red; width-fixed:12px; padding: 0px;"></td>
+                  <td >My family <span class="profile-city">(41)</span></td>
+                  <td ><input type="checkbox" class="checkbox"></td>
+                  <td ><div class="more-vertical-solid icon" id="edit"> </td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td style="background-color:#ffdc2e; width:12px; padding: 0px;"></td>
+                  <td >Jiena Schedule</td>
+                  <td ><input type="checkbox" class="checkbox" checked></td>
+                  <td ><div class="more-vertical-solid icon" id="edit"></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td style="background-color:#e7085f; width-fixed:12px; padding: 0px;"></td>
+                  <td >Daily Workout</td>
+                  <td ><input type="checkbox" class="checkbox" checked></td>
+                  <td ><div class="more-vertical-solid icon" id="edit"></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td style="background-color:#ffa31f; width-fixed:12px; padding: 0px;"></td>
+                  <td >My family</td>
+                  <td ><input type="checkbox" class="checkbox"></td>
+                  <td ><div class="more-vertical-solid icon" id="edit"></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td style="background-color:#23ebb1; width:12px; padding: 0px;"></td>
+                  <td >Jaelen Schedule</td>
+                  <td ><input type="checkbox" class="checkbox" checked></td>
+                  <td ><div class="more-vertical-solid icon" id="edit"></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td style="background-color:#ca3cf8; width-fixed:12px; padding: 0px;"></td>
+                  <td >Family Vacation</td>
+                  <td ><input type="checkbox" class="checkbox" checked></td>
+                  <td ><div class="more-vertical-solid icon" id="edit"></td>
+                  <td></td>
+                </tr>
+              </table>
+              <br>
+              <div class="col-md-12">
+                <div class="row" style="padding-bottom:15px; padding-top:12px; padding-right:10px;">
+                  <div style="padding-left:15px; "><h5>FOLLOWING</h5></div>
+                </div>
+              </div>
+
+              <table class="catgmenu">
+
+                  <tr >
+                    <td style="padding-bottom:5px; padding-top:6px;"><img class="img-friend-circle" src="/v1/profile.png"></td>
+                    <td ><span class="friend-sm">Jae Lee</span></td>
+                    <td ><div class="more-vertical-solid icon" id="edit"></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td style="padding-bottom:5px; padding-top:6px;"><img class="img-friend-circle" src="/v1/profile.png"></td>
+                    <td ><span class="friend-sm">Vanessa Jung Ji</span></td>
+                    <td ><div class="more-vertical-solid icon" id="edit"></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td style="padding-bottom:5px; padding-top:6px;"><img class="img-friend-circle" src="/v1/profile.png"></td>
+                    <td ><span class="friend-sm">Jiena Lee</span></td>
+                    <td ><div class="more-vertical-solid icon" id="edit"></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td style="padding-bottom:5px; padding-top:6px;"><img class="img-friend-circle" src="/v1/profile.png"></td>
+                    <td ><span class="friend-sm">Jaelen Lee</span></td>
+                    <td ><div class="more-vertical-solid icon" id="edit"></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td style="padding-bottom:5px; padding-top:6px;"><img class="img-friend-circle" src="/v1/profile.png"></td>
+                    <td ><span class="friend-sm">Buddy the cat</span></td>
+                    <td ><div class="more-vertical-solid icon" id="edit"></td>
+                    <td></td>
+                  </tr>
+
+              </table>
+
+              <div class="col-md-12">
+                <div class="row" style="padding-bottom:15px; padding-top:5px;">
+                  <div style="padding-right:10px; text-align:right;"><a href="#" class="profile-city" style="font-weight:700; padding-top:9px;">+ 25 more</a></div>
+                </div>
+              </div>
+
+           </div>
+           <br>
+
+           <div class="col-md-10 col-xs-8">
+               <div class="row">
+                 <div id="calendar" class="col-md-12 col-main-content">
+                   calender
+
+               </div>
+
+           </div>
+        </div>
+
+    </div>
+<br>
+<br>
+<br>
+    <div class="popbox">
+
+      <div class="col-md-12 ">
+        <div class="row ">
+          <div class="col-md-10 col-sm-9 col-xs-9 text-lg " style="padding:20px 0px 10px 18px; color:#41d0bc;">What happened on May 3, Wed 2017</div>
+          <div class="col-md-2 col-sm-3 col-xs-3 right-container "><a href="#" class="btn-close" >X</a></div>
+        </div> 
+        <div class="row">
+          <div class="col-md-12 row-popup ">
+            <div class="styled-select col-md-6 " style="padding-left:0px;">
+             <span style="margin-right:6px; ">category </span>
+              <select>
+              <option>Family</option>
+              <option>2</option>
+              <option>3</option>
+              <option>4</option>
+              <option>5</option>
+              </select>
+            </div>
+            <div class="col-md-6" style="padding-left:0px; padding-top:5px;">
+              <label class="radio-inline">
+                <input type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1"> public
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2"> private
+              </label>
+            </div>
+          </div>
+        </div> 
+        <div class="row">
+          <div class="col-md-12 row-popup text-lg gray-text">
+             enter Event Title here 
+          </div>
+        </div>  
+        <div class="row">
+          <div class="col-md-12 row-popup gray-text" >
+             location
+          </div> 
+        </div> 
+        <div class="row">
+          <div class="col-md-12 row-popup gray-text">
+             description
+             <br><br>
+             <br>
+          </div> 
+        </div> 
+        <div class="row">
+          <div class="col-md-12 row-popup">
+            <div id="full_image">
+             <img src="/v1/profile.png" style="width:110px; height:110px; margin:4px 8px 4px 0px;"><a href="#" class="full_close">X</a>
+            </div>
+            <div id="full_image">
+             <img src="/v1/profile.png" style="width:110px; height:110px; margin:4px 8px 4px 0px;"><a href="#" class="full_close">X</a>
+            </div>
+            <div id="full_image">
+             <img src="/v1/profile.png" style="width:110px; height:110px; margin:4px 8px 4px 0px;"><a href="#" class="full_close">X</a>
+            </div>
+            <div id="full_image">
+             <img src="/v1/profile.png" style="width:110px; height:110px; margin:4px 8px 4px 0px;"><a href="#" class="full_close">X</a>
+            </div>
+            <div id="full_image">
+             <img src="/v1/profile.png" style="width:110px; height:110px; margin:4px 8px 4px 0px;"><a href="#" class="full_close">X</a>
+            </div>
+            <div id="full_image">
+             <img src="/v1/profile.png" style="width:110px; height:110px; margin:4px 8px 4px 0px;"><a href="#" class="full_close">X</a>
+            </div>
+            <div id="full_image">
+             <img src="/v1/profile.png" style="width:110px; height:110px; margin:4px 8px 4px 0px;"><a href="#" class="full_close">X</a>
+            </div>
+           <div class="row ">
+            <div class="col-md-12 right-container " style="padding-right:16px;"><a href="#" class="profile-city" style="font-weight:700; padding-top:9px;">+ 25 more photos</a> <a href="#" style="margin-left:13px;" class="btn-edit">add more photos</a></div>
+           </div> 
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12" style="text-align:center; padding: 13px 0px 22px 0px;">
+             <a href="#" style="margin-left:13px;" class="btn-follow">OK</a>
+             <a href="#" style="margin-left:13px;" class="btn-delete">delete</a>
+          </div> 
+        </div>
+      </div>
+    </div>
+<br>
+<br>
+<br>
+    <div class="popbox">
+
+      <div class="col-md-12 ">
+        <div class="row ">
+          <div class="col-md-10 col-sm-9 col-xs-9 text-lg " style="padding:20px 0px 23px 18px; color:#41d0bc;">Add New Calendar</div>
+          <div class="col-md-2 col-sm-3 col-xs-3 right-container "><a href="#" class="btn-close" >X</a></div>
+        </div> 
+        <div class="row">
+          <div class="col-md-12" style="padding-bottom:0px;">
+            <div class="col-md-9" style="padding-left:3px;">
+              <input type="text" class="form-text-box" id=""  placeholder="Name the calendar" style="border: 1px solid #ccc; height:32px; width:100%; font-size:16px; padding-left:8px;" >
+            </div>
+            <div class="col-md-3" style="padding-left:3px; padding-top:7px;">
+              color picker here
+            </div>
+          </div>
+        </div> 
+        <div class="row">
+          <div class="col-md-12 row-popup " style="padding-bottom:20px;">
+            <div class="col-md-10" style="padding-left:0px;">
+              <label class="radio-inline">
+                <input type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1"> public
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2"> private
+              </label>
+            </div>
+            <div class="col-md-2" style="padding-left:3px; padding-top:7px;">
+              
+            </div>
+          </div>
+          <div class="row">
+          <div class="col-md-12" style="text-align:center; padding: 16px 0px 22px 0px;">
+             <a href="#" style="margin-left:13px;" class="btn-follow">OK</a>
+          </div> 
+        </div>
+        </div> 
+        
+      </div>
+    </div>
+<br>
+<br>
+<br>
+    <div class="popbox">
+      <div class="col-md-12 ">
+        <div class="row ">
+          <div class="col-md-10 col-sm-9 col-xs-9 text-lg " style="padding:20px 0px 20px 18px; color:#41d0bc;">You have 81 Followings</div>
+          <div class="col-md-2 col-sm-3 col-xs-3 right-container "><a href="#" class="btn-close" >X</a></div>
+        </div> 
+        <div class="row">
+          <div class="col-md-12 " >
+              <div class="row ">
+                <div class="col-md-4" >
+
+                  <div class="row" >
+                      <div class="col-md-12" ><img class="img-friend-circle-lg " src="/v1/profile.png"> <span >Jae Lee</span></div>
+                  </div>
+
+                </div>
+                <div class="col-md-4" >
+
+                  <div class="row" >
+                      <div class="col-md-12" ><img class="img-friend-circle-lg " src="/v1/profile.png"> <span >Jaelen Lee</span></div>
+                  </div>
+
+                </div>
+                <div class="col-md-4" >
+
+                  <div class="row" >
+                      <div class="col-md-12" ><img class="img-friend-circle-lg " src="/v1/profile.png"> <span >Vanessa Jung Ji</span></div>
+                  </div>
+
+                </div>
+              </div> 
+          </div>
+        </div> 
+
+        <div class="row">
+          <div class="col-md-12 " >
+              <div class="row ">
+                <div class="col-md-4" >
+
+                  <div class="row" >
+                      <div class="col-md-12" ><img class="img-friend-circle-lg " src="/v1/profile.png"> <span >Jae Lee</span></div>
+                  </div>
+
+                </div>
+                <div class="col-md-4" >
+
+                  <div class="row" >
+                      <div class="col-md-12" ><img class="img-friend-circle-lg " src="/v1/profile.png"> <span >Jaelen Lee</span></div>
+                  </div>
+
+                </div>
+                <div class="col-md-4" >
+
+                  <div class="row" >
+                      <div class="col-md-12" ><img class="img-friend-circle-lg " src="/v1/profile.png"> <span >Vanessa Jung Ji</span></div>
+                  </div>
+
+                </div>
+              </div> 
+          </div>
+        </div> 
+        <br>
+      </div>
+    </div>
+<br>
+<br>
+<br>
+
+
+
+
+    <script src="http://localhost:9999/js/app.js"></script>
+
+</body>
+
+</html>
