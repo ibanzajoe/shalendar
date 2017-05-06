@@ -38,10 +38,13 @@
       <div class="row" >
        <div class="col-md-12 col-header2">
         <div class="row">
-          <div class="col-md-4 col-xs-4">SHALENDAR</div>
+          <div class="col-md-4 col-xs-4"><img src="/assets/images/logo.png" style="width: 100px;"></div>
           <div class="col-md-4 col-xs-4 col-header-profile" style="text-align:center;">
-            <a class="tooltips" href="#"><img class="img-profile-circle" src="/v1/profile.png"><span>Tooltip</span></a>
-            <div class="profile-name">Jiena Lee</div> 
+
+            
+            <a href="#"  class="btn" style="position:relative;"><img class="img-profile-circle" src="profile.png"><div class="tool-tip slideIn bottom" >Hello all!<br>I am Jiena. I am 9 years old girl who likes <br>games and coding <br> I have a cat named Buddy.<br>you can contact me here!!!</div></a> 
+
+            <div class="profile-name">{{user.username}}</div> 
             <div class="profile-city">Los Angeles, CA</div> 
           </div>
           <div class="col-md-4 col-xs-4 col-header-follow" style="text-align:right;">log out</div>
@@ -50,7 +53,7 @@
 
       <div class="col-md-12 col-header-top">
         <div class="row" >
-          <div class="col-md-5 col-xs-6" style="text-align:right;"><span class="grn-lg">2387</span> <span class="gray-text">memories</span></div>
+          <div class="col-md-5 col-xs-6" style="text-align:right;"><span class="grn-lg">{{num_total_events}}</span> <span class="gray-text">memories</span></div>
           <div class="col-md-2 col-xs-0" ></div>
           <div class="col-md-5 col-xs-6" style="text-align:left;"><span class="grn-lg">713</span> <span class="gray-text">followers</span> <a href="#" style="margin-left:13px;" class="btn-follow">follow me</a></div>
         </div>
@@ -67,15 +70,24 @@
       <div class="col-md-12 " >
         <div class="row" style="padding-right:10px; padding-bottom:13px;">
           <div class="col-md-9 col-xs-9 " style="padding-left:15px; "><h5>MY CALENDAR</h5></div>
-          <div class="col-md-3 col-xs-3 right-container" style="padding-top:6px; "><a href="#" class="rbtn" >+</a></div>
+          <div class="col-md-3 col-xs-3 right-container" style="padding-top:6px; "><a href="#" class="rbtn" @click="add_calendar" v-if="has_access()" >+</a></div>
         </div>
       </div>
       <table class="catgmenu">
-        <tr v-for="calendar in calendars">
-          <td :style="{'backgroundColor': calendar.color ? calendar.color : '#333'}" style="width:12px; padding: 0px;"></td>
-          <td >{{calendar.name}} <span class="profile-city">({{calendar.total_events}})</span></td>
+
+        <tr @click.prevent="set_active_calendar()" style="cursor: pointer;">
+          <td style="width:12px; padding: 0px;"></td>
+          <td :style="{'fontWeight': location.hash == '' ? 'bold' : 'normal'}">All <span class="profile-city">({{num_total_events}})</span></td>
           <td ><input type="checkbox" class="checkbox" checked></td>
           <td ><a href="#"><div class="more-vertical-solid icon" id="edit" style="margin-right:8px;"></a></td>
+          <td></td>
+        </tr>
+
+        <tr v-if="calendars" v-for="calendar in calendars">
+          <td :style="{'backgroundColor': calendar.color ? calendar.color : '#333'}" style="width:12px; padding: 0px;"></td>
+          <td @click.prevent="set_active_calendar(calendar)" style="cursor: pointer;" :style="{'fontWeight': check_active_calendar(calendar) ? 'bold' : 'normal'}">{{calendar.name}} <span class="profile-city">({{calendar.total_events}})</span></td>
+          <td ><input type="checkbox" class="checkbox" checked></td>
+          <td @click="handle_edit_calendar(calendar)" style="cursor: pointer;"><a href="#"><div class="more-vertical-solid icon" id="edit" style="margin-right:8px;"></a></td>
           <td></td>
         </tr>
         
@@ -134,9 +146,9 @@
 
     <div class="col-md-10 col-xs-8">
      <div class="row">
-      <div id="calendar" class="col-md-12 col-main-content" style="height: 600px;">
-
-       </div>
+        <div id="calendar" class="col-md-12 col-main-content" style="height: 600px;"></div>
+        <event-modal id="modal_event" v-if="modal_event" :current_user="current_user" :user="user" :save_event="save_event" :delete_event="delete_event" :calendars="calendars" :active_calendar="active_calendar" :cal="cal" :close_event="close_event" :active_event="active_event" :show_event_preview="show_event_preview" :show_event_form="show_event_form" :handle_show_event_form="handle_show_event_form" :handle_add_media="handle_add_media" :handle_delete_media="handle_delete_media" :this_day="this_day" @close="modal_event = false"></event-modal>
+        <calendar-modal id="modal_calendar" v-if="modal_calendar" :calendar="active_calendar" :cal="cal" @close="modal_calendar = false"></calendar-modal>
 
      </div>
    </div>
@@ -339,6 +351,8 @@
 </div>
 
 </div>
+
+
 
 <script>
 
@@ -630,12 +644,13 @@
              editable: true,
              eventLimit: false, // allow "more" link when too many events
              height: 'parent',
+             aspectRatio: 1.605,
              firstDay: 1,
              fixedWeekCount: false,
 
              header: {
-               left: 'prev,next today',
-               center: 'title',
+               left: 'today',
+               center: 'prev,title,next',
                right: 'listDay,listWeek,month'
              },
 

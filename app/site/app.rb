@@ -562,7 +562,7 @@ module Honeybadger
 
       if !@user.blank?
         @friends = UserFollow.left_join(:users, :id => :user_id).where(:user_follows__user_id => @user.id).all
-        @friend = UserFollow.where(:user_id => @current_user.id, :friend_id =>@user.id).first
+        @friend = UserFollow.where(:user_id => @current_user[:id], :friend_id =>@user[:id]).first
       end
 
       return "error" if @user.blank?

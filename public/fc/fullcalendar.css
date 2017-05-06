@@ -1449,3 +1449,4 @@ button.fc-button.fc-state-active {
 }	
 
 .fc-state-default { border: 1px solid #ccc; }
+.fc-center h2 { padding: 0 20px; display: inline;}

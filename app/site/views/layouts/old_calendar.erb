@@ -5,23 +5,16 @@
 
     <title>Shalendar | <%= @user[:username] %></title>
 
-    <!-- jquery -->
+    
     <script src='/fc/lib/jquery.min.js'></script>
-
-    <!-- utilities -->
     <script src='/fc/lib/moment.min.js'></script>
-
-    <!-- fontawesome -->
     <link rel="stylesheet" href="/bower_components/font-awesome/css/font-awesome.min.css">
-
-    <!-- sweetalert -->
     <link rel="stylesheet" href="/bower_components/sweetalert/dist/sweetalert.css">
     <script src="/bower_components/sweetalert/dist/sweetalert.min.js"></script>
-
-    <!-- fc -->
     <link href='/fc/fullcalendar.css' rel='stylesheet' />
     <link href='/fc/fullcalendar.print.css' rel='stylesheet' media='print' />
     <script src='/fc/fullcalendar.js'></script>
+    <script src="https://api.filestackapi.com/filestack.js"></script>
 
     <!-- webpack | <%=Padrino.env%> -->
     <% if Padrino.env == :development %>
@@ -34,7 +27,7 @@
       <link href='/static/calendar.css' rel='stylesheet' />
     <% end %>
 
-    <script src="https://api.filestackapi.com/filestack.js"></script>
+    
 
 
   </head>
