@@ -66,6 +66,10 @@ hr.star-primary:after {
 .img-centered {
   margin: 0 auto;
 }
+.gray-lg {
+  font-size: 18px;
+  color: #999;
+}
 header {
   text-align: center;
   background: #ed5d63;
@@ -105,7 +109,6 @@ header .intro-text .skills {
 }
 .navbar-custom {
   background: #ff7278;
-  /*background: #ed5d63;*/
   font-family: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif;
   text-transform: uppercase;
   font-weight: 700;
@@ -242,6 +245,34 @@ section.success {
     margin: 0 0 30px;
   }
 }
+
+.floating-label-form-group2 {
+  position: relative;
+  margin-bottom: 0;
+  padding-bottom: 0.5em;
+  border-bottom: 1px solid #ddd;
+}
+.floating-label-form-group2 input,
+.floating-label-form-group2 textarea {
+  z-index: 1;
+  position: relative;
+  padding-right: 0;
+  padding-left: 0;
+  border: none;
+  border-radius: 0;
+  font-size: 1.5em;
+  background: none;
+  box-shadow: none !important;
+  resize: none;
+  color:#333;
+  line-height:22px;
+}
+.floating-label-form-group2 input::placeholder {
+  color: #999;
+  opacity: 0.7;
+}
+
+
 .floating-label-form-group {
   position: relative;
   margin-bottom: 0;
@@ -391,8 +422,10 @@ fieldset[disabled] .btn-primary.active {
   background-color: white;
 }
 .btn-success {
-  color: #ed5d63;
-  background-color: #fff;
+  background: transparent;
+  transition: all 0.3s ease-in-out;
+  color: #fff;
+  background-color: #ed5d63;
   border-color: #fff;
   font-weight: 700;
 }
@@ -402,13 +435,36 @@ fieldset[disabled] .btn-primary.active {
 .btn-success.active,
 .open .dropdown-toggle.btn-success {
   color: white;
-  background-color: #ed5d63;
-  border-color: #ed5d63;
+  background: #ddd;
+  border-color: #ddd;
 }
 .btn-success:active,
 .btn-success.active,
 .open .dropdown-toggle.btn-success {
   background-image: none;
+}
+
+
+.btn-outline2 {
+  color: white;
+  font-size: 20px;
+  background-color: #ed5d63;
+  border: solid 2px #ed5d63;
+  transition: all 0.3s ease-in-out;
+  margin-top: 15px;
+}
+
+.btn-outline2:hover,
+.btn-outline2:focus,
+.btn-outline2:active,
+.btn-outline2.active {
+  color: #ed5d63;
+  background: #fff;
+}
+
+
+
+
 }
 .btn-success.disabled,
 .btn-success[disabled],

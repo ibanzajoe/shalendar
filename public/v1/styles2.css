@@ -29,6 +29,7 @@ a:hover {
   border-bottom-color: #dddddd;
   border-bottom-style: solid;
   border-bottom-width: 1px;
+  background-color:#ddd;
   background-image: url("bg2.png");
 }
 
@@ -258,6 +259,7 @@ table.catgmenu th, td {
           justify-content: flex-end;
 }
 
+
 .btn-follow {
   -webkit-border-radius: 26;
   -moz-border-radius: 26;
@@ -279,7 +281,6 @@ table.catgmenu th, td {
   border: solid 2px #ed5d63;
   text-decoration: none;
 }
-
 
 .btn-edit {
   -webkit-border-radius: 22;
@@ -347,6 +348,23 @@ table.catgmenu th, td {
   color:white;
 }
 
+.btn-okay{
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0px;
+  color: #ffffff;
+  font-size: 17px;
+  background: #ed5d63;
+  padding: 4px 8px 4px 8px;
+  text-decoration: none;
+}
+
+.btn-okay:hover {
+  background:#fc7e84;
+  text-decoration: none;
+  color:white;
+}
+
 
 .styled-select select {
    background: transparent;
@@ -405,11 +423,14 @@ table.catgmenu th, td {
 
 
 
+
+
+
 /* Popup */
 
 
 /* HTML5 display-role reset for older browsers */
-article, aside, details, figcaption, figure,
+article, aside, details, figcaption, figure, 
 footer, header, hgroup, menu, nav, section, main {
   display: block;
 }
@@ -523,28 +544,28 @@ q:before, q:after {
   text-shadow: none;
   font-size: 14px;
   visibility: hidden;
-  -webkit-border-radius: 9px;
-  -moz-border-radius: 9px;
-  -o-border-radius: 9px;
-  border-radius: 9px;
-  text-align: center;
+  -webkit-border-radius: 9px; 
+  -moz-border-radius: 9px; 
+  -o-border-radius: 9px; 
+  border-radius: 9px; 
+  text-align: center; 
   opacity: 0;
   z-index: 999;
-  padding: 20px 16px;
+  padding: 20px 16px; 
   position: absolute;
   cursor: default;
   -webkit-transition: all 240ms ease-in-out;
   -moz-transition: all 240ms ease-in-out;
   -ms-transition: all 240ms ease-in-out;
   -o-transition: all 240ms ease-in-out;
-  transition: all 240ms ease-in-out;
+  transition: all 240ms ease-in-out;  
 }
 
 .tool-tip,
 .tool-tip.top{
   top: auto;
   bottom: 114%;
-  left: 50%;
+  left: 50%;    
 }
 
 .tool-tip.top:after,
@@ -557,7 +578,7 @@ q:before, q:after {
   height: 0px;
   width: 0px;
   border: 6px solid transparent;
-  border-top-color: rgba( 243, 84, 91, .8);
+    border-top-color: rgba( 243, 84, 91, .8); 
 }
 
 /* default heights, width and margin w/o Javscript */
@@ -575,7 +596,7 @@ q:before, q:after {
   top: 100%;
   bottom: auto;
   left: -20%;
-  margin-bottom: auto;
+  margin-bottom: auto;  
 }
 
 .tool-tip.bottom:after{
@@ -587,8 +608,8 @@ q:before, q:after {
   height: 0px;
   width: 0px;
   border: 6px solid transparent;
-  border-top-color: transparent;
-  border-bottom-color: rgba( 243, 84, 91, .8);
+    border-top-color: transparent;  
+    border-bottom-color: rgba( 243, 84, 91, .8);  
 }
 
 /* on hover of element containing tooltip default*/
@@ -601,42 +622,23 @@ q:before, q:after {
   -moz-transition: all 240ms ease-in-out;
   -ms-transition: all 240ms ease-in-out;
   -o-transition: all 240ms ease-in-out;
-  transition: all 240ms ease-in-out;
+  transition: all 240ms ease-in-out;    
 }
 
 /* bottom slideIn */
 
 *:not(.on-focus) > .tool-tip.slideIn.bottom,
 .on-focus > .tool-tip.slideIn.bottom{
-  top: 65%;
+  top: 65%; 
 }
 
 *:not(.on-focus):hover > .tool-tip.slideIn.bottom,
 .on-focus > input:focus + .tool-tip.slideIn.bottom{
   top: 100%;
-}
+} 
 
 .on-focus > input:focus + .tool-tip.slideIn.bottom{
   top: 100%;
 }
 
-
-
-
-.btn-okay{
-  -webkit-border-radius: 0;
-  -moz-border-radius: 0;
-  border-radius: 0px;
-  color: #ffffff;
-  font-size: 17px;
-  background: #ed5d63;
-  padding: 4px 8px 4px 8px;
-  text-decoration: none;
-}
-
-.btn-okay:hover {
-  background:#fc7e84;
-  text-decoration: none;
-  color:white;
-}
 
