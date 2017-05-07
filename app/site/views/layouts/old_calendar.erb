@@ -1,49 +1,47 @@
 <!DOCTYPE HTML>
 <html>
 
-  <head>
+<head>
 
-    <title>Shalendar | <%= @user[:username] %></title>
+  <title>Shalendar | <%= @user[:username] %></title>
 
-    
-    <script src='/fc/lib/jquery.min.js'></script>
-    <script src='/fc/lib/moment.min.js'></script>
-    <link rel="stylesheet" href="/bower_components/font-awesome/css/font-awesome.min.css">
-    <link rel="stylesheet" href="/bower_components/sweetalert/dist/sweetalert.css">
-    <script src="/bower_components/sweetalert/dist/sweetalert.min.js"></script>
-    <link href='/fc/fullcalendar.css' rel='stylesheet' />
-    <link href='/fc/fullcalendar.print.css' rel='stylesheet' media='print' />
-    <script src='/fc/fullcalendar.js'></script>
-    <script src="https://api.filestackapi.com/filestack.js"></script>
 
-    <!-- webpack | <%=Padrino.env%> -->
-    <% if Padrino.env == :development %>
+  <script src='/fc/lib/jquery.min.js'></script>
+  <script src='/fc/lib/moment.min.js'></script>
+  <link rel="stylesheet" href="/bower_components/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/bower_components/sweetalert/dist/sweetalert.css">
+  <script src="/bower_components/sweetalert/dist/sweetalert.min.js"></script>
+  <link href='/fc/fullcalendar.css' rel='stylesheet'/>
+  <link href='/fc/fullcalendar.print.css' rel='stylesheet' media='print'/>
+  <script src='/fc/fullcalendar.js'></script>
+  <script src="https://api.filestackapi.com/filestack.js"></script>
+
+  <!-- webpack | <%= Padrino.env %> -->
+  <% if Padrino.env == :development %>
       <script src="//webpack.shalendar.docker/static/common.js"></script>
       <script src="//webpack.shalendar.docker/static/calendar.js"></script>
-    <% else %>
+  <% else %>
       <script src="/static/common.js"></script>
       <script src="/static/calendar.js"></script>
-      <link href='/static/common.css' rel='stylesheet' />
-      <link href='/static/calendar.css' rel='stylesheet' />
-    <% end %>
-
-    
+      <link href='/static/common.css' rel='stylesheet'/>
+      <link href='/static/calendar.css' rel='stylesheet'/>
+  <% end %>
 
 
-  </head>
+</head>
 
-  <body class="calendar">
+<body class="calendar">
 
-    <div id="app" class="full_height">
-      <nav class="nav">
-        <div class="nav-left">
-          <a class="nav-item is-brand" href="#">
-            <img src="/assets/images/logo.png" alt="Shalendar logo" style="max-height:50px;">
-          </a>
-        </div>
+<div id="app" class="full_height">
+  <nav class="nav">
+    <div class="nav-left">
+      <a class="nav-item is-brand" href="#">
+        <img src="/assets/images/logo.png" alt="Shalendar logo" style="max-height:50px;">
+      </a>
+    </div>
 
-        <% if !@current_user.blank? %>
-          <div class="nav-right nav-menu">
+    <% if !@current_user.blank? %>
+        <div class="nav-right nav-menu">
             <span class="nav-item">
               <!-- <a class="button" @click="handle_settings()">
               <span class="icon">
@@ -68,701 +66,725 @@
 
               <a class="button is-primary" href="/user/logout"><span>Logout <%= @current_user[:username] %></span></a>
             </span>
-          </div>
-        <% else %>
-          <div class="nav-right nav-menu">
+        </div>
+    <% else %>
+        <div class="nav-right nav-menu">
             <span class="nav-item">
               <a class="button is-primary" href="/"><span>Login</span></a>
             </span>
+        </div>
+    <% end %>
+
+  </nav>
+  <div class="columns" style="margin: 0px;">
+
+    <!-- left -->
+    <div id="cal_left_pane" class="column is-narrow left-calendar box is-hidden-mobile">
+      <div class="boxes" style="width: 250px; box-shadow: 0; padding: 10px;">
+        <!-- <input type="text" class="form-control" placeholder="Search"> -->
+
+        <div class="cal_left_head">
+          <strong>My Calendars</strong>
+          <a class="left-add-calendar" @click="add_calendar" v-if="has_access()">+</a>
+        </div>
+        <div class="cal_left_body">
+          <ul>
+            <li v-if="calendars[0]" :class="is_active_calendar('all')">
+              <!-- <i class="fa fa-calendar-o" aria-hidden="true"></i> -->
+              <a class="overflow_ellipsis" @click="set_active_calendar()">&nbsp;
+                <template v-if="location.hash != ''">All</template>
+                <template v-if="location.hash == ''"><strong>All</strong></template>
+                <span>{{num_total_events}}</span>
+              </a>
+            </li>
+            <ul v-if="calendars[1]">
+              <li v-if="!calendars.code" class="overflow_ellipsis" v-for="calendar in calendars" :class="is_active_calendar(calendar)" @click.prevent="set_active_calendar(calendar)">
+
+                <template v-if="calendar.id">
+                  <!-- <i class="fa fa-circle" aria-hidden="true"></i> -->
+                  <!-- <i class="fa fa-square" aria-hidden="true" style="font-size: 10px; margin-top: 4px;" :style="{'color': calendar.color}"></i> -->
+
+                  <span style="float: left; margin-left: 10px; margin-right: 10px; border-radius: 0; width: 3px; height: 18px;" :style="{'backgroundColor': calendar.color}"></span>
+
+                  <template v-if="check_active_calendar(calendar)"><strong>{{calendar.name}}</strong></template>
+                  <template v-if="!check_active_calendar(calendar)">{{calendar.name}}</template>
+                  <span>{{calendar.total_events}}</span>
+
+                  <i v-if="!check_active_calendar(calendar)" class="fa fa-square-o" aria-hidden="true" style="float: right; color: grey; font-size: 14px; margin-top: 4px;"></i>
+                  <i v-if="check_active_calendar(calendar)" class="fa fa-check-square-o" aria-hidden="true" style="float: right; color: grey; font-size: 14px; margin-top: 4px;"></i>
+                  <!-- <input v-model="active_calendars" :checked="check_active_calendar(calendar) == true" style='float: right; margin-right: 10px;' type='checkbox'> -->
+
+                  <a @click="handle_edit_calendar(calendar)" v-if="check_active_calendar(calendar)" style='float: right; margin-right: 10px;'><i class="fa fa-bars" aria-hidden="true" style="font-size: 14px; margin-top: 4px;"></i></a>
+                </template>
+              </li>
+            </ul>
+          </ul>
+
+          <div class="cal_left_head" style="margin-top: 30px;">
+            <strong>Following</strong>
           </div>
-        <% end %>
 
-      </nav>
-      <div class="columns" style="margin: 0px;">
+          <ul>
 
-        <!-- left -->
-        <div id="cal_left_pane" class="column is-narrow left-calendar box is-hidden-mobile">
-          <div class="boxes" style="width: 250px; box-shadow: 0; padding: 10px;">
-            <!-- <input type="text" class="form-control" placeholder="Search"> -->
-
-            <div class="cal_left_head">
-              <strong>My Calendars</strong>
-              <a class="left-add-calendar" @click="add_calendar" v-if="has_access()">+</a>
-            </div>
-            <div class="cal_left_body">
-              <ul>
-                <li v-if="calendars[0]" :class="is_active_calendar('all')">
-                  <!-- <i class="fa fa-calendar-o" aria-hidden="true"></i> -->
-                  <a class="overflow_ellipsis" @click="set_active_calendar()">&nbsp;
-                    <template v-if="location.hash != ''">All</template>
-                    <template v-if="location.hash == ''"><strong>All</strong></template>
-                    <span>{{num_total_events}}</span>
-                  </a>
-                </li>
-                <ul v-if="calendars[1]">
-                  <li v-if="!calendars.code" class="overflow_ellipsis" v-for="calendar in calendars" :class="is_active_calendar(calendar)" @click.prevent="set_active_calendar(calendar)">
-
-                    <template v-if="calendar.id">
-                      <!-- <i class="fa fa-circle" aria-hidden="true"></i> -->
-                      <!-- <i class="fa fa-square" aria-hidden="true" style="font-size: 10px; margin-top: 4px;" :style="{'color': calendar.color}"></i> -->
-
-                      <span style="float: left; margin-left: 10px; margin-right: 10px; border-radius: 0; width: 3px; height: 18px;" :style="{'backgroundColor': calendar.color}"></span>
-
-                      <template v-if="check_active_calendar(calendar)"><strong>{{calendar.name}}</strong></template>
-                      <template v-if="!check_active_calendar(calendar)">{{calendar.name}}</template>
-                      <span>{{calendar.total_events}}</span>
-
-                      <i v-if="!check_active_calendar(calendar)" class="fa fa-square-o" aria-hidden="true" style="float: right; color: grey; font-size: 14px; margin-top: 4px;"></i>
-                      <i v-if="check_active_calendar(calendar)" class="fa fa-check-square-o" aria-hidden="true" style="float: right; color: grey; font-size: 14px; margin-top: 4px;"></i>
-                      <!-- <input v-model="active_calendars" :checked="check_active_calendar(calendar) == true" style='float: right; margin-right: 10px;' type='checkbox'> -->
-
-                      <a @click="handle_edit_calendar(calendar)" v-if="check_active_calendar(calendar)" style='float: right; margin-right: 10px;'><i class="fa fa-bars" aria-hidden="true" style="font-size: 14px; margin-top: 4px;"></i></a>
-                    </template>
-                  </li>
-                </ul>
-              </ul>
-
-              <div class="cal_left_head" style="margin-top: 30px;">
-                <strong>Following</strong>
-              </div>
-
-              <ul>
-
-                <li class="overflow_ellipsis" v-if="friends.length == 0">
-                  <template>
-                    <span style="float: left; margin-left: 0px; margin-right: 10px; border-radius: 0; width: 3px; height: 18px;"></span>
-                    <template>None</template>
-                  </template>
-                </li>
-
-                <li class="overflow_ellipsis" v-for="friend in friends">
-                  <template>
-                    <span style="float: left; margin-left: 0px; margin-right: 10px; border-radius: 0; width: 3px; height: 18px;"></span>
-                    <template><a :href="'/'+ friend.username">Jaequery</a></template>
-                    <i @click="unfollow_user(friend)" class="fa fa-square" aria-hidden="true" style="float: right; color: grey; font-size: 14px; margin-top: 4px;"></i>
-
-                  </template>
-                </li>
-
-
-                <!-- <li class="overflow_ellipsis">
-                <template>
+            <li class="overflow_ellipsis" v-if="friends.length == 0">
+              <template>
                 <span style="float: left; margin-left: 0px; margin-right: 10px; border-radius: 0; width: 3px; height: 18px;"></span>
-                <template><i style="font-size: 16px; margin-top: 2px;" class="fa fa-instagram"></i> Instagram</template>
-                <a v-if="!is_social_connected('instagram')" @click="handle_connect_instagram" class="button is-small" style="float: right; font-size: 11px; margin-top: 0px;">Connect</a>
-                <a v-if="is_social_connected('instagram')" disabled class="button is-success is-small" style="float: right; font-size: 11px; margin-top: 0px;">Connected</a>
-                <i class="fa fa-check-square-o" aria-hidden="true" style="float: right; color: grey; font-size: 14px; margin-top: 4px;"></i>
+                <template>None</template>
+              </template>
+            </li>
 
-                </template>
-                </li> -->
-                <!-- <li class="overflow_ellipsis">
-                <template>
+            <li class="overflow_ellipsis" v-for="friend in friends">
+              <template>
                 <span style="float: left; margin-left: 0px; margin-right: 10px; border-radius: 0; width: 3px; height: 18px;"></span>
-                <template><i style="font-size: 16px; margin-top: 2px;" class="fa fa-facebook"></i> Facebook</template>
-                <i class="fa fa-square" aria-hidden="true" style="float: right; color: grey; font-size: 14px; margin-top: 4px;"></i>
+                <template><a :href="'/'+ friend.username">Jaequery</a></template>
+                <i @click="unfollow_user(friend)" class="fa fa-square" aria-hidden="true" style="float: right; color: grey; font-size: 14px; margin-top: 4px;"></i>
 
-                </template>
-                </li> -->
-              </ul>
-
-
-            </div> <!-- .cal_left_body -->
+              </template>
+            </li>
 
 
-          </div> <!-- .boxes -->
+            <!-- <li class="overflow_ellipsis">
+            <template>
+            <span style="float: left; margin-left: 0px; margin-right: 10px; border-radius: 0; width: 3px; height: 18px;"></span>
+            <template><i style="font-size: 16px; margin-top: 2px;" class="fa fa-instagram"></i> Instagram</template>
+            <a v-if="!is_social_connected('instagram')" @click="handle_connect_instagram" class="button is-small" style="float: right; font-size: 11px; margin-top: 0px;">Connect</a>
+            <a v-if="is_social_connected('instagram')" disabled class="button is-success is-small" style="float: right; font-size: 11px; margin-top: 0px;">Connected</a>
+            <i class="fa fa-check-square-o" aria-hidden="true" style="float: right; color: grey; font-size: 14px; margin-top: 4px;"></i>
 
-        </div> <!-- #cal_left_pane -->
+            </template>
+            </li> -->
+            <!-- <li class="overflow_ellipsis">
+            <template>
+            <span style="float: left; margin-left: 0px; margin-right: 10px; border-radius: 0; width: 3px; height: 18px;"></span>
+            <template><i style="font-size: 16px; margin-top: 2px;" class="fa fa-facebook"></i> Facebook</template>
+            <i class="fa fa-square" aria-hidden="true" style="float: right; color: grey; font-size: 14px; margin-top: 4px;"></i>
 
+            </template>
+            </li> -->
+          </ul>
 
-        <!-- middle -->
-        <div id="cal_middle_pane" class="column box" style="padding-bottom: 100px;">
-          <div class="column is-12" id="calendar"></div>
-          <event-modal id="modal_event" v-if="modal_event" :current_user="current_user" :user="user" :save_event="save_event" :delete_event="delete_event" :calendars="calendars" :active_calendar="active_calendar" :cal="cal" :close_event="close_event" :active_event="active_event" :show_event_preview="show_event_preview" :show_event_form="show_event_form" :handle_show_event_form="handle_show_event_form" :handle_add_media="handle_add_media" :handle_delete_media="handle_delete_media" :this_day="this_day" @close="modal_event = false"></event-modal>
-
-
-          <calendar-modal id="modal_calendar" v-if="modal_calendar" :calendar="active_calendar" :cal="cal" @close="modal_calendar = false"></calendar-modal>
 
         </div>
+        <!-- .cal_left_body -->
 
-        <!-- end middle -->
 
       </div>
+      <!-- .boxes -->
+
+    </div>
+    <!-- #cal_left_pane -->
+
+
+    <!-- middle -->
+    <div id="cal_middle_pane" class="column box" style="padding-bottom: 100px;">
+      <div class="column is-12" id="calendar"></div>
+      <event-modal id="modal_event" v-if="modal_event" :current_user="current_user" :user="user" :save_event="save_event" :delete_event="delete_event" :calendars="calendars" :active_calendar="active_calendar" :cal="cal" :close_event="close_event" :active_event="active_event" :show_event_preview="show_event_preview" :show_event_form="show_event_form" :handle_show_event_form="handle_show_event_form" :handle_add_media="handle_add_media" :handle_delete_media="handle_delete_media" :this_day="this_day" @close="modal_event = false"></event-modal>
+
+
+      <calendar-modal id="modal_calendar" v-if="modal_calendar" :calendar="active_calendar" :cal="cal" @close="modal_calendar = false"></calendar-modal>
+
     </div>
 
+    <!-- end middle -->
+
+  </div>
+</div>
 
-    <script type="text/x-template" id="event-modal-template">
-     <transition name="modal">
 
-     <div class="modal-mask" @click="$emit('close')">
-     <div class="modal-wrapper" style="height: 100%;">
-     <div class="modal-container" @click.stop>
-     <div class="modal-body">
-
-     <slot name="body" v-if="show_event_preview()">
-
-     <h3>What Happened On {{this_day(active_event.start)}}? <small class="is-pulled-right" style="margin-top: 10px;">{{active_event.calendar ? 'Calendar: ' + active_event.calendar.name : 'All'}}</small></h3>
-
-     <label class="label">{{active_event.title}}
-     <a v-if="user && current_user && current_user.id == user.id" @click="handle_show_event_form(true)" class="is-pulled-right link is-default is-outlined modal-default-button" :class="{'is-loading': active_event.loading}" >edit</a>
-     </label>
-
-     <p id="links" class="event_media_files" v-if="active_event.media">
-     <div class="event_media_file" v-for="file in active_event.media">
-     <a :href="file" target="_blank"><img class="image" :src="file"></a>
-     </div>
-     <div style="clear: both;" />
-     </p>
-
-     <p v-if="show_description || active_event.description" class="control has-icon has-icon-right">
-     {{active_event.description |nl2br}}
-     </p>
-
-     <p v-if="show_location || active_event.location" class="control has-icon has-icon-right">
-     <pre>Location: {{active_event.location}}</pre>
-     </p>
-
-     </slot>
-
-     <slot name="body" v-if="show_event_form()">
-
-     <form @submit.prevent="save_event">
-
-     <h3>
-     What Happened On {{this_day(active_event.start)}}?
-                           <small class="is-pulled-right" style="margin-top: 10px;">
-     <select v-model="active_event.calendar_id"><option v-for="calendar in calendars" :value="calendar.id">{{calendar.name}}</option></select>
-     </small>
-     </h3>
-     <p class="control">
-     <input id="active_event_title" v-model="active_event.title" class="input is-info" type="text" placeholder="A short sentence describing the event" :disabled="current_user.id != user.id">
-     </p>
-
-     <div class="event_extra_actions">
-     <div class="has-text-left"><a @click="handle_add_media" id="add_media" class="button is-primary is-outlined">+ add media</a></div>
-     <div class="has-text-right" style="margin-top: -23px;">
-     <a :class="{'is-active': show_description || active_event.description}" @click="show_description = show_description ? false : true">+ add description</a>
-     <a :class="{'is-active': show_location || active_event.location}" @click="show_location = show_location ? false : true">+ add location</a>
-     </div>
-     </div>
-
-     <p class="event_media_files">
-     <div class="event_media_file" v-for="(file, index) in active_event.media" style="position: relative;">
-     <img :src="file" class="">
-     <a @click="handle_delete_media(file)" class="button is-warning is-small" style="position: absolute; right: 0; top: 0;">x</a>
-     </div>
-     <div style="clear: both;" />
-     </p>
-
-     <p v-if="show_description || active_event.description" class="control has-icon has-icon-right">
-     <textarea v-model="active_event.description" class="textarea" placeholder="Describe what happened"></textarea>
-     </p>
-
-     <p v-if="show_location || active_event.location" class="control has-icon has-icon-right">
-     <input v-model="active_event.location" class="input" type="text" placeholder="city or location">
-     </p>
-
-
-     <div class="modal_action ">
-
-     <a v-if="active_event.id" @click="delete_event(active_event.id)" class="is-pulled-left link is-danger is-outlined modal-default-button" :class="{'is-loading': active_event.loading}" style="color: red;">
-     delete
-     </a>
-
-     <!--<a @click="handle_show_event_form(false)" class="is-pulled-right link is-warning is-outlined modal-default-button" :class="{'is-loading': active_event.loading}">Cancel</a>-->
-
-     <button class="button is-success modal-default-button is-pulled-right" :class="{'is-loading': active_event.loading}" style="float: right;">
-     save
-     </button>
-
-     </div>
-     </form>
-
-     </slot>
-     </div>
-     </div>
-     </div>
-     </div>
-     </transition>
-    </script>
-
-
-    <script>
-
-     // event modal
-     Vue.component('event-modal', {
-       template: '#event-modal-template',
-       data: function(){
-         return {
-           show_description: false,
-           show_location: false,
-           media: []
-         }
-       },
-       mounted: function(){
-
-       },
-       props: ['active_event', 'active_calendar', 'close_event', 'save_event', 'delete_event', 'date', 'cal', 'calendars', 'current_user', 'user', 'show_event_preview', 'show_event_form', 'handle_show_event_form', 'handle_add_media', 'handle_delete_media', 'this_day'],
-     });
-
-     // vue app
-     new Vue({
-       el: '#app',
-       data: {
-         user: <%== @user.to_json %>,
-         current_user: <%== @current_user.to_json %>,
-         calendars: [],
-         friends: <%== @friends.to_json %>,
-         friend: <%== @friend.to_json %>,
-         active_calendar: null,
-         active_calendars: [],
-         eventsources: [],
-         cal: {},
-         events: [],
-         modal_event: false,
-         modal_calendar: false,
-         active_event: {},
-         edit_event: false,
-         calendar_burger: null,
-         show_left_pane: false
-       },
-
-       mounted: function(){
-         this.get_calendars();
-         this.init_calendar();
-         this.set_active_calendar();
-         this.get_friends();
-         filepicker.setKey("<%= config('filepicker') %>");
-       },
-
-       computed: {
-         location: function(){
-           return location
-         },
-         num_total_events: function(){
-           var total = 0
-           $.each(this.calendars, function(k, v){
-             total += v.total_events
-           })
-             return total
-         }
-
-       },
-       methods: {
-
-         is_not_friend: function(user){
-
-         },
-
-         follow_user: function(user){
-           $.post("/api/follow/"+user.username, function(res){
-             if(res.code == 200){
-               alert('followed ' + res.friend.username)
-             }else{
-               alert('error: ' + res.msg)
-             }
-           })
-         },
-
-         unfollow_user: function(user){
-           $.post("/api/unfollow/"+user.username, function(res){
-             if(res.code == 200){
-               alert('un-followed ' + res.friend.username)
-             }else{
-               alert('error: ' + res.msg)
-             }
-           })
-         },
-
-         get_friends: function(){
-           var _this = this
-           $.get("/api/friends", function(res){
-             _this.friends = res.friends
-           })
-         },
-
-         is_social_connected: function(name){
-           return false
-           if(this.current_user.integrations && this.current_user.integrations[name]){
-             return true
-           }else{
-             return false
-           }
-         },
-
-         handle_connect_instagram: function(){
-
-           swal("Syncing with Instagram", "Please wait...", "success")
-             window.location.href = "/connect/instagram"
-
-         },
-         handle_edit_calendar: function(calendar){
-           this.modal_calendar = true
-         },
-
-         handle_calendar_burger: function(calendar){
-           console.log('hovering on', calendar.id)
-             this.calendar_burger = calendar
-         },
-
-         show_calendar_burger: function(calendar){
-           if(this.calendar_burger && calendar.id == this.calendar_burger.id){
-             return true
-           }
-         },
-
-         check_active_calendar: function(calendar){
-           if(this.active_calendar && this.active_calendar.id == calendar.id){
-             console.log('it is active', calendar.id, calendar.name)
-               return true
-           }else{
-             console.log('not active', calendar.id, calendar.name)
-               return false
-           }
-         },
-
-         this_day: function(date){
-
-           return moment(date).format("MM/DD/YY")
-         },
-
-         handle_show_event_form: function(show){
-           if(show) this.edit_event = true
-           if(!show) this.edit_event = false
-         },
-
-         handle_add_media: function(){
-           var _this = this
-           filepicker.pickMultiple(
-             {
-               mimetype: 'image/*',
-               storeTo: { location: 's3'}
-             },
-             function(Blobs){
-
-               if(!_this.active_event.media) _this.active_event.media = []
-               $.each(Blobs, function(k, v){
-                 console.log('blob!', k, v)
-                   _this.active_event.media.push(v["url"])
-               });
-               console.log('after', _this.active_event.media)
-                 console.log(JSON.stringify(Blobs));
-             },
-             function(FPError){
-               console.log(FPError.toString());
-             }
-           );
-         },
-         handle_delete_media: function(file){
-
-           var _this = this
-           $.each(this.active_event.media, function(index, value){
-             if(value == file){
-               _this.active_event.media.splice(index, 1)
-             }
-           })
-
-         },
-
-         show_event_preview: function(){
-           if(this.edit_event == false) return true
-         },
-
-         show_event_form: function(){
-           var _this = this
-           if(this.edit_event == true) {
-             return true
-           }
-
-         },
-
-         save_eventsource: function(source){
-           this.eventsources.push(source);
-           this.cal.fullCalendar('addEventSource', source)
-         },
-
-         remove_eventsource: function(source){
-           var idx = $.inArray(source, this.eventsources)
-             console.log(idx)
-             this.cal.fullCalendar('removeEventSource', source);
-         },
-
-         has_access: function(){
-           if(!this.current_user) return false
-           if(this.user.id == this.current_user.id){
-             return true
-           }
-         },
-
-         is_active_calendar: function(calendar){
-           if(this.active_calendar && (this.active_calendar.id == calendar.id) ){
-             return 'active'
-           }
-           if(calendar == 'all' && !this.active_calendar) return 'active'
-         },
-
-         unset_calendar: function(calendar){
-           this.active_calendar = null;
-           this.eventsources = []
-           this.cal.fullCalendar('removeEventSources')
-             this.cal.fullCalendar('removeEvents')
-         },
-
-         set_active_calendar: function(calendar){
-
-           this.unset_calendar(calendar);
-
-           if(calendar){
-             console.log('active calendar', calendar)
-               this.active_calendar = calendar;
-             this.save_eventsource("/api/events?user_id="+this.user.id+"&calendar_id="+calendar.id);
-             //this.cal.fullCalendar.refetchEvents();
-             location.hash = calendar.name
-           }else{
-             this.save_eventsource("/api/events?user_id="+this.user.id);
-             location.hash = ''
-           }
-           console.log(this.eventsources)
-         },
-
-         get_calendars: function(){
-           var _this = this
-           $.get("/api/calendars", {user_id: this.user.id}, function(res){
-             _this.calendars = res
-             console.log('/api/calendars', res)
-           })
-         },
-         add_calendar: function(){
-           var _this = this
-           swal({
-             title: "Add a calendar",
-             text: "What do you want to call it?",
-             type: "input",
-             showCancelButton: true,
-             closeOnConfirm: false,
-             animation: "slide-from-top",
-             inputPlaceholder: "Write something"
-           }, function(calendar_name){
-             if (calendar_name === false) return false
-             if (calendar_name === "") {
-               swal.showInputError("You need to write something!")
-                 return false
-             }
-
-             $.post("/api/calendar", { user_id: _this.user.id, name: calendar_name }, function(res){
-               swal("Nice!", "You just created a calendar: " + calendar_name, "success")
-                 if(res.code == 200){
-                   _this.get_calendars()
-                     _this.set_active_calendar(res.calendar)
-                 }
-
-             })
-
-           })
-         },
-
-         add_integration: function(){
-
-         },
-
-         init_calendar: function(){
-           var _this = this
-           console.log('init calendar')
-             var cal = $('#calendar')
-             _this.cal = cal
-
-           cal.fullCalendar({
-
-             defaultDate: moment(),
-             editable: true,
-             eventLimit: false, // allow "more" link when too many events
-             height: 'parent',
-             firstDay: 1,
-             fixedWeekCount: false,
-
-             header: {
-               left: 'prev,next today',
-               center: 'title',
-               right: 'listDay,listWeek,month'
-             },
-
-             views: {
-               listDay: { buttonText: 'day' },
-               listWeek: { buttonText: 'week' }
-             },
-
-             displayEventTime: false,
-
-             dayClick: function (date, jsEvent, view) {
-               var event = { date: date }
-               console.log('day clicked')
-                 _this.edit_event = true
-               _this.handle_day_click(event)
-             },
-
-             eventClick: function(calEvent, jsEvent, view) {
-               var event_id = calEvent.id
-               if(event_id){
-                 $.get("/api/event", {id: event_id}, function(res){
-                   console.log('from /api/event', res)
-                     _this.handle_event_click(res, calEvent)
-                 })
-               }
-             },
-
-             eventDrop: function(event, delta, revertFunc) {
-
-               alert(event.title + " was dropped on " + event.start.format());
-
-               if (!confirm("Are you sure about this change?")) {
-                 revertFunc();
-               }
-
-             },
-
-             eventRender: function(event, element) {
-               //console.log('wtf', event, element)
-               var image_html = ''
-
-               if(event.media){
-                 $.each(event.media, function(k, file){
-                   image_html += "<img src='"+file+"' style='height: 20px;'>"
-                 })
-               }
-
-               var title = ''
-               if(event.title){ title = event.title }
-               element.find('.fc-title').html(title + " <div style='float: right;'>" + image_html + "</div>");
-             }
-
-             //events: "/api/events?user_id="+_this.user.id,
-             //eventSources: _this.eventsources,
-
-           });
-
-         },
-
-         handle_day_click: function(event){
-           var _this = this
-           this.init_active_event()
-             if(this.active_calendar) this.active_event.calendar_id = this.active_calendar.id
-           this.active_event.start = event.date.format()
-             console.log('handle_day_click', this.active_event)
-             if (this.current_user && (this.user.id == this.current_user.id)){
-               this.modal_event = true
-               setTimeout(function(){
-                 $("#active_event_title").focus();
-               }, 500)
-             }
-         },
-
-         handle_event_click: function(event, calEvent){
-           var _this = this
-           this.active_event = event
-           this.edit_event = false
-           this.active_event.calEvent = calEvent
-           console.log('handle_event_click', event, this.active_event)
-             //if (this.user.id == this.current_user.id){
-             this.modal_event = true
-           setTimeout(function(){
-             $("#active_event_title").focus();
-           }, 500)
-             //}
-         },
-
-         handle_settings: function(){
-           alert('hi')
-         },
-
-         init_active_event: function(){
-           this.active_event = {
-             media: []
-           }
-         },
-         close_event: function(){
-           this.modal_event = false
-         },
-
-         save_event: function(){
-
-           var _this = this
-           var event_id = _this.active_event.id || null
-
-           if (_this.active_event) {
-
-             _this.active_event.loading = true
-
-             console.log('active_event', _this.active_event)
-
-               // setup payload
-               var data = {
-                 id: _this.active_event.id || null,
-                 calendar_id: _this.active_event.calendar_id || null,
-                 title: _this.active_event.title,
-                 start: _this.active_event.start,
-                 end: _this.active_event.end,
-                 description: _this.active_event.description || null,
-                 location: _this.active_event.location || null,
-                 media: _this.active_event.media || null,
-               }
-
-             $.each(data, function(k, v){
-               $.each(_this.active_event.calEvent, function(k2, v2){
-                 if(k == k2){
-                   _this.active_event.calEvent[k] = v
-                 }
-               })
-
-             })
-
-               // post to /api/event
-               console.log('/api/event', data)
-               $.post('/api/event', data, function (res) {
-                 _this.close_event()
-
-                   if(event_id){
-                     _this.cal.fullCalendar('updateEvent', _this.active_event.calEvent);
-                   }else{
-                     _this.cal.fullCalendar('renderEvent', res);
-                   }
-
-                 _this.get_calendars()
-                   //swal("Nice!", "Event has been posted on your calendar", "success");
-               })
-
-           }
-         },
-
-         delete_event: function(id){
-           var _this = this
-           var c = confirm("Are you sure?")
-             if(c){
-               $.post('/api/event/delete', {id: id}, function(res){
-                 if(res.code == 200){
-                   _this.cal.fullCalendar('removeEvents', [id])
-                     _this.close_event()
-                 }else{
-                   alert('something went wrong')
-                 }
-               })
-             }
-
-         }
-
-       }
-     });
-
-    </script>
-
-    <script>
-     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-                              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-     })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-     ga('create', 'UA-90180102-1', 'auto');
-     ga('send', 'pageview');
-    </script>
-
-  </body>
+<script type="text/x-template" id="event-modal-template">
+  <transition name="modal">
+
+    <div class="modal-mask" @click="$emit('close')">
+      <div class="modal-wrapper" style="height: 100%;">
+        <div class="modal-container" @click.stop>
+          <div class="modal-body">
+
+            <slot name="body" v-if="show_event_preview()">
+
+              <h3>What Happened On {{this_day(active_event.start)}}?
+                <small class="is-pulled-right" style="margin-top: 10px;">{{active_event.calendar ? 'Calendar: ' +
+                  active_event.calendar.name : 'All'}}
+                </small>
+              </h3>
+
+              <label class="label">{{active_event.title}}
+                <a v-if="user && current_user && current_user.id == user.id" @click="handle_show_event_form(true)" class="is-pulled-right link is-default is-outlined modal-default-button" :class="{'is-loading': active_event.loading}">edit</a>
+              </label>
+
+              <p id="links" class="event_media_files" v-if="active_event.media">
+
+              <div class="event_media_file" v-for="file in active_event.media">
+                <a :href="file" target="_blank"><img class="image" :src="file"></a>
+              </div>
+              <div style="clear: both;"/>
+              </p>
+
+              <p v-if="show_description || active_event.description" class="control has-icon has-icon-right">
+                {{active_event.description |nl2br}}
+              </p>
+
+              <p v-if="show_location || active_event.location" class="control has-icon has-icon-right">
+              <pre>Location: {{active_event.location}}</pre>
+              </p>
+
+            </slot>
+
+            <slot name="body" v-if="show_event_form()">
+
+              <form @submit.prevent="save_event">
+
+                <h3>
+                  What Happened On {{this_day(active_event.start)}}?
+                  <small class="is-pulled-right" style="margin-top: 10px;">
+                    <select v-model="active_event.calendar_id">
+                      <option v-for="calendar in calendars" :value="calendar.id">{{calendar.name}}</option>
+                    </select>
+                  </small>
+                </h3>
+                <p class="control">
+                  <input id="active_event_title" v-model="active_event.title" class="input is-info" type="text" placeholder="A short sentence describing the event" :disabled="current_user.id != user.id">
+                </p>
+
+                <div class="event_extra_actions">
+                  <div class="has-text-left">
+                    <a @click="handle_add_media" id="add_media" class="button is-primary is-outlined">+ add media</a>
+                  </div>
+                  <div class="has-text-right" style="margin-top: -23px;">
+                    <a :class="{'is-active': show_description || active_event.description}" @click="show_description = show_description ? false : true">+
+                      add description</a>
+                    <a :class="{'is-active': show_location || active_event.location}" @click="show_location = show_location ? false : true">+
+                      add location</a>
+                  </div>
+                </div>
+
+                <p class="event_media_files">
+
+                <div class="event_media_file" v-for="(file, index) in active_event.media" style="position: relative;">
+                  <img :src="file" class="">
+                  <a @click="handle_delete_media(file)" class="button is-warning is-small" style="position: absolute; right: 0; top: 0;">x</a>
+                </div>
+                <div style="clear: both;"/>
+                </p>
+
+                <p v-if="show_description || active_event.description" class="control has-icon has-icon-right">
+                  <textarea v-model="active_event.description" class="textarea" placeholder="Describe what happened"></textarea>
+                </p>
+
+                <p v-if="show_location || active_event.location" class="control has-icon has-icon-right">
+                  <input v-model="active_event.location" class="input" type="text" placeholder="city or location">
+                </p>
+
+
+                <div class="modal_action ">
+
+                  <a v-if="active_event.id" @click="delete_event(active_event.id)" class="is-pulled-left link is-danger is-outlined modal-default-button" :class="{'is-loading': active_event.loading}" style="color: red;">
+                    delete
+                  </a>
+
+                  <!--<a @click="handle_show_event_form(false)" class="is-pulled-right link is-warning is-outlined modal-default-button" :class="{'is-loading': active_event.loading}">Cancel</a>-->
+
+                  <button class="button is-success modal-default-button is-pulled-right" :class="{'is-loading': active_event.loading}" style="float: right;">
+                    save
+                  </button>
+
+                </div>
+              </form>
+
+            </slot>
+          </div>
+        </div>
+      </div>
+    </div>
+  </transition>
+</script>
+
+
+<script>
+
+    // event modal
+    Vue.component('event-modal', {
+        template: '#event-modal-template',
+        data: function () {
+            return {
+                show_description: false,
+                show_location: false,
+                media: []
+            }
+        },
+        mounted: function () {
+
+        },
+        props: ['active_event', 'active_calendar', 'close_event', 'save_event', 'delete_event', 'date', 'cal', 'calendars', 'current_user', 'user', 'show_event_preview', 'show_event_form', 'handle_show_event_form', 'handle_add_media', 'handle_delete_media', 'this_day'],
+    });
+
+    // vue app
+    new Vue({
+        el: '#app',
+        data: {
+            user: <%== @user.to_json %>,
+            current_user: <%== @current_user.to_json %>,
+            calendars: [],
+            friends: <%== @friends.to_json %>,
+            friend: <%== @friend.to_json %>,
+            active_calendar: null,
+            active_calendars: [],
+            eventsources: [],
+            cal: {},
+            events: [],
+            modal_event: false,
+            modal_calendar: false,
+            active_event: {},
+            edit_event: false,
+            calendar_burger: null,
+            show_left_pane: false
+        },
+
+        mounted: function () {
+            this.get_calendars();
+            this.init_calendar();
+            this.set_active_calendar();
+            this.get_friends();
+            filepicker.setKey("<%= config('filepicker') %>");
+        },
+
+        computed: {
+            location: function () {
+                return location
+            },
+            num_total_events: function () {
+                var total = 0
+                $.each(this.calendars, function (k, v) {
+                    total += v.total_events
+                })
+                return total
+            }
+
+        },
+        methods: {
+
+            is_not_friend: function (user) {
+
+            },
+
+            follow_user: function (user) {
+                $.post("/api/follow/" + user.username, function (res) {
+                    if (res.code == 200) {
+                        alert('followed ' + res.friend.username)
+                    } else {
+                        alert('error: ' + res.msg)
+                    }
+                })
+            },
+
+            unfollow_user: function (user) {
+                $.post("/api/unfollow/" + user.username, function (res) {
+                    if (res.code == 200) {
+                        alert('un-followed ' + res.friend.username)
+                    } else {
+                        alert('error: ' + res.msg)
+                    }
+                })
+            },
+
+            get_friends: function () {
+                var _this = this
+                $.get("/api/friends", function (res) {
+                    _this.friends = res.friends
+                })
+            },
+
+            is_social_connected: function (name) {
+                return false
+                if (this.current_user.integrations && this.current_user.integrations[name]) {
+                    return true
+                } else {
+                    return false
+                }
+            },
+
+            handle_connect_instagram: function () {
+
+                swal("Syncing with Instagram", "Please wait...", "success")
+                window.location.href = "/connect/instagram"
+
+            },
+            handle_edit_calendar: function (calendar) {
+                this.modal_calendar = true
+            },
+
+            handle_calendar_burger: function (calendar) {
+                console.log('hovering on', calendar.id)
+                this.calendar_burger = calendar
+            },
+
+            show_calendar_burger: function (calendar) {
+                if (this.calendar_burger && calendar.id == this.calendar_burger.id) {
+                    return true
+                }
+            },
+
+            check_active_calendar: function (calendar) {
+                if (this.active_calendar && this.active_calendar.id == calendar.id) {
+                    console.log('it is active', calendar.id, calendar.name)
+                    return true
+                } else {
+                    console.log('not active', calendar.id, calendar.name)
+                    return false
+                }
+            },
+
+            this_day: function (date) {
+
+                return moment(date).format("MM/DD/YY")
+            },
+
+            handle_show_event_form: function (show) {
+                if (show) this.edit_event = true
+                if (!show) this.edit_event = false
+            },
+
+            handle_add_media: function () {
+                var _this = this
+                filepicker.pickMultiple(
+                        {
+                            mimetype: 'image/*',
+                            storeTo: {location: 's3'}
+                        },
+                        function (Blobs) {
+
+                            if (!_this.active_event.media) _this.active_event.media = []
+                            $.each(Blobs, function (k, v) {
+                                console.log('blob!', k, v)
+                                _this.active_event.media.push(v["url"])
+                            });
+                            console.log('after', _this.active_event.media)
+                            console.log(JSON.stringify(Blobs));
+                        },
+                        function (FPError) {
+                            console.log(FPError.toString());
+                        }
+                );
+            },
+            handle_delete_media: function (file) {
+
+                var _this = this
+                $.each(this.active_event.media, function (index, value) {
+                    if (value == file) {
+                        _this.active_event.media.splice(index, 1)
+                    }
+                })
+
+            },
+
+            show_event_preview: function () {
+                if (this.edit_event == false) return true
+            },
+
+            show_event_form: function () {
+                var _this = this
+                if (this.edit_event == true) {
+                    return true
+                }
+
+            },
+
+            save_eventsource: function (source) {
+                this.eventsources.push(source);
+                this.cal.fullCalendar('addEventSource', source)
+            },
+
+            remove_eventsource: function (source) {
+                var idx = $.inArray(source, this.eventsources)
+                console.log(idx)
+                this.cal.fullCalendar('removeEventSource', source);
+            },
+
+            has_access: function () {
+                if (!this.current_user) return false
+                if (this.user.id == this.current_user.id) {
+                    return true
+                }
+            },
+
+            is_active_calendar: function (calendar) {
+                if (this.active_calendar && (this.active_calendar.id == calendar.id)) {
+                    return 'active'
+                }
+                if (calendar == 'all' && !this.active_calendar) return 'active'
+            },
+
+            unset_calendar: function (calendar) {
+                this.active_calendar = null;
+                this.eventsources = []
+                this.cal.fullCalendar('removeEventSources')
+                this.cal.fullCalendar('removeEvents')
+            },
+
+            set_active_calendar: function (calendar) {
+
+                this.unset_calendar(calendar);
+
+                if (calendar) {
+                    console.log('active calendar', calendar)
+                    this.active_calendar = calendar;
+                    this.save_eventsource("/api/events?user_id=" + this.user.id + "&calendar_id=" + calendar.id);
+                    //this.cal.fullCalendar.refetchEvents();
+                    location.hash = calendar.name
+                } else {
+                    this.save_eventsource("/api/events?user_id=" + this.user.id);
+                    location.hash = ''
+                }
+                console.log(this.eventsources)
+            },
+
+            get_calendars: function () {
+                var _this = this
+                $.get("/api/calendars", {user_id: this.user.id}, function (res) {
+                    _this.calendars = res
+                    console.log('/api/calendars', res)
+                })
+            },
+            add_calendar: function () {
+                var _this = this
+                swal({
+                    title: "Add a calendar",
+                    text: "What do you want to call it?",
+                    type: "input",
+                    showCancelButton: true,
+                    closeOnConfirm: false,
+                    animation: "slide-from-top",
+                    inputPlaceholder: "Write something"
+                }, function (calendar_name) {
+                    if (calendar_name === false) return false
+                    if (calendar_name === "") {
+                        swal.showInputError("You need to write something!")
+                        return false
+                    }
+
+                    $.post("/api/calendar", {user_id: _this.user.id, name: calendar_name}, function (res) {
+                        swal("Nice!", "You just created a calendar: " + calendar_name, "success")
+                        if (res.code == 200) {
+                            _this.get_calendars()
+                            _this.set_active_calendar(res.calendar)
+                        }
+
+                    })
+
+                })
+            },
+
+            add_integration: function () {
+
+            },
+
+            init_calendar: function () {
+                var _this = this
+                console.log('init calendar')
+                var cal = $('#calendar')
+                _this.cal = cal
+
+                cal.fullCalendar({
+
+                    defaultDate: moment(),
+                    editable: true,
+                    eventLimit: false, // allow "more" link when too many events
+                    height: 'parent',
+                    firstDay: 1,
+                    fixedWeekCount: false,
+
+                    header: {
+                        left: 'prev,next today',
+                        center: 'title',
+                        right: 'listDay,listWeek,month'
+                    },
+
+                    views: {
+                        listDay: {buttonText: 'day'},
+                        listWeek: {buttonText: 'week'}
+                    },
+
+                    displayEventTime: false,
+
+                    dayClick: function (date, jsEvent, view) {
+                        var event = {date: date}
+                        console.log('day clicked')
+                        _this.edit_event = true
+                        _this.handle_day_click(event)
+                    },
+
+                    eventClick: function (calEvent, jsEvent, view) {
+                        var event_id = calEvent.id
+                        if (event_id) {
+                            $.get("/api/event", {id: event_id}, function (res) {
+                                console.log('from /api/event', res)
+                                _this.handle_event_click(res, calEvent)
+                            })
+                        }
+                    },
+
+                    eventDrop: function (event, delta, revertFunc) {
+
+                        alert(event.title + " was dropped on " + event.start.format());
+
+                        if (!confirm("Are you sure about this change?")) {
+                            revertFunc();
+                        }
+
+                    },
+
+                    eventRender: function (event, element) {
+                        //console.log('wtf', event, element)
+                        var image_html = ''
+
+                        if (event.media) {
+                            $.each(event.media, function (k, file) {
+                                image_html += "<img src='" + file + "' style='height: 20px;'>"
+                            })
+                        }
+
+                        var title = ''
+                        if (event.title) {
+                            title = event.title
+                        }
+                        element.find('.fc-title').html(title + " <div style='float: right;'>" + image_html + "</div>");
+                    }
+
+                    //events: "/api/events?user_id="+_this.user.id,
+                    //eventSources: _this.eventsources,
+
+                });
+
+            },
+
+            handle_day_click: function (event) {
+                var _this = this
+                this.init_active_event()
+                if (this.active_calendar) this.active_event.calendar_id = this.active_calendar.id
+                this.active_event.start = event.date.format()
+                console.log('handle_day_click', this.active_event)
+                if (this.current_user && (this.user.id == this.current_user.id)) {
+                    this.modal_event = true
+                    setTimeout(function () {
+                        $("#active_event_title").focus();
+                    }, 500)
+                }
+            },
+
+            handle_event_click: function (event, calEvent) {
+                var _this = this
+                this.active_event = event
+                this.edit_event = false
+                this.active_event.calEvent = calEvent
+                console.log('handle_event_click', event, this.active_event)
+                //if (this.user.id == this.current_user.id){
+                this.modal_event = true
+                setTimeout(function () {
+                    $("#active_event_title").focus();
+                }, 500)
+                //}
+            },
+
+            handle_settings: function () {
+                alert('hi')
+            },
+
+            init_active_event: function () {
+                this.active_event = {
+                    media: []
+                }
+            },
+            close_event: function () {
+                this.modal_event = false
+            },
+
+            save_event: function () {
+
+                var _this = this
+                var event_id = _this.active_event.id || null
+
+                if (_this.active_event) {
+
+                    _this.active_event.loading = true
+
+                    console.log('active_event', _this.active_event)
+
+                    // setup payload
+                    var data = {
+                        id: _this.active_event.id || null,
+                        calendar_id: _this.active_event.calendar_id || null,
+                        title: _this.active_event.title,
+                        start: _this.active_event.start,
+                        end: _this.active_event.end,
+                        description: _this.active_event.description || null,
+                        location: _this.active_event.location || null,
+                        media: _this.active_event.media || null,
+                    }
+
+                    $.each(data, function (k, v) {
+                        $.each(_this.active_event.calEvent, function (k2, v2) {
+                            if (k == k2) {
+                                _this.active_event.calEvent[k] = v
+                            }
+                        })
+
+                    })
+
+                    // post to /api/event
+                    console.log('/api/event', data)
+                    $.post('/api/event', data, function (res) {
+                        _this.close_event()
+
+                        if (event_id) {
+                            _this.cal.fullCalendar('updateEvent', _this.active_event.calEvent);
+                        } else {
+                            _this.cal.fullCalendar('renderEvent', res);
+                        }
+
+                        _this.get_calendars()
+                        //swal("Nice!", "Event has been posted on your calendar", "success");
+                    })
+
+                }
+            },
+
+            delete_event: function (id) {
+                var _this = this
+                var c = confirm("Are you sure?")
+                if (c) {
+                    $.post('/api/event/delete', {id: id}, function (res) {
+                        if (res.code == 200) {
+                            _this.cal.fullCalendar('removeEvents', [id])
+                            _this.close_event()
+                        } else {
+                            alert('something went wrong')
+                        }
+                    })
+                }
+
+            }
+
+        }
+    });
+
+</script>
+
+<script>
+    (function (i, s, o, g, r, a, m) {
+        i['GoogleAnalyticsObject'] = r;
+        i[r] = i[r] || function () {
+            (i[r].q = i[r].q || []).push(arguments)
+        }, i[r].l = 1 * new Date();
+        a = s.createElement(o),
+                m = s.getElementsByTagName(o)[0];
+        a.async = 1;
+        a.src = g;
+        m.parentNode.insertBefore(a, m)
+    })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+    ga('create', 'UA-90180102-1', 'auto');
+    ga('send', 'pageview');
+</script>
+
+</body>
 
 
 </html>

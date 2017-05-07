@@ -2,6 +2,7 @@
 <html>
 
 <head>
+
   <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
 
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
@@ -11,21 +12,40 @@
   <link href='/fc/fullcalendar.print.css' rel='stylesheet' media='print'/>
   <link rel="stylesheet" href="/v1/styles.css">
 
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+  <script src="https://api.filestackapi.com/filestack.js"></script>
+  <script src='/fc/lib/moment.min.js'></script>
+  <script src="/bower_components/sweetalert/dist/sweetalert.min.js"></script>
+  <script src='/fc/fullcalendar.js'></script>
+  <script src="https://use.fontawesome.com/33d0cfbfdd.js"></script>
+
+
+  <% if Padrino.env == :development %>
+      <script src="//webpack.shalendar.docker/static/common.js"></script>
+      <script src="//webpack.shalendar.docker/static/calendar.js"></script>
+  <% else %>
+      <script src="/static/common.js"></script>
+      <script src="/static/calendar.js"></script>
+      <link href='/static/common.css' rel='stylesheet'/>
+      <link href='/static/calendar.css' rel='stylesheet'/>
+  <% end %>
 
 </head>
 
+
 <body>
+
 
 <div id="app">
 
+  <!-- header -->
   <div class="container-fluid">
     <div class="row">
-      <div class="col-md-12 col-header2">
+
+      <div class="col-md-12 col-header2" style="background-image: url(); background-color: #87cefa;">
         <div class="row">
-          <div class="col-md-4 col-xs-4"><img class="img-responsive" src="/assets/images/logo_new.png" style="width: 150px;"></div>
+          <div class="col-md-4 col-xs-4"><img class="img-responsive" src="/v1/logo_new.png" style="width: 150px;"></div>
           <div class="col-md-4 col-xs-4 col-header-profile" style="text-align:center;">
-
-
             <a href="#" class="btn" style="position:relative;"><img class="img-profile-circle" src="/v1/profile.png">
 
               <div class="tool-tip slideIn bottom">Hello all!<br>I am Jiena. I am 9 years old girl who likes <br>games
@@ -34,9 +54,17 @@
             </a>
 
             <div class="profile-name">{{user.username}}</div>
-            <div class="profile-city">Los Angeles, CA</div>
+            <!--<div class="profile-city">Los Angeles, CA</div>-->
           </div>
-          <div class="col-md-4 col-xs-4 col-header-follow" style="text-align:right;">log out</div>
+          <div class="col-md-4 col-xs-4 col-header-follow right-container" style="padding-right:14px;">
+              <div class="dropdown">
+                <button class="dropbtn profile-top-box"><i class="fa fa-cog" aria-hidden="true" style="font-size:27px;"></i></button>
+                <div class="dropdown-content">
+                  <a href="#">Profile</a>
+                  <a href="/user/logout">Log out</a>
+                </div>
+              </div>
+            </div>
         </div>
       </div>
 
@@ -55,6 +83,7 @@
   </div>
 
 
+  <!-- calendar -->
   <div class="container-fluid">
     <div class="row">
 
@@ -68,14 +97,14 @@
         </div>
         <table class="catgmenu">
 
-          <tr @click.prevent="set_active_calendar()" style="cursor: pointer;">
+          <tr style="cursor: pointer;">
             <td style="width:12px; padding: 0px;"></td>
-            <td :style="{'fontWeight': location.hash == '' ? 'bold' : 'normal'}">All
+            <td @click.prevent="set_active_calendar()" :style="{'fontWeight': location.hash == '' ? 'bold' : 'normal'}">All
               <span class="profile-city">({{num_total_events}})</span></td>
-            <td><input type="checkbox" class="checkbox" checked></td>
-            <td><a href="#">
-              <div class="more-vertical-solid icon" id="edit" style="margin-right:8px;">
-            </a></td>
+            <td><input type="checkbox" class="checkbox" :checked="!active_calendar"></td>
+            <td>
+
+            </td>
             <td></td>
           </tr>
 
@@ -83,14 +112,11 @@
             <td :style="{'backgroundColor': calendar.color ? calendar.color : '#333'}" style="width:12px; padding: 0px;"></td>
             <td @click.prevent="set_active_calendar(calendar)" style="cursor: pointer;" :style="{'fontWeight': check_active_calendar(calendar) ? 'bold' : 'normal'}">{{calendar.name}}
               <span class="profile-city">({{calendar.total_events}})</span></td>
-            <td><input type="checkbox" class="checkbox" checked></td>
-            <td @click="handle_edit_calendar(calendar)" style="cursor: pointer;"><a href="#">
-              <div class="more-vertical-solid icon" id="edit" style="margin-right:8px;">
-            </a></td>
-            <td></td>
+            <td><input type="checkbox" class="checkbox" disabled :checked="is_active_calendar(calendar)"></td>
+            <td colspan="2" @click="handle_edit_calendar(calendar)" style="cursor: pointer;">
+              <div class="more-vertical-solid icon" id="edit" style="text-align: center;" />
+            </td>
           </tr>
-
-
         </table>
         <br>
 
@@ -158,11 +184,9 @@
       <div class="col-md-10 col-xs-8">
         <div class="row">
           <div id="calendar" class="col-md-12 col-main-content" style="height: 600px;"></div>
-          <event-modal id="modal_event" v-if="modal_event" :current_user="current_user" :user="user" :save_event="save_event" :delete_event="delete_event" :calendars="calendars" :active_calendar="active_calendar" :cal="cal" :close_event="close_event" :active_event="active_event" :show_event_preview="show_event_preview" :show_event_form="show_event_form" :handle_show_event_form="handle_show_event_form" :handle_add_media="handle_add_media" :handle_delete_media="handle_delete_media" :this_day="this_day" @close="modal_event = false"></event-modal>
-          <calendar-modal id="modal_calendar" v-if="modal_calendar" :calendar="active_calendar" :cal="cal" @close="modal_calendar = false"></calendar-modal>
-
         </div>
       </div>
+
 
     </div>
   </div>
@@ -170,441 +194,90 @@
 
 
 
-  <br>
-  <br>
-  <br>
 
-  <div class="popbox">
+  <div class="cd-popup" role="alert" :class="{'is-visible': modal_event }" @click="close_event">
 
-    <div class="col-md-12 ">
-      <div class="row ">
-        <div class="col-md-10 col-sm-9 col-xs-9 text-lg " style="padding:20px 0px 23px 18px; color:#41d0bc;">Add New
-          Calendar
-        </div>
-        <div class="col-md-2 col-sm-3 col-xs-3 right-container "><a href="#" class="btn-close">X</a></div>
-      </div>
-      <div class="row">
-        <div class="col-md-12" style="padding-bottom:0px;">
-          <div class="col-md-9" style="padding-left:3px;">
-            <input type="text" class="form-text-box" id="" placeholder="Name the calendar" style="border: 1px solid #ccc; height:32px; width:100%; font-size:16px; padding-left:8px;">
-          </div>
-          <div class="col-md-3" style="padding-left:3px; padding-top:7px;">
-            color picker here
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-12 row-popup " style="padding-bottom:20px;">
-          <div class="col-md-10" style="padding-left:0px;">
-            <label class="radio-inline">
-              <input type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1"> public
-            </label>
-            <label class="radio-inline">
-              <input type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2"> private
-            </label>
-          </div>
-          <div class="col-md-2" style="padding-left:3px; padding-top:7px;">
-
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-12" style="text-align:center; padding: 16px 0px 22px 0px;">
-            <a href="#" style="margin-left:13px;" class="btn-okay">OK</a>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-  <br>
-  <br>
-  <br>
-
-  <div class="popbox">
-    <div class="col-md-12 ">
-      <div class="row ">
-        <div class="col-md-10 col-sm-9 col-xs-9 text-lg " style="padding:20px 0px 20px 18px; color:#41d0bc;">You have
-          81 Followings
-        </div>
-        <div class="col-md-2 col-sm-3 col-xs-3 right-container "><a href="#" class="btn-close">X</a></div>
-      </div>
-      <div class="row">
-        <div class="col-md-12 ">
-          <div class="row ">
-            <div class="col-md-4">
-
-              <div class="row">
-                <div class="col-md-12"><img class="img-friend-circle-lg " src="/v1/profile.png"> <span>Jae Lee</span>
-                </div>
-              </div>
-
-            </div>
-            <div class="col-md-4">
-
-              <div class="row">
-                <div class="col-md-12"><img class="img-friend-circle-lg " src="/v1/profile.png">
-                  <span>Jaelen Lee</span></div>
-              </div>
-
-            </div>
-            <div class="col-md-4">
-
-              <div class="row">
-                <div class="col-md-12"><img class="img-friend-circle-lg " src="/v1/profile.png">
-                  <span>Vanessa Jung Ji</span></div>
-              </div>
-
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col-md-12 ">
-          <div class="row ">
-            <div class="col-md-4">
-
-              <div class="row">
-                <div class="col-md-12"><img class="img-friend-circle-lg " src="/v1/profile.png"> <span>Jae Lee</span>
-                </div>
-              </div>
-
-            </div>
-            <div class="col-md-4">
-
-              <div class="row">
-                <div class="col-md-12"><img class="img-friend-circle-lg " src="/v1/profile.png">
-                  <span>Jaelen Lee</span></div>
-              </div>
-
-            </div>
-            <div class="col-md-4">
-
-              <div class="row">
-                <div class="col-md-12"><img class="img-friend-circle-lg " src="/v1/profile.png">
-                  <span>Vanessa Jung Ji</span></div>
-              </div>
-
-            </div>
-          </div>
-        </div>
-      </div>
-      <br>
-    </div>
-  </div>
-
-
-
-
-
-
-
-
-
-
-
-
-  <a href="#0" class="cd-popup-trigger">Add new calendar</a>
-  <div class="cd-popup" role="alert">
-    <div class="cd-popup-container">
-
-      <div class="popbox">
-        <div class="col-md-12 ">
-          <div class="row ">
-            <div class="text-lg " style=" text-align:left; padding:20px 0px 23px 18px; color:#41d0bc;">Add New Calendar</div>
-          </div>
-          <div class="row">
-            <div class="col-md-12" style="padding-bottom:0px;">
-              <div class="col-md-9" style="padding-left:3px;">
-                <input type="text" class="form-text-box" id=""  placeholder="Name the calendar" style="border: 1px solid #ccc; height:32px; width:100%; font-size:16px; padding-left:8px;" >
-              </div>
-              <div class="col-md-3" style="padding-left:3px; padding-top:7px; text-align:left;">
-                color picker here
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-12 row-popup " style="padding-bottom:20px;">
-              <div class="col-md-10" style="padding-left:0px; text-align:left;" >
-                <label class="radio-inline">
-                  <input type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1"> public
-                </label>
-                <label class="radio-inline">
-                  <input type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2"> private
-                </label>
-              </div>
-              <div class="col-md-2" style="padding-left:3px; padding-top:7px;">
-
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12" style="text-align:center; padding: 16px 0px 20px 0px;">
-                <a href="#" class="btn-okay">OK</a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <a href="#0" class="cd-popup-close btn-close "></a>
-    </div>
-  </div>
-
-  <br>
-
-  <a href="#0" class="cd-popup-trigger">My followings</a>
-  <div class="cd-popup" role="alert">
-    <div class="cd-popup-container">
-
-      <div class="popbox">
-        <div class="col-md-12 ">
-          <div class="row ">
-            <div class="text-lg " style="padding:20px 0px 20px 18px; color:#41d0bc; text-align:left;">You have 81 Followings</div>
-          </div>
-          <div class="row">
-            <div class="col-md-12 " >
-              <div class="row " style="text-align:left;">
-                <div class="col-md-4" >
-
-                  <div class="row" >
-                    <div class="col-md-12" ><img class="img-friend-circle-lg " src="profile.png"> <span >Jae Lee</span></div>
-                  </div>
-
-                </div>
-                <div class="col-md-4" >
-
-                  <div class="row" >
-                    <div class="col-md-12" ><img class="img-friend-circle-lg " src="profile.png"> <span >Jaelen Lee</span></div>
-                  </div>
-
-                </div>
-                <div class="col-md-4" >
-
-                  <div class="row" >
-                    <div class="col-md-12" ><img class="img-friend-circle-lg " src="profile.png"> <span >Vanessa Jung Ji</span></div>
-                  </div>
-
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-md-12 " >
-              <div class="row " style="text-align:left;">
-                <div class="col-md-4" >
-
-                  <div class="row" >
-                    <div class="col-md-12" ><img class="img-friend-circle-lg " src="profile.png"> <span >Jae Lee</span></div>
-                  </div>
-
-                </div>
-                <div class="col-md-4" >
-
-                  <div class="row" >
-                    <div class="col-md-12" ><img class="img-friend-circle-lg " src="profile.png"> <span >Jaelen Lee</span></div>
-                  </div>
-
-                </div>
-                <div class="col-md-4" >
-
-                  <div class="row" >
-                    <div class="col-md-12" ><img class="img-friend-circle-lg " src="profile.png"> <span >Vanessa Jung Ji</span></div>
-                  </div>
-
-                </div>
-              </div>
-            </div>
-          </div>
-          <br>
-        </div>
-      </div>
-
-      <a href="#0" class="cd-popup-close btn-close "></a>
-    </div>
-  </div>
-
-  <br>
-
-  <a href="#0" class="cd-popup-trigger">What happened</a>
-  <div class="cd-popup" role="alert">
-    <div class="cd-popup-container">
+    <div class="cd-popup-container" @click.stop>
 
       <div class="popbox">
 
         <div class="col-md-12 ">
           <div class="row ">
-            <div class="text-lg " style="padding:20px 0px 10px 18px; color:#41d0bc; text-align:left;">What happened on May 3, Wed 2017</div>
+            <div class="text-lg " style="padding:20px 0px 10px 18px; color:#41d0bc; text-align:left;">What
+              happened on
+              {{this_day(active_event.start)}}
+            </div>
           </div>
           <div class="row">
             <div class="col-md-12 row-popup ">
-              <div class="styled-select col-md-6 " style="padding-left:0px; text-align:left;">
-                <span style="margin-right:6px; ">category </span>
-                <select>
-                  <option>Family</option>
-                  <option>2</option>
-                  <option>3</option>
-                  <option>4</option>
-                  <option>5</option>
-                </select>
-              </div>
-              <div class="col-md-6" style="padding-left:0px; padding-top:5px; text-align:left;">
-                <label class="radio-inline">
-                  <input type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1"> public
-                </label>
-                <label class="radio-inline">
-                  <input type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2"> private
-                </label>
+              <!--<div class="styled-select col-md-6 " style="padding-left:0px; text-align:left;">
+                {{active_event.calendar ? active_event.calendar.name : 'All'}}
+              </div>-->
+              <div class="col-md-12" style="padding-left:0px; padding-top:5px; text-align: left;">
+                <span :style="{ padding: '4px', background: active_event.calendar ? active_event.calendar.color : '#fff' }"></span> <span style="margin-left: 10px;">{{active_event.calendar ? active_event.calendar.name : 'All'}}</span>
+
               </div>
             </div>
           </div>
           <div class="row" style="text-align:left;">
-            <div class="col-md-12 row-popup text-lg gray-text">
-              enter Event Title here
+            <div class="col-md-12 row-popup text-lg">
+              {{active_event.title}}
             </div>
           </div>
-          <div class="row" style="text-align:left;">
-            <div class="col-md-12 row-popup gray-text" >
-              location
+          <div v-if="active_event.location" class="row" style="text-align:left;">
+            <div class="col-md-12 row-popup">
+              {{active_event.location}}
             </div>
           </div>
-          <div class="row" style="text-align:left;">
-            <div class="col-md-12 row-popup gray-text">
-              description
-              <br><br>
-              <br>
+          <div v-if="active_event.description" class="row" style="text-align:left;">
+            <div class="col-md-12 row-popup">
+              {{active_event.description}}
             </div>
           </div>
           <div class="row" style="text-align:left;">
             <div class="col-md-12 row-popup">
-              <div id="full_image">
-                <img src="profile.png" style="width:110px; height:110px; margin:4px 8px 4px 0px;"><a href="#" class="full_close">X</a>
+
+              <div id="full_image" class="event_media_file" v-for="file in active_event.media">
+                <a :href="file" target="_blank"><img style="width:110px; height:110px; margin:4px 8px 4px 0px;" class="image" :src="file"></a>
               </div>
-              <div id="full_image">
-                <img src="profile.png" style="width:110px; height:110px; margin:4px 8px 4px 0px;"><a href="#" class="full_close">X</a>
-              </div>
-              <div id="full_image">
-                <img src="profile.png" style="width:110px; height:110px; margin:4px 8px 4px 0px;"><a href="#" class="full_close">X</a>
-              </div>
-              <div id="full_image">
-                <img src="profile.png" style="width:110px; height:110px; margin:4px 8px 4px 0px;"><a href="#" class="full_close">X</a>
-              </div>
-              <div id="full_image">
-                <img src="profile.png" style="width:110px; height:110px; margin:4px 8px 4px 0px;"><a href="#" class="full_close">X</a>
-              </div>
-              <div id="full_image">
-                <img src="profile.png" style="width:110px; height:110px; margin:4px 8px 4px 0px;"><a href="#" class="full_close">X</a>
-              </div>
-              <div id="full_image">
-                <img src="profile.png" style="width:110px; height:110px; margin:4px 8px 4px 0px;"><a href="#" class="full_close">X</a>
-              </div>
+
+
               <div class="row ">
-                <div class="col-md-12 right-container " style="padding-right:16px;"><a href="#" class="profile-city" style="font-weight:700; padding-top:9px;">+ 25 more photos</a> <a href="#" style="margin-left:13px;" class="btn-edit">add more photos</a></div>
+                <div class="col-md-12 right-container " style="padding-right:16px;">
+                  <a href="#" class="profile-city" style="font-weight:700; padding-top:9px;">+ 25 more
+                    photos</a>
+                  <a href="#" style="margin-left:13px;" class="btn-edit">add more photos</a></div>
               </div>
             </div>
           </div>
           <div class="row">
             <div class="col-md-12" style="text-align:center; padding: 13px 0px 22px 0px;">
-              <a href="#" style="margin-left:13px;" class="btn-okay">OK</a>
-              <a href="#" style="margin-left:13px;" class="btn-delete">delete</a>
+              <a href="#" style="margin-left:13px;" class="btn-okay">Close</a>
+
             </div>
           </div>
         </div>
       </div>
 
-      <a href="#0" class="cd-popup-close btn-close "></a>
+      <a style="cursor: pointer;" @click="close_event" class="cd-popup-close btn-close "></a>
     </div>
   </div>
-
-
-  <script>
-    jQuery(document).ready(function($){
-      //open popup
-      $('.cd-popup-trigger').on('click', function(event){
-        event.preventDefault();
-        $('.cd-popup').addClass('is-visible');
-      });
-
-      //close popup
-      $('.cd-popup').on('click', function(event){
-        if( $(event.target).is('.cd-popup-close') || $(event.target).is('.cd-popup') ) {
-          event.preventDefault();
-          $(this).removeClass('is-visible');
-        }
-      });
-      //close popup when clicking the esc keyboard button
-      $(document).keyup(function(event){
-        if(event.which=='27'){
-          $('.cd-popup').removeClass('is-visible');
-        }
-      });
-    });
-  </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
 </div>
 
 
-
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-<script src="https://api.filestackapi.com/filestack.js"></script>
-<script src='/fc/lib/moment.min.js'></script>
-<script src="/bower_components/sweetalert/dist/sweetalert.min.js"></script>
-<script src='/fc/fullcalendar.js'></script>
-<% if Padrino.env == :development %>
-    <script src="//webpack.shalendar.docker/static/common.js"></script>
-    <script src="//webpack.shalendar.docker/static/calendar.js"></script>
-<% else %>
-    <script src="/static/common.js"></script>
-    <script src="/static/calendar.js"></script>
-    <link href='/static/common.css' rel='stylesheet'/>
-    <link href='/static/calendar.css' rel='stylesheet'/>
-<% end %>
-
-<script type="text/x-template" id="event-modal-template">
-  <div>
+<!-- event modal -->
 
 
 
 
-  </div>
-</script>
+
+
+
 
 <script>
-
-    // event modal
-    Vue.component('event-modal', {
-        template: '#event-modal-template',
-        data: function () {
-            return {
-                show_description: false,
-                show_location: false,
-                media: []
-            }
-        },
-        mounted: function () {
-          },
-        props: ['active_event', 'active_calendar', 'close_event', 'save_event', 'delete_event', 'date', 'cal', 'calendars', 'current_user', 'user', 'show_event_preview', 'show_event_form', 'handle_show_event_form', 'handle_add_media', 'handle_delete_media', 'this_day'],
-    });
-
     // vue app
     new Vue({
         el: '#app',
@@ -820,7 +493,7 @@
                     location.hash = calendar.name
                 } else {
                     this.save_eventsource("/api/events?user_id=" + this.user.id);
-                    location.hash = ''
+                    location.hash = 'All'
                 }
                 console.log(this.eventsources)
             },
@@ -967,6 +640,7 @@
                 console.log('handle_event_click', event, this.active_event)
                 //if (this.user.id == this.current_user.id){
                 this.modal_event = true
+
                 setTimeout(function () {
                     $("#active_event_title").focus();
                 }, 500)

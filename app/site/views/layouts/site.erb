@@ -9,7 +9,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>Shalendar - Social Public Calendar</title>
+  <title>Shalendar - Calendar Social Network</title>
 
   <!-- Bootstrap Core CSS -->
   <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -29,217 +29,259 @@
   <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
   <![endif]-->
 
+
+
+  <% if Padrino.env == :development %>
+      <script src="//webpack.shalendar.docker/static/common.js"></script>
+      <script src="//webpack.shalendar.docker/static/calendar.js"></script>
+  <% else %>
+      <script src="/static/common.js"></script>
+      <script src="/static/calendar.js"></script>
+      <link href='/static/common.css' rel='stylesheet'/>
+      <link href='/static/calendar.css' rel='stylesheet'/>
+      <script>
+window['_fs_debug'] = false;
+window['_fs_host'] = 'www.fullstory.com';
+window['_fs_org'] = '4DPCC';
+window['_fs_namespace'] = 'FS';
+(function(m,n,e,t,l,o,g,y){
+    if (e in m && m.console && m.console.log) { m.console.log('FullStory namespace conflict. Please set window["_fs_namespace"].'); return;}
+    g=m[e]=function(a,b){g.q?g.q.push([a,b]):g._api(a,b);};g.q=[];
+    o=n.createElement(t);o.async=1;o.src='https://'+_fs_host+'/s/fs.js';
+    y=n.getElementsByTagName(t)[0];y.parentNode.insertBefore(o,y);
+    g.identify=function(i,v){g(l,{uid:i});if(v)g(l,v)};g.setUserVars=function(v){g(l,v)};
+    g.identifyAccount=function(i,v){o='account';v=v||{};v.acctId=i;g(o,v)};
+    g.clearUserCookie=function(c,d,i){if(!c || document.cookie.match('fs_uid=[`;`]*`[`;`]*`[`;`]*`')){
+    d=n.domain;while(1){n.cookie='fs_uid=;domain='+d+
+    ';path=/;expires='+new Date(0).toUTCString();i=d.indexOf('.');if(i<0)break;d=d.slice(i+1)}}};
+})(window,document,window['_fs_namespace'],'script','user');
+</script>
+  <% end %>
+
+
 </head>
 
 <body id="page-top" class="index">
-<div id="skipnav"><a href="#maincontent">Skip to main content</a></div>
-
-<!-- Navigation -->
-<nav id="mainNav" class="navbar navbar-default navbar-fixed-top navbar-custom">
-  <div class="container">
-    <!-- Brand and toggle get grouped for better mobile display -->
-    <div class="navbar-header page-scroll">
-      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-        <span class="sr-only">Toggle navigation</span> <i class="fa fa-bars"></i>
-      </button>
-      <a class="navbar-brand" href="index.html" style="padding-top:11px;"><img class="img-responsive" src="img/logo.png" style="width:164px;"></a>
-    </div>
-
-    <!-- Collect the nav links, forms, and other content for toggling -->
-    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-      <ul class="nav navbar-nav navbar-right">
-        <li class="hidden">
-          <a href="#page-top"></a>
-        </li>
-        <li class="page-scroll">
-          <a href="#about_modal" data-toggle="modal">About</a>
-        </li>
-        <li class="page-scroll">
-          <a href="#login_modal" data-toggle="modal">Log in</a>
-        </li>
-      </ul>
-    </div>
-    <!-- /.navbar-collapse -->
-  </div>
-  <!-- /.container-fluid -->
-</nav>
-
-<!-- Header -->
-<header>
-  <div class="container" id="maincontent" tabindex="-1" n>
-    <div class="row">
-      <div class="col-lg-12">
-        <div class="intro-text">
-          <h1 class="name">Join Our Private Beta</h1>
-          <span class="skills">Your life on calendar - memories, love & share</span>
-        </div>
-
-        <!-- Contact Section -->
-
-        <div class="container join-beta" style="padding-top: 80px;">
-
-          <div class="col-lg-8 col-lg-offset-2" style="text-align: center;">
-
-            <form name="sentMessage" id="" novalidate>
-              <div class="row control-group">
-                <div class="form-group col-xs-12 floating-label-form-group controls">
-                  <input type="email" class="form-control" placeholder="Email Address" id="email">
-
-                </div>
-              </div>
-              <br>
-
-              <div id="success"></div>
-              <div class="row">
-                <div class="form-group col-xs-12">
-                  <a href="#" class="btn btn-lg btn-outline"> Send Request</a>
-                </div>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</header>
 
 
-<!-- image Section -->
-<section>
-  <div class="container" id="maincontent" tabindex="-1" style="position: relative;">
-    <div class="row" class="text-center">
-      <div class="col-lg-12">
-        <img class="img-responsive" src="img/profile.png" alt="">
-      </div>
-    </div>
-  </div>
-</section>
+<div id="app">
 
-<!-- Footer -->
-<footer class="text-center">
 
-  <div class="footer-below">
+  <!-- Navigation -->
+  <nav id="mainNav" class="navbar navbar-default navbar-fixed-top navbar-custom">
     <div class="container">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header page-scroll">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+          <span class="sr-only">Toggle navigation</span> <i class="fa fa-bars"></i>
+        </button>
+        <a class="navbar-brand" href="/" style="padding-top:11px;"><img class="img-responsive" src="img/logo.png" style="width:164px;"></a>
+      </div>
+
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav navbar-right">
+          <li class="hidden">
+            <a href="#page-top"></a>
+          </li>
+          <li class="page-scroll">
+            <a href="#about_modal" data-toggle="modal">About</a>
+          </li>
+          <li class="page-scroll">
+            <a href="#login_modal" data-toggle="modal">Log in</a>
+          </li>
+        </ul>
+      </div>
+      <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container-fluid -->
+  </nav>
+
+  <!-- Header -->
+  <header>
+    <div class="container" id="maincontent" tabindex="-1" n>
       <div class="row">
-        <div class="company col-lg-12" style="text-align: center;">
-          Sqrap
-        </div>
         <div class="col-lg-12">
-          <div class="row">
-            Made in Los Angeles, CA
+          <div class="intro-text">
+            <h1 class="name">Join Our Private Beta</h1>
+            <span class="skills">Your life on calendar, it's a place to record them</span>
+          </div>
+
+          <!-- Contact Section -->
+
+          <div class="container join-beta" style="padding-top: 80px;">
+
+            <div class="col-lg-8 col-lg-offset-2" style="text-align: center;">
+
+              <form @submit.prevent="handle_beta" name="sentMessage" id="" novalidate autocomplete="off">
+                <div class="row control-group">
+                  <div class="form-group col-xs-12 floating-label-form-group controls">
+                    <input type="email" class="form-control" placeholder="Email Address" required id="email" v-model="beta_email">
+
+                  </div>
+                </div>
+                <br>
+
+                <div id="success"></div>
+                <div class="row">
+                  <div class="form-group col-xs-12">
+                    <button class="btn btn-lg btn-outline"> Send Request</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+  <!-- image Section -->
+  <section>
+    <div class="container" id="maincontent" tabindex="-1" style="position: relative;">
+      <div class="row" class="text-center">
+        <div class="col-lg-12">
+          <img class="img-responsive" src="/v1/ss.png" alt="">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="text-center">
+
+    <div class="footer-below">
+      <div class="container">
+        <div class="row">
+          <div class="company col-lg-12" style="text-align: center;">
+            Shalendar
+          </div>
+          <div class="col-lg-12">
+            <div class="row">
+              Made in Los Angeles, CA
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scroll to Top Button (Only visible on small and extra-small screen sizes) -->
+  <div class="scroll-top page-scroll hidden-sm hidden-xs hidden-lg hidden-md">
+    <a class="btn btn-primary" href="#page-top">
+      <i class="fa fa-chevron-up"></i>
+    </a>
+  </div>
+
+
+  <!-- Portfolio Modals -->
+  <div class="portfolio-modal modal fade" id="about_modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-content">
+      <div class="close-modal" data-dismiss="modal">
+        <div class="lr">
+          <div class="rl">
+          </div>
+        </div>
+      </div>
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2">
+            <div class="modal-body">
+              <h2>About Us</h2>
+              <hr class="star-primary">
+
+              <p>Shalendar puts your life on calendar.</p>
+              <p>We believe it's the perfect place to store them.</p>
+
+              <ul class="list-inline item-details">
+                <li>From
+                  <strong>Santa Monica, CA</strong>
+                </li>
+                <br><br>
+                <!--<li>
+                  Incubated by
+                  <strong><a href="//techbeach.la">Techbeach.LA</a></strong>
+                </li>-->
+              </ul>
+              <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Close
+              </button>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-</footer>
-
-<!-- Scroll to Top Button (Only visible on small and extra-small screen sizes) -->
-<div class="scroll-top page-scroll hidden-sm hidden-xs hidden-lg hidden-md">
-  <a class="btn btn-primary" href="#page-top">
-    <i class="fa fa-chevron-up"></i>
-  </a>
-</div>
 
 
-<!-- Portfolio Modals -->
-<div class="portfolio-modal modal fade" id="about_modal" tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-content">
-    <div class="close-modal" data-dismiss="modal">
-      <div class="lr">
-        <div class="rl">
-        </div>
-      </div>
-    </div>
-    <div class="container">
-      <div class="row">
-        <div class="col-lg-8 col-lg-offset-2">
-          <div class="modal-body">
-            <h2>About Us</h2>
-            <hr class="star-primary">
-
-            <p>Shalendar is a social network of calendars.</p>
-
-            <p>Peek at what your peers are doing, will do, or have done.</p>
-
-            <ul class="list-inline item-details">
-              <li>From
-                <strong>Santa Monica, CA</strong>
-              </li>
-              <br><br>
-              <li>
-                Incubated by
-                <strong><a href="//techbeach.la">Techbeach.LA</a></strong>
-              </li>
-            </ul>
-            <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Close
-            </button>
+  <div class="portfolio-modal modal fade" id="login_modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-content">
+      <div class="close-modal" data-dismiss="modal">
+        <div class="lr">
+          <div class="rl">
           </div>
         </div>
       </div>
-    </div>
-  </div>
-</div>
+      <div class="container">
+        <div class="modal-body">
 
-
-<div class="portfolio-modal modal fade" id="login_modal" tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-content">
-    <div class="close-modal" data-dismiss="modal">
-      <div class="lr">
-        <div class="rl">
-        </div>
-      </div>
-    </div>
-    <div class="container">
-      <div class="modal-body">
-
-        <div class="container-fluid">
-          <div class="col-lg-12 text-center">
-            <h2>Log In</h2>
-            <hr class="star-primary">
-          </div>
-          <div class="col-lg-12 ">
-
-            <div class="row control-group">
-              <div class="form-group col-xs-12 floating-label-form-group2 controls">
-                <label for="email"></label>
-                <input type="email" class="form-control" placeholder="Email Address" id="email" required data-validation-required-message="Please enter your email address.">
-
-                <p class="help-block text-danger"></p>
-              </div>
+          <div class="container-fluid">
+            <div class="col-lg-12 text-center">
+              <h2>Log In</h2>
+              <hr class="star-primary">
             </div>
-            <div class="row control-group">
-              <div class="form-group col-xs-12 floating-label-form-group2 controls">
-                <label for="password"></label>
-                <input type="tel" class="form-control" placeholder="Password" id="phone" required data-validation-required-message="Please enter your password.">
+            <div class="col-lg-12 ">
+              <form @submit.prevent="handle_login">
+                <div class="row control-group">
+                  <div class="form-group col-xs-12 floating-label-form-group2 controls">
+                    <label for="email"></label>
+                    <input type="email" v-model="email" class="form-control" placeholder="Email Address" id="email" required data-validation-required-message="Please enter your email address.">
 
-                <p class="help-block text-danger"></p>
-              </div>
-            </div>
-            <div class="row form-group" style="padding-top:14px; padding-bottom:3px;">
-              <button type="submit" class="btn btn-outline2 btn-lg">Send</button>
+                    <p class="help-block text-danger"></p>
+                  </div>
+                </div>
+                <div class="row control-group">
+                  <div class="form-group col-xs-12 floating-label-form-group2 controls">
+                    <label for="password"></label>
+                    <input type="password" v-model="password" class="form-control" placeholder="Password" required data-validation-required-message="Please enter your password.">
+
+                    <p class="help-block text-danger"></p>
+                  </div>
+                </div>
+                <div class="row form-group" style="padding-top:14px; padding-bottom:3px;">
+                  <button type="submit" class="btn btn-outline2 btn-lg">Send</button>
+                </div>
+
+                <!--<div class="row form-group">
+                  <a href="#" class="gray-lg">Or Sign up</a>
+                  <a href="#" class="gray-lg" style="padding-left:15px;">Forgot password?</a>
+                </div>-->
+              </form>
             </div>
 
-            <div class="row form-group">
-              <a href="#" class="gray-lg">Or Sign up</a>
-              <a href="#" class="gray-lg" style="padding-left:15px;">Forgot password?</a>
-            </div>
+            <div v-if="error" class="error_message" style="color: red;">{{error}}</div>
+
           </div>
         </div>
+
+        <!--<ul class="list-inline item-details">
+          <li>From
+            <strong>Santa Monica, CA</strong>
+          </li>
+          <br><br>
+          <li>
+            Incubated by
+            <strong><a href="//techbeach.la">Techbeach.LA</a></strong>
+          </li>
+        </ul>-->
+
+
       </div>
-
-      <ul class="list-inline item-details">
-        <li>
-          <strong><a href="http://startbootstrap.com">Shalendar</a>
-          </strong><br> Made in Los Angeles, CA
-        </li>
-      </ul>
-
     </div>
+
   </div>
 
 </div>
-
 
 <!-- jQuery -->
 <script src="vendor/jquery/jquery.min.js"></script>
@@ -256,6 +298,112 @@
 
 <!-- Theme JavaScript -->
 <script src="js/freelancer.min.js"></script>
+
+<link rel="stylesheet" href="/bower_components/sweetalert/dist/sweetalert.css">
+<script src="/bower_components/sweetalert/dist/sweetalert.min.js"></script>
+
+
+<script>
+    var main = new Vue({
+        el: '#app',
+        data: {
+            email: '',
+            password: '',
+            username: '',
+            beta_email: '',
+            error: false,
+            loading: false,
+            modals: {
+                forgot_pass: false
+            }
+        },
+        mounted: function () {
+        },
+        methods: {
+            handle_login: function (e) {
+                var _this = this
+                _this.error = false
+                _this.loading = true
+                $.post('/api/login', {email: this.email, password: this.password}, function (res) {
+                    _this.loading = false
+                    console.log(res)
+                    if (res.code == "200") {
+                        location.href = res.redir
+                    } else {
+                        _this.error = "authentication error, please try again"
+                    }
+                })
+            },
+            handle_login_button: function () {
+                this.error = false
+                this.left_pane = 'login'
+            },
+            handle_register: function () {
+                var _this = this
+                _this.error = false
+                _this.loading = true
+                $.post('/api/register', {
+                    email: this.email,
+                    password: this.password,
+                    username: this.username
+                }, function (res) {
+                    _this.loading = false
+                    console.log(res)
+                    if (res.code == "200") {
+                        location.href = res.redir
+                    } else {
+                        _this.error = "authentication error, please try again"
+                    }
+                })
+            },
+            handle_register_button: function () {
+                this.error = false
+                this.left_pane = 'register'
+            },
+            forgot_password: function () {
+                this.forgot_pass = true;
+            },
+
+            handle_beta: function(){
+                var _this = this
+                var email = this.beta_email
+                if(email){
+                    $.post("/api/request_beta/" + this.beta_email, function (res) {
+                        if (res.code == 200) {
+                            swal("You have applied to beta!", "Now please wait for your invitation link to arrive", "success")
+                            _this.beta_email = ''
+                        } else {
+                            swal("Oops", res.msg, "error")
+                        }
+                    })
+                }else{
+                    swal("Oops", "Whatcha trying to do?", "warning")
+                }
+
+
+
+            }
+        }
+    })
+</script>
+
+
+<script>
+    (function (i, s, o, g, r, a, m) {
+        i['GoogleAnalyticsObject'] = r;
+        i[r] = i[r] || function () {
+            (i[r].q = i[r].q || []).push(arguments)
+        }, i[r].l = 1 * new Date();
+        a = s.createElement(o),
+                m = s.getElementsByTagName(o)[0];
+        a.async = 1;
+        a.src = g;
+        m.parentNode.insertBefore(a, m)
+    })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+    ga('create', 'UA-90180102-1', 'auto');
+    ga('send', 'pageview');
+</script>
+
 
 </body>
 

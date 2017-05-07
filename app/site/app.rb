@@ -539,7 +539,7 @@ module Honeybadger
         return {
           :status => 'error',
           :code => 404,
-          :msg => 'email required'
+          :msg => 'Email is required'
         }.to_json
       end
 
@@ -547,7 +547,21 @@ module Honeybadger
         return {
           :status => 'error',
           :code => 400,
-          :msg => 'email not valid'
+          :msg => 'The email is not valid'
+        }.to_json
+      end
+
+      begin
+        beta_user = BetaUser.create(:email => email)
+        return {
+          :status => 'ok',
+          :code => 200,
+        }.to_json
+      rescue => e
+        return {
+          :status => 'error',
+          :code => 300,
+          :msg => 'There was a duplicate entry'
         }.to_json
       end
 
