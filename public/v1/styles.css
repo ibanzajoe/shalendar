@@ -738,3 +738,25 @@ body.is-modal {
 .col-main-content { padding: 0 20px; }
 .fc-state-default { border: 0; box-shadow: none; outline: none;}
 .fc-state-default:focus { outline: none; }
+
+a:hover { cursor: pointer; }
+
+.event.popbox label {
+  width: 100px;
+  font-size: 14px;
+  font-weight: normal;
+  text-align: right;
+  margin-right: 20px;
+}
+
+.row-popup {
+  min-height: 50px;
+  display: flex;
+  align-items: center;
+}
+.event.popbox button { border: 0; }
+
+.row-popup input, .row-popup textarea { border: 0; width: 100%; padding: 2px 6px; }
+.row-popup input::placeholder, .row-popup textarea::placeholder { color: #ccc;}
+
+
