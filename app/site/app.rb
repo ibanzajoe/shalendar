@@ -519,9 +519,15 @@ module Honeybadger
     end
 
     get '/api/friends' do
-      friends = UserFollow.where(:user_id => @current_user.id).all
 
       content_type :json
+
+      if @current_user.blank?
+        return { :status => 'error', :code => 400, :msg => 'you need to be logged in to call this'}.to_json
+      end
+
+      friends = UserFollow.where(:user_id => @current_user.id).all
+
       return {
         :status => 'ok',
         :code => 200,
@@ -575,7 +581,10 @@ module Honeybadger
       @friend = nil
 
       if !@user.blank?
-        @friends = UserFollow.left_join(:users, :id => :user_id).where(:user_follows__user_id => @user.id).all
+        @friends = UserFollow.left_join(:users, :id => :user_id).where(:user_follows__user_id => @user.id).all        
+      end
+
+      if !@user.blank? && @current_user.blank?
         @friend = UserFollow.where(:user_id => @current_user[:id], :friend_id =>@user[:id]).first
       end
 
