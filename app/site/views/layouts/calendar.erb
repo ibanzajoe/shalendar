@@ -74,7 +74,7 @@
               <div class="col-md-5 col-xs-6" style="text-align:right;"><span class="grn-lg">{{num_total_events}}</span>
                 <span class="gray-text">memories</span></div>
                 <div class="col-md-2 col-xs-0"></div>
-                <div class="col-md-5 col-xs-6" style="text-align:left;"><span class="grn-lg">713</span>
+                <div class="col-md-5 col-xs-6" style="text-align:left;"><span class="grn-lg">{{friends.length}}</span>
                   <span class="gray-text">followers</span>
                   <a href="#" style="margin-left:13px;" class="btn-follow">follow me</a></div>
                 </div>
@@ -123,98 +123,76 @@
 
                       <div class="col-md-12">
                         <div class="row" style="padding-bottom:15px; padding-top:12px; padding-right:10px;">
-                          <div style="padding-left:15px; "><h5>FOLLOWING</h5></div>
+                          <div style="padding-left:15px; "><h5>FRIENDS</h5></div>
                         </div>
                       </div>
 
                       <table class="catgmenu">
 
-                        <tr>
+                        <tr v-for="friend in friends">
                           <td style="padding-bottom:5px; padding-top:6px;"><img class="img-friend-circle" src="/v1/profile.png"></td>
-                          <td><span class="friend-sm">Jae Lee</span></td>
+                          <td><span class="friend-sm">{{friend}}</span></td>
                           <td>
-                            <div class="more-vertical-solid icon" id="edit">
-                            </td>
-                            <td></td>
-                          </tr>
-                          <tr>
-                            <td style="padding-bottom:5px; padding-top:6px;"><img class="img-friend-circle" src="/v1/profile.png"></td>
-                            <td><span class="friend-sm">Vanessa Jung Ji</span></td>
-                            <td>
-                              <div class="more-vertical-solid icon" id="edit">
-                              </td>
-                              <td></td>
-                            </tr>
-                            <tr>
-                              <td style="padding-bottom:5px; padding-top:6px;"><img class="img-friend-circle" src="/v1/profile.png"></td>
-                              <td><span class="friend-sm">Jiena Lee</span></td>
-                              <td>
-                                <div class="more-vertical-solid icon" id="edit">
-                                </td>
-                                <td></td>
-                              </tr>
-                              <tr>
-                                <td style="padding-bottom:5px; padding-top:6px;"><img class="img-friend-circle" src="/v1/profile.png"></td>
-                                <td><span class="friend-sm">Jaelen Lee</span></td>
-                                <td>
-                                  <div class="more-vertical-solid icon" id="edit">
-                                  </td>
-                                  <td></td>
-                                </tr>
-                                <tr>
-                                  <td style="padding-bottom:5px; padding-top:6px;"><img class="img-friend-circle" src="/v1/profile.png"></td>
-                                  <td><span class="friend-sm">Buddy the cat</span></td>
-                                  <td>
-                                    <div class="more-vertical-solid icon" id="edit">
-                                    </td>
-                                    <td></td>
-                                  </tr>
+                            <div class="more-vertical-solid icon" id="edit"></div>
+                          </td>
+                          <td></td>
+                        </tr>
 
-                                </table>
+                      </table>
 
-                                <div class="col-md-12">
-                                  <div class="row" style="padding-bottom:15px; padding-top:5px;">
-                                    <div style="padding-right:10px; text-align:right;">
-                                      <a href="#" class="profile-city" style="font-weight:700; padding-top:9px;">+ 25 more</a></div>
-                                    </div>
-                                  </div>
+                      <div class="col-md-12" v-if="friends.length > 0">
+                        <div class="row" style="padding-bottom:15px; padding-top:5px;">
+                          <div style="padding-right:10px; text-align:right;">
+                            <a href="#" class="profile-city" style="font-weight:700; padding-top:9px;">+ 25 more</a>
+                          </div>
+                        </div>
+                      </div>
 
-                                </div>
-                                <br>
+                      <div class="col-md-12" v-if="friends.length == 0">
+                        <div class="row" style="padding-bottom:15px; padding-top:5px;">
+                          <div style="padding-right:10px; text-align:center;">
+                            You have no friends
+                          </div>
+                        </div>
+                      </div>
 
-                                <div class="col-md-10 col-xs-8">
-                                  <div class="row">
-                                    <div id="calendar" class="col-md-12 col-main-content" style="height: 600px;"></div>
-                                  </div>
-                                </div>
+                    </div>
+                    <br>
+
+                    <div class="col-md-10 col-xs-8">
+                      <div class="row">
+                        <div id="calendar" class="col-md-12 col-main-content" style="height: 600px;"></div>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
 
 
-                              </div>
-                            </div>
+                <div class="cd-popup" role="alert" :class="{'is-visible': modal_event }" @click="close_event">
 
+                  <div class="cd-popup-container" @click.stop>
 
-                            <div class="cd-popup" role="alert" :class="{'is-visible': modal_event }" @click="close_event">
+                    <!-- view event -->
+                    <div class="popbox" v-if="!is_my_calendar()">
 
-                              <div class="cd-popup-container" @click.stop>
-
-                                <!-- view event -->
-                                <div class="popbox" v-if="!is_my_calendar()">
-
-                                  <div class="col-md-12 ">
-                                    <div class="row ">
-                                      <div class="text-lg " style="padding:20px 0px 10px 18px; color:#41d0bc; text-align:left;">What
-                                        happened on
-                                        {{this_day(active_event.start)}}
-                                      </div>
-                                    </div>
-                                    <div class="row">
-                                      <div class="col-md-12 row-popup ">
+                      <div class="col-md-12 ">
+                        <div class="row ">
+                          <div class="text-lg " style="padding:20px 0px 10px 18px; color:#41d0bc; text-align:left;">What
+                            happened on
+                            {{this_day(active_event.start)}}
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-md-12 row-popup ">
               <!--<div class="styled-select col-md-6 " style="padding-left:0px; text-align:left;">
                 {{active_event.calendar ? active_event.calendar.name : 'All'}}
               </div>-->
               <div class="col-md-12" style="padding-left:0px; padding-top:5px; text-align: left;">
                 <span :style="{ padding: '4px', background: active_event.calendar ? active_event.calendar.color : '#fff' }"></span>
-                <span style="margin-left: 10px;">{{active_event.calendar ? active_event.calendar.name : 'All'}}</span>
+                <span style="margin-left: 10px;">
+                  {{active_event.calendar ? active_event.calendar.name : 'All'}}                  
+                </span>
 
               </div>
             </div>
@@ -277,7 +255,9 @@
                         </div>-->
                         <div class="col-md-12" style="padding-left:0px; padding-top:5px; text-align: left;">
                           <span :style="{ padding: '4px', background: active_event.calendar ? active_event.calendar.color : '#fff' }"></span>
-                          <span style="margin-left: 10px;">{{active_event.calendar ? active_event.calendar.name : 'All'}}</span>
+                          <span style="margin-left: 10px;">
+                            <select v-model="active_event.calendar_id"><option v-for="calendar in calendars" :value="calendar.id">{{calendar.name}}</option></select>
+                          </span>
 
                         </div>
                       </div>
@@ -306,7 +286,7 @@
                        
 
 
-                      <div class="row ">
+                       <div class="row ">
                         <div class="col-md-12 right-container " style="padding-right:16px;">
 
                           <a @click="handle_add_media" style="margin-left:13px;" class="btn-edit">add photos</a></div>
@@ -347,7 +327,7 @@
         current_user: <%== @current_user.to_json %>,
         calendars: [],
         friends: <%== @friends.to_json %>,
-        friend: <%== @friend.to_json %>,
+        // friend: <%== @friend.to_json %>,
         active_calendar: null,
         active_calendars: [],
         eventsources: [],
@@ -385,6 +365,7 @@
       methods: {
 
         is_my_calendar: function () {
+
           if (this.current_user && this.user && this.current_user.id == this.user.id) {
             return true
           }
@@ -731,7 +712,7 @@ handle_event_click: function (event, calEvent) {
 
                 var _this = this
                 var event_id = _this.active_event.id || null
-
+                console.log('save_event')
                 if (_this.active_event) {
 
                   _this.active_event.loading = true
@@ -750,13 +731,15 @@ handle_event_click: function (event, calEvent) {
                       media: _this.active_event.media || null,
                     }
 
+                    // update existing calendar event if exists
                     $.each(data, function (k, v) {
-                      $.each(_this.active_event.calEvent, function (k2, v2) {
-                        if (k == k2) {
-                          _this.active_event.calEvent[k] = v
-                        }
-                      })
-
+                      if(_this.active_event.calEvent){
+                        $.each(_this.active_event.calEvent, function (k2, v2) {
+                          if (k == k2) {
+                            _this.active_event.calEvent[k] = v
+                          }
+                        })  
+                      }
                     })
 
                     // post to /api/event
