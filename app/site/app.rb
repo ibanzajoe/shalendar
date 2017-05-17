@@ -474,7 +474,7 @@ module Honeybadger
 
       return { :status => 'loggedin_only', :code => 500, :msg => 'you need to be logged in'}.to_json if @current_user.blank?
 
-      friend = User.where(:username => params[:username]).first
+      friend = User.where(Sequel.ilike(:username, params[:username])).first
       return { :status => 'error', :code => 400, :msg => 'cant follow yourself'}.to_json if friend.id == @current_user.id
 
       begin
@@ -502,7 +502,7 @@ module Honeybadger
     post '/api/unfollow/:username' do
 
       content_type :json
-      friend = User.where(:username => params[:username]).first
+      friend = User.where(Sequel.ilike(:username, params[:username])).first
 
       userfollow = UserFollow.where(:user_id => @current_user.id, :friend_id => friend.id).destroy
       if userfollow == 1
@@ -579,7 +579,7 @@ module Honeybadger
 
     ### calendar page ###
     get '/:username' do
-      @user = User.where(:username => params[:username].downcase).first
+      @user = User.where(Sequel.ilike(:username, params[:username])).first
       @friends = []
       @friend = nil
 
