@@ -19,6 +19,7 @@ a:hover {
   text-decoration: underline;
 }
 
+.hide { display: none; }
 
 .col-header2{
   height:110px;

@@ -31,6 +31,7 @@ module Honeybadger
           redirect "/error", :error => msg
         end
 
+        
 
     end
 

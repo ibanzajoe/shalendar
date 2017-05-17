@@ -472,8 +472,11 @@ module Honeybadger
 
       content_type :json
 
+      return { :status => 'loggedin_only', :code => 500, :msg => 'you need to be logged in'}.to_json if @current_user.blank?
+
       friend = User.where(:username => params[:username]).first
       return { :status => 'error', :code => 400, :msg => 'cant follow yourself'}.to_json if friend.id == @current_user.id
+
       begin
 
         user_follow = UserFollow.create(:user_id => @current_user.id, :friend_id => friend.id)
