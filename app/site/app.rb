@@ -3,6 +3,10 @@
 
 module Honeybadger
 
+  require 'omniauth'
+  require 'omniauth-facebook'
+  require 'omniauth-google-oauth2'
+
   class SiteApp < Padrino::Application
 
     register Padrino::Mailer
@@ -18,7 +22,7 @@ module Honeybadger
       @title = "Shalendar | Digital Calendar for your life"
       @page = (params[:page] || 1).to_i
       @per_page = params[:per_page] || 5
-
+      @current_user = nil
       if !session[:user_id].blank?
         @current_user = User[session[:user_id]]
       end
@@ -38,11 +42,14 @@ module Honeybadger
 
     use OmniAuth::Builder do
 
+      provider :facebook, auth_keys[:facebook][:app_id],auth_keys[:facebook][:secret]
+      
+
       # /auth/twitter
-      provider :twitter,  auth_keys[:twitter][:key], auth_keys[:twitter][:secret]
+      #provider :twitter,  auth_keys[:twitter][:key], auth_keys[:twitter][:secret]
 
       # /auth/instagram
-      provider :instagram,  auth_keys[:instagram][:key], auth_keys[:instagram][:secret]
+      #provider :instagram,  auth_keys[:instagram][:key], auth_keys[:instagram][:secret]
 
     end
 
@@ -51,19 +58,18 @@ module Honeybadger
     end
 
     get '/auth/:name/callback' do
-      auth    = request.env["omniauth.auth"]
+      if params[:error] == 'access_denied'
+        flash[:notice] = 'There was a problem authenticating your account'
+        redirect("/")
+      end
+      auth = request.env["omniauth.auth"]
+      auth[:session] = session
       user = User.login_with_omniauth(auth)
 
       if user
-        integrations = @current_user[:integrations] || {}
-        integrations[user.provider] = {:user_id => user.id }
-        @current_user.update(:integrations => integrations.to_json).reload
-
-        # if user.email.blank?
-        #   redirect("/user/account", :notice => 'Please fill in required informations')
-        # end
-
-        # redirect("/")
+        session[:user_id] = user[:id]
+        redirect("/auth/email") if user.email.blank?
+        redirect("/" + user.username)
       else
         output(user.values)
       end
@@ -271,8 +277,8 @@ module Honeybadger
       return {
         :calendar => calendar,
         :code => 200
-      }.to_json
-    end
+        }.to_json
+      end
 
     ### get a list of events
     ### params: user_id
@@ -431,16 +437,16 @@ module Honeybadger
       content_type :json
 
       rules = {
-          :email => {:type => 'email', :required => true},
-          :password => {:type => 'string', :required => true},
+        :email => {:type => 'email', :required => true},
+        :password => {:type => 'string', :required => true},
       }
 
       validator = Validator.new(params, rules)
       if !validator.valid?
         res = {
-            :status => 'input validation failure',
-            :code => 403,
-            :error => validator.errors,
+          :status => 'input validation failure',
+          :code => 403,
+          :error => validator.errors,
         }
       else
         user = User.register_with_email(params)
@@ -448,17 +454,17 @@ module Honeybadger
           session[:user_id] = user[:id]
 
           res = {
-              :status => 'auth success',
-              :code => 200,
-              :redir => "/#{user[:username]}",
+            :status => 'auth success',
+            :code => 200,
+            :redir => "/#{user[:username]}",
           }
 
         else
 
           res = {
-              :status => 'authentication failure',
-              :code => 401,
-              :error => user.errors,
+            :status => 'authentication failure',
+            :code => 401,
+            :error => user.errors,
           }
 
         end
@@ -521,61 +527,82 @@ module Honeybadger
 
     end
 
-    get '/api/friends' do
+    get '/api/:username/followings' do
 
       content_type :json
 
-      if @current_user.blank?
-        return { :status => 'error', :code => 400, :msg => 'you need to be logged in to call this'}.to_json
-      end
+      return { :status => 'username required', :code => 400, :msg => 'username cant be blank'}.to_json if params[:username].blank?
 
-      friends = UserFollow.where(:user_id => @current_user.id).all
+      user = User.where(Sequel.ilike(:username, params[:username])).first
+      return { :status => 'user not found', :code => 404, :msg => 'username not found in system'}.to_json if user.blank?
 
+      followings = user.followings
+      
       return {
         :status => 'ok',
         :code => 200,
-        :friends => friends
-      }.to_json
-
-    end
-
-    post '/api/request_beta/:email' do
-      email = params[:email]
-
-      content_type :json
-
-      if email.blank?
-        return {
-          :status => 'error',
-          :code => 404,
-          :msg => 'Email is required'
+        :followings => followings
         }.to_json
+
       end
 
-      if !Util::valid_email?(email)
-        return {
-          :status => 'error',
-          :code => 400,
-          :msg => 'The email is not valid'
-        }.to_json
-      end
 
-      begin
-        beta_user = BetaUser.create(:email => email)
+      get '/api/:username/followers' do
+
+        content_type :json
+
+        return { :status => 'username required', :code => 400, :msg => 'username cant be blank'}.to_json if params[:username].blank?
+
+        user = User.where(Sequel.ilike(:username, params[:username])).first
+        return { :status => 'user not found', :code => 404, :msg => 'username not found in system'}.to_json if user.blank?
+
+        followers = user.followers
+
         return {
           :status => 'ok',
           :code => 200,
-        }.to_json
-      rescue => e
-        return {
-          :status => 'error',
-          :code => 300,
-          :msg => 'There was a duplicate entry'
-        }.to_json
-      end
+          :followers => followers
+          }.to_json
+
+        end
+
+        post '/api/request_beta/:email' do
+          email = params[:email]
+
+          content_type :json
+
+          if email.blank?
+            return {
+              :status => 'error',
+              :code => 404,
+              :msg => 'Email is required'
+              }.to_json
+            end
+
+            if !Util::valid_email?(email)
+              return {
+                :status => 'error',
+                :code => 400,
+                :msg => 'The email is not valid'
+                }.to_json
+              end
+
+              begin
+                beta_user = BetaUser.create(:email => email)
+                return {
+                  :status => 'ok',
+                  :code => 200,
+                  }.to_json
+                rescue => e
+                  return {
+                    :status => 'error',
+                    :code => 300,
+                    :msg => 'There was a duplicate entry'
+                    }.to_json
+                  end
 
 
-    end
+                end
 
     ### calendar page ###
     get '/:username' do

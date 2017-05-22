@@ -1,4 +1,4 @@
-/usr/local/bin/ruby -r ./siteconf20160825-5-158xrfk.rb extconf.rb
+/usr/local/bin/ruby -r ./siteconf20160327-8-c8ncij.rb extconf.rb
 checking for ffi_call() in -lffi... yes
 checking for ffi_prep_closure()... yes
 checking for ffi_raw_call()... yes
@@ -41,4 +41,4 @@ compiling Variadic.c
 linking shared-object ffi_c.so
 
 make "DESTDIR=" install
-/usr/bin/install -c -m 0755 ffi_c.so ./.gem.20160825-5-12ngk4d
+/usr/bin/install -c -m 0755 ffi_c.so ./.gem.20160327-8-17i85sn

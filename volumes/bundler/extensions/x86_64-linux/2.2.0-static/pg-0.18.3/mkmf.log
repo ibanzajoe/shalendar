@@ -1228,8 +1228,8 @@ conftest.c: In function 't':
 conftest.c:13:1: warning: implicit declaration of function 'rb_w32_wrap_io_handle' [-Wimplicit-function-declaration]
  int t(void) { rb_w32_wrap_io_handle(); return 0; }
  ^
-/tmp/ccOQ1c8Q.o: In function `t':
-/app/volumes/bundler/gems/pg-0.18.3/ext/conftest.c:13: undefined reference to `rb_w32_wrap_io_handle'
+/tmp/ccx9hm8T.o: In function `t':
+/bundler/gems/pg-0.18.3/ext/conftest.c:13: undefined reference to `rb_w32_wrap_io_handle'
 collect2: error: ld returned 1 exit status
 checked program was:
 /* begin */

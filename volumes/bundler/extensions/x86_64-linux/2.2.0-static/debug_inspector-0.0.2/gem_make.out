@@ -1,4 +1,4 @@
-/usr/local/bin/ruby -r ./siteconf20160825-5-1in3s7o.rb extconf.rb
+/usr/local/bin/ruby -r ./siteconf20160327-8-1u1gil2.rb extconf.rb
 creating Makefile
 
 make "DESTDIR=" clean
@@ -8,4 +8,4 @@ compiling debug_inspector.c
 linking shared-object debug_inspector.so
 
 make "DESTDIR=" install
-/usr/bin/install -c -m 0755 debug_inspector.so ./.gem.20160825-5-1lkdzjk
+/usr/bin/install -c -m 0755 debug_inspector.so ./.gem.20160327-8-xmtras

@@ -1,4 +1,4 @@
-/usr/local/bin/ruby -r ./siteconf20160825-5-n5p4a4.rb extconf.rb
+/usr/local/bin/ruby -r ./siteconf20160327-8-1v0km8d.rb extconf.rb
 
 make "DESTDIR=" clean
 make: *** No rule to make target 'clean'.  Stop.

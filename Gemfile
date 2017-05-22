@@ -26,6 +26,7 @@ gem 'omniauth-instagram'
 gem 'omniauth-facebook'
 gem 'omniauth-github'
 gem 'omniauth-linkedin'
+gem 'omniauth-google-oauth2'
 gem 'sequel_secure_password'
 gem 'bcrypt'
 

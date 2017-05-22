@@ -242,8 +242,8 @@ conftest.c: In function 't':
 conftest.c:13:1: warning: implicit declaration of function 'rb_thread_blocking_region' [-Wimplicit-function-declaration]
  int t(void) { rb_thread_blocking_region(); return 0; }
  ^
-/tmp/cc3Yxmwy.o: In function `t':
-/app/volumes/bundler/gems/ffi-1.9.10/ext/ffi_c/conftest.c:13: undefined reference to `rb_thread_blocking_region'
+/tmp/cc3XX80D.o: In function `t':
+/bundler/gems/ffi-1.9.10/ext/ffi_c/conftest.c:13: undefined reference to `rb_thread_blocking_region'
 collect2: error: ld returned 1 exit status
 checked program was:
 /* begin */

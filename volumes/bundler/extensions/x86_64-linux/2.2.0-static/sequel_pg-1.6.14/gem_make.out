@@ -1,4 +1,4 @@
-/usr/local/bin/ruby -r ./siteconf20160825-5-io1i6j.rb extconf.rb
+/usr/local/bin/ruby -r ./siteconf20160327-8-19l5hh8.rb extconf.rb
 checking for main() in -lpq... yes
 checking for libpq-fe.h... yes
 checking for PQsetSingleRowMode()... yes
@@ -26,4 +26,4 @@ sequel_pg.c:897:11: warning: variable 'conn' set but not used [-Wunused-but-set-
 linking shared-object sequel_pg.so
 
 make "DESTDIR=" install
-/usr/bin/install -c -m 0755 sequel_pg.so ./.gem.20160825-5-1oxeiwm
+/usr/bin/install -c -m 0755 sequel_pg.so ./.gem.20160327-8-17zpnzn

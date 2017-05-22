@@ -10,5 +10,7 @@ touch /app/tmp/initialized
 else    
 padrino rake db:migrate
 fi
-passenger start -d --pool-idle-time=0
-tail -f /app/log/passenger.3000.log
+
+bundle exec rackup  -p 3000
+#passenger start -d --pool-idle-time=0
+#tail -f /app/log/passenger.3000.log

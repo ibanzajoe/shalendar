@@ -20,8 +20,9 @@
   <link rel="stylesheet" href="/bower_components/sweetalert/dist/sweetalert.css">
   <link href='/fc/fullcalendar.css' rel='stylesheet'/>
   <link href='/fc/fullcalendar.print.css' rel='stylesheet' media='print'/>
-  <link rel="stylesheet" href="/v1/styles.css">
   <link rel="stylesheet" href="/bower_components/fancybox/dist/jquery.fancybox.css">
+  <link rel="stylesheet" href="/v1/styles.css">
+  
 
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
   <script src="https://api.filestackapi.com/filestack.js"></script>
@@ -53,7 +54,7 @@
           <div class="row">
             <div class="col-md-4 col-xs-4"><a href="/"><img class="img-responsive" src="/v1/logo_new.png" style="width: 150px;"></a></div>
             <div class="col-md-4 col-xs-4 col-header-profile" style="text-align:center;">
-              <a href="#" class="btn" style="position:relative;"><img class="img-profile-circle" src="/v1/profile.png">
+              <a href="#" class="btn" style="position:relative;"><img class="img-profile-circle" :src="user.avatar_url">
 
                 <div class="tool-tip slideIn bottom">
                   Hello all!<br>I am Jiena. I am 9 years old girl who likes <br>games and coding <br> I have a cat named Buddy.<br>you can contact me here!!!
@@ -84,7 +85,7 @@
               </div>
               <div class="col-md-2 col-xs-0"></div>
               <div class="col-md-5 col-xs-6" style="text-align:left;">
-                <span class="grn-lg">{{friends ? friends.length : 0}}</span>
+                <span class="grn-lg">{{followers ? followers.length : 0}}</span>
                 <span class="gray-text">followers</span>
                 <a v-if="!is_my_calendar()" @click="follow_user(user)" style="margin-left:13px;" class="btn-follow">follow me</a>
               </div>
@@ -123,79 +124,80 @@
                   <tr v-if="calendars" v-for="calendar in calendars">
                     <td :style="{'backgroundColor': calendar.color ? calendar.color : '#333'}" style="width:12px; padding: 0px;"></td>
                     <td @click.prevent="set_active_calendar(calendar)" style="cursor: pointer;" :style="{'fontWeight': check_active_calendar(calendar) ? 'bold' : 'normal'}">{{calendar.name}}
-                      <span class="profile-city">({{calendar.total_events}})</span></td>
-                      <td><input type="checkbox" class="checkbox" disabled :checked="is_active_calendar(calendar)"></td>
-                      <td colspan="2" @click="handle_edit_calendar(calendar)" style="cursor: pointer;">
-                        <div class="more-vertical-solid icon" id="edit" style="text-align: center;"/>
-                      </td>
-                    </tr>
-                  </table>
-                  <br>
-
-                  <div class="col-md-12">
-                    <div class="row" style="padding-bottom:15px; padding-top:12px; padding-right:10px;">
-                      <div style="padding-left:15px; "><h5>FRIENDS</h5></div>
-                    </div>
-                  </div>
-
-                  <table class="catgmenu">
-
-                    <tr v-for="friend in friends">
-                      <td style="padding-bottom:5px; padding-top:6px;"><img class="img-friend-circle" src="/v1/profile.png"></td>
-                      <td><span class="friend-sm">{{friend}}</span></td>
-                      <td>
-                        <div class="more-vertical-solid icon" id="edit"></div>
-                      </td>
-                      <td></td>
-                    </tr>
-
-                  </table>
-
-                  <div class="col-md-12" v-if="friends && friends.length > 0">
-                    <div class="row" style="padding-bottom:15px; padding-top:5px;">
-                      <div style="padding-right:10px; text-align:right;">
-                        <a href="#" class="profile-city" style="font-weight:700; padding-top:9px;">+ 25 more</a>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="col-md-12" v-if="friends && friends.length == 0">
-                    <div class="row" style="padding-bottom:15px; padding-top:5px;">
-                      <div style="padding-right:10px; text-align:center;">
-                        You have no friends
-                      </div>
-                    </div>
-                  </div>
-
-                </div>
+                      <span class="profile-city">({{calendar.total_events}})</span>
+                    </td>
+                    <td><input type="checkbox" class="checkbox" disabled :checked="is_active_calendar(calendar)"></td>
+                    <td colspan="2" @click="handle_edit_calendar(calendar)" style="cursor: pointer;">
+                      <div class="more-vertical-solid icon" id="edit" style="text-align: center;"/>
+                    </td>
+                  </tr>
+                </table>
                 <br>
 
-                <div class="col-md-10 col-xs-8">
-                  <div class="row">
-                    <div id="calendar" class="col-md-12 col-main-content" style="height: 600px;"></div>
+                <div class="col-md-12">
+                  <div class="row" style="padding-bottom:15px; padding-top:12px; padding-right:10px;">
+                    <div style="padding-left:15px; "><h5>Friends</h5></div>
+                  </div>
+                </div>
+
+                <table class="catgmenu" v-if="followings">
+
+                  <tr v-for="following in followings">
+                    <td style="padding-bottom:5px; padding-top:6px;"><img class="img-friend-circle" src="/v1/profile.png"></td>
+                    <td><a :href="'/'+following.friend.username" class="friend-sm">{{following.friend.username}}</a></td>
+                    <td>
+                      <div v-if="is_my_calendar()" class="more-vertical-solid icon" id="edit"></div>
+                    </td>
+                    <td></td>
+                  </tr>
+
+                </table>
+
+                <!-- <div class="col-md-12" v-if="followings && followings.length > 0">
+                  <div class="row" style="padding-bottom:15px; padding-top:5px;">
+                    <div style="padding-right:10px; text-align:right;">
+                      <a href="#" class="profile-city" style="font-weight:700; padding-top:9px;">+ 25 more</a>
+                    </div>
+                  </div>
+                </div> -->
+
+                <div class="col-md-12" v-if="(followings && followings.length == 0) || !followings">
+                  <div class="row" style="padding-bottom:15px; padding-top:5px;">
+                    <div style="padding-right:10px; text-align:center;">
+                      There are none
+                    </div>
                   </div>
                 </div>
 
               </div>
+              <br>
+
+              <div class="col-md-10 col-xs-8">
+                <div class="row">
+                  <div id="calendar" class="col-md-12 col-main-content" style="height: 600px;"></div>
+                </div>
+              </div>
+
             </div>
+          </div>
 
 
-            <div class="cd-popup" role="alert" :class="{'is-visible': modal_event }" @click="close_event">
+          <div class="cd-popup" role="alert" :class="{'is-visible': modal_event }" @click="close_event">
 
-              <div class="cd-popup-container" @click.stop>
+            <div class="cd-popup-container" @click.stop>
 
-                <!-- view event -->
-                <div class="popbox" v-if="!is_my_calendar()">
+              <!-- view event -->
+              <div class="popbox" v-if="!is_my_calendar()">
 
-                  <div class="col-md-12 ">
-                    <div class="row ">
-                      <div class="text-lg " style="padding:20px 0px 10px 18px; color:#41d0bc; text-align:left;">What
-                        happened on
-                        {{this_day(active_event.start)}}
-                      </div>
+                <div class="col-md-12 ">
+                  <div class="row ">
+                    <div class="text-lg " style="padding:20px 0px 10px 18px; color:#41d0bc; text-align:left;">What
+                      happened on
+                      {{this_day(active_event.start)}}
                     </div>
-                    <div class="row">
-                      <div class="col-md-12 row-popup ">
+                  </div>
+                  <div class="row">
+                    <div class="col-md-12 row-popup ">
                   <!--<div class="styled-select col-md-6 " style="padding-left:0px; text-align:left;">
                        {{active_event.calendar ? active_event.calendar.name : 'All'}}
                      </div>-->
@@ -223,16 +225,23 @@
                     {{active_event.description}}
                   </div>
                 </div>
+
+
+
+
+
+
+
                 <div class="row" style="text-align:left;">
                   <div class="col-md-12 row-popup">
 
-                    <div id="full_image" class="event_media_file" v-for="file in active_event.media">
-                      <a :href="file" data-fancybox="group"><img style="width:110px; height:110px; margin:4px 8px 4px 0px;" class="image" :src="file"></a>
+                    <div id="full_image" v-for="file in active_event.media">
+                      <a class="fancybox" @click="open_media(file)" data-fancybox="group"><img :src="file" style="width:110px; height:110px; margin:4px 8px 4px 0px;"></a>
                     </div>
 
 
-                    <div class="row ">
-                      <div class="col-md-12 right-container " style="padding-right:16px;">
+                    <div class="row " v-if="is_my_calendar()">
+                      <div class="col-md-12 right-container" style="padding-right:16px;">
                         <a href="#" class="profile-city" style="font-weight:700; padding-top:9px;">+ 25 more
                           photos</a>
                           <a @click="handle_add_media" style="margin-left:13px;" class="btn-edit">add more photos</a></div>
@@ -295,8 +304,6 @@
                         <a class="fancybox" @click="open_media(file)" data-fancybox="group"><img :src="file" style="width:110px; height:110px; margin:4px 8px 4px 0px;"></a><a @click="handle_delete_media(file)" class="full_close">X</a>
                       </div>
 
-
-
                       <div class="row ">
                         <div class="col-md-12 right-container " style="padding-right:16px;">
 
@@ -337,10 +344,16 @@
      new Vue({
        el: '#app',
        data: {
-         user: <%== @user.to_json %>,
-         current_user: <%== @current_user.to_json %>,
+         user: <%== @user.values.to_json %>,
+         <% if !@current_user.blank? %>
+         current_user: <%== @current_user.values.to_json %>,
+         <% else %>
+         current_user: null,
+         <% end %>
          calendars: [],
-         friends: [],
+         followings: [],
+         followers: [],
+         omg: null,
          // friend: <%== @friend.to_json %>,
          active_calendar: null,
          active_calendars: [],
@@ -356,44 +369,47 @@
        },
 
        mounted: function () {
-         this.get_calendars();
-         this.init_calendar();
-         this.set_active_calendar();
-         this.get_friends();
-         filepicker.setKey("<%= config('filepicker') %>");
+        this.get_followings();
+        this.get_followers();
+        this.get_calendars();
+        this.init_calendar();
+        this.set_active_calendar();
+        filepicker.setKey("<%= config('filepicker') %>");
+      },
 
-         $("[data-fancybox]").fancybox({
-
-         });
+      computed: {
+       location: function () {
+         return location
        },
+       num_total_events: function () {
+         var total = 0
+         $.each(this.calendars, function (k, v) {
+           total += v.total_events
+         })
+         return total
+       }
 
-       computed: {
-         location: function () {
-           return location
-         },
-         num_total_events: function () {
-           var total = 0
-           $.each(this.calendars, function (k, v) {
-             total += v.total_events
-           })
-           return total
+     },
+     methods: {
+
+       is_following: function(){
+         if(this.current_user){
+           
          }
-
        },
-       methods: {
 
-         follow_user: function(user){
-           alert('follow')
-           $.post("/api/follow/" + user.username, function(res){
-             if(res.code == 200){
-               alert('user followed!')
-             }else{
-               alert('error')
-             }
-           })
-         },
+       follow_user: function(user){
+         alert('follow')
+         $.post("/api/follow/" + user.username, function(res){
+           if(res.code == 200){
+             alert('user followed!')
+           }else{
+             alert('error')
+           }
+         })
+       },
 
-         open_media: function(media){
+       open_media: function(media){
 
            // $.iLightBox([
            //   'image1.jpg',
@@ -403,19 +419,19 @@
            // media = "https://www.youtube.com/watch?v=_sI_Ps7JSEk"
            //$('.fancy').fancybox();
            //
-           var medias = []
-           $('#full_image .fancybox img').each(function(k, v){
-             medias.push( {src: $(v).attr('src')} )
-           })
+           // var medias = []
+           // $('#full_image .fancybox img').each(function(k, v){
+           //   medias.push( {src: $(v).attr('src')} )
+           // })
 
-           var idx = 0
-           $.each(medias, function(k, v){
-             if(v.src == media){
-               idx = k
-             }
-           })
-           $.fancybox.open(medias, {}, idx);
-           //$.fancybox.open('<div class="message"><img src="'+media+'"></p></div>');
+           // var idx = 0
+           // $.each(medias, function(k, v){
+           //   if(v.src == media){
+           //     idx = k
+           //   }
+           // })
+           // $.fancybox.open(medias, {}, idx);
+           $.fancybox.open('<div class="message"><img src="'+media+'"></p></div>');
          },
 
          is_my_calendar: function () {
@@ -449,10 +465,17 @@
            })
          },
 
-         get_friends: function () {
+         get_followings: function () {
            var _this = this
-           $.get("/api/friends", function (res) {
-             _this.friends = res.friends
+           $.get("/api/"+this.user.username+"/followings", function (res) {
+             _this.followings = res.followings
+           })
+         },
+
+         get_followers: function () {
+           var _this = this
+           $.get("/api/"+this.user.username+"/followers", function (res) {
+             _this.followers = res.followers
            })
          },
 
@@ -726,7 +749,7 @@ set_active_calendar: function (calendar) {
              },
 
              eventRender: function (event, element) {
-               //console.log('wtf', event, element)
+
                var image_html = ''
 
                if (event.media) {
@@ -741,11 +764,9 @@ set_active_calendar: function (calendar) {
                }
                element.find('.fc-title').html(title + " <div style='float: right;'>" + image_html + "</div>");
              }
+             
 
-             //events: "/api/events?user_id="+_this.user.id,
-             //eventSources: _this.eventsources,
-
-           });
+           })
 
 },
 

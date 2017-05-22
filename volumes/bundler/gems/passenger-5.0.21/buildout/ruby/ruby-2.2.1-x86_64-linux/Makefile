@@ -11,7 +11,7 @@ NULLCMD = :
 
 #### Start of system configuration section. ####
 
-srcdir = /app/volumes/bundler/gems/passenger-5.0.21/src/ruby_native_extension
+srcdir = /bundler/gems/passenger-5.0.21/src/ruby_native_extension
 topdir = /usr/local/include/ruby-2.2.0
 hdrdir = $(topdir)
 arch_hdrdir = /usr/local/include/ruby-2.2.0/x86_64-linux

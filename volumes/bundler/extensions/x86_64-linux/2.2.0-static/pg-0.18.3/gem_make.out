@@ -1,4 +1,4 @@
-/usr/local/bin/ruby -r ./siteconf20160825-5-x967l.rb extconf.rb
+/usr/local/bin/ruby -r ./siteconf20160327-8-1kt7ja8.rb extconf.rb
 checking for pg_config... yes
 Using config values from /usr/bin/pg_config
 checking for libpq-fe.h... yes
@@ -69,4 +69,4 @@ compiling util.c
 linking shared-object pg_ext.so
 
 make "DESTDIR=" install
-/usr/bin/install -c -m 0755 pg_ext.so ./.gem.20160825-5-b4bsen
+/usr/bin/install -c -m 0755 pg_ext.so ./.gem.20160327-8-14mncrg

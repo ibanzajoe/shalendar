@@ -72,7 +72,6 @@ class User < Sequel::Model
     # get user
     user = User.where(:provider => auth["provider"], :uid => auth["uid"]).first
 
-    # create if not exist
     if user.nil?
 
       user = User.new
@@ -82,39 +81,67 @@ class User < Sequel::Model
       user.last_name = auth["name"].split(" ").last if !auth["name"].nil?
       user.username = auth["username"]
       user.email = auth["email"]
-      user.role = "users"
+      user.role = "marketer"
+      user.ref = auth[:session][:ref] if !auth[:session].blank? && !auth[:session][:ref].blank?
+      user.refer_url = auth[:session][:refer_url] if !auth[:session].blank? && !auth[:session][:refer_url].blank?
 
-      # facebook
+
       if auth["provider"] == "facebook"
-        user.email = auth["user_info"]["email"]
+        user.first_name   = auth["info"]["name"].split(" ").first if !auth["info"]["name"].nil?
+        user.last_name    = auth["info"]["name"].split(" ").last if !auth["info"]["name"].nil?
+        user.username     = auth["info"]["email"]
+        user.email        = auth["info"]["email"]
+        user.avatar_url   = "https://graph.facebook.com/#{user.uid}/picture?type=large" || auth["info"]["image"]
+
+      elsif auth[:provider] == 'google_oauth2'
+        user.first_name   = auth['info']['first_name'] ? auth['info']['first_name'] : auth["info"]["name"].split(" ").first
+        user.last_name    = auth['info']['last_name'] ? auth['info']['last_name'] : auth["info"]["name"].split(" ").last
+        user.username     = auth["info"]["email"]
+        user.email        = auth["info"]["email"]
+        user.avatar_url   = auth["info"]["image"]
       end
 
-      # twitter
+
       if auth["provider"] == "twitter"
-        user.first_name = auth["info"]["name"].split(" ").first
-        user.last_name = auth["info"]["name"].split(" ").last
-        user.username = auth["info"]["username"]
+        user.first_name   = auth["info"]["name"].split(" ").first
+        user.last_name    = auth["info"]["name"].split(" ").last
+        user.username     = auth["info"]["username"]
       end
 
-      # instagram
+
       if auth["provider"] == "instagram"
-        user.first_name = auth["info"]["name"].split(" ").first
-        user.last_name = auth["info"]["name"].split(" ").last
-        user.username = auth["info"]["nickname"]
-        user.refid = auth["uid"]
-        user.avatar_url = auth["info"]["image"]
+        user.first_name   = auth["info"]["name"].split(" ").first
+        user.last_name    = auth["info"]["name"].split(" ").last
+        user.username     = auth["info"]["nickname"]
+        user.refid        = auth["uid"]
+        user.avatar_url   = auth["info"]["image"]
       end
 
-      # create user
+
+
       if user.valid?
         user.save
+
+        if !auth[:session].blank? && !auth[:session][:invite_id].blank?
+          Invite.where(:id => auth[:session][:invite_id]).update(:status => 'accepted', :invited_user_id => user[:id])
+        end
+
       end
+    else
 
     end
 
-    # return
+
     return user
 
+  end
+
+  def followings
+    return UserFollow.eager(:friend).where(:user_id => self.id).all.with(:friend)
+  end
+
+  def followers
+    return UserFollow.eager(:friend).where(:friend_id => self.id).all.with(:friend)
   end
 
 end

@@ -12,6 +12,8 @@ Padrino.configure_apps do
     set :base_url, "http://shalendar.docker"
     set :auth, {
           :instagram => {:key => '79756588aba4487e9c3947a6f033db0d', :secret => 'c77405cd424847cb921873c2e15ceb29'},
+          :facebook       => {:app_id => '310763185973375', :secret => '342da645f77872059331ed6b3eee7095'},
+          :google_oauth2  => {:app_key => '456746435380-ji2gatb796l16u2fonjf9g479ovn4cec.apps.googleusercontent.com', :secret => 'vZVYL-mL-_VBmO8RxIIvlu4l'},
         }
     set :filepicker, 'ACGRkMPr9TqmbgPiHBS5Cz'
   else
