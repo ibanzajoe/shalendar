@@ -1,0 +1,999 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 9.6.2
+-- Dumped by pg_dump version 9.6.2
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+
+SET search_path = public, pg_catalog;
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- Name: calendars; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE calendars (
+    id integer NOT NULL,
+    user_id integer,
+    name character varying(64),
+    rank integer DEFAULT 0,
+    color character varying(64),
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
+);
+
+
+ALTER TABLE calendars OWNER TO postgres;
+
+--
+-- Name: calendars_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE calendars_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE calendars_id_seq OWNER TO postgres;
+
+--
+-- Name: calendars_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE calendars_id_seq OWNED BY calendars.id;
+
+
+--
+-- Name: events; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE events (
+    id integer NOT NULL,
+    user_id integer,
+    calendar_id integer,
+    source_id integer,
+    title character varying(64),
+    description text,
+    url character varying(128),
+    location text,
+    color text,
+    media jsonb,
+    starts_at timestamp without time zone,
+    ends_at timestamp without time zone,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
+);
+
+
+ALTER TABLE events OWNER TO postgres;
+
+--
+-- Name: events_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE events_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE events_id_seq OWNER TO postgres;
+
+--
+-- Name: events_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE events_id_seq OWNED BY events.id;
+
+
+--
+-- Name: hits; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE hits (
+    id integer NOT NULL,
+    user_id integer,
+    ip text,
+    created_at timestamp without time zone
+);
+
+
+ALTER TABLE hits OWNER TO postgres;
+
+--
+-- Name: hits_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE hits_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE hits_id_seq OWNER TO postgres;
+
+--
+-- Name: hits_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE hits_id_seq OWNED BY hits.id;
+
+
+--
+-- Name: media; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE media (
+    id integer NOT NULL,
+    user_id integer,
+    event_id integer,
+    provider text,
+    refid text,
+    type text,
+    title text,
+    description text,
+    image_url text,
+    video_url text,
+    data jsonb,
+    origin_at timestamp without time zone,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
+);
+
+
+ALTER TABLE media OWNER TO postgres;
+
+--
+-- Name: media_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE media_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE media_id_seq OWNER TO postgres;
+
+--
+-- Name: media_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE media_id_seq OWNED BY media.id;
+
+
+--
+-- Name: posts; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE posts (
+    id integer NOT NULL,
+    user_id integer,
+    title character varying(256),
+    teaser text,
+    content text,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
+);
+
+
+ALTER TABLE posts OWNER TO postgres;
+
+--
+-- Name: posts_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE posts_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE posts_id_seq OWNER TO postgres;
+
+--
+-- Name: posts_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE posts_id_seq OWNED BY posts.id;
+
+
+--
+-- Name: schema_info; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE schema_info (
+    version integer DEFAULT 0 NOT NULL
+);
+
+
+ALTER TABLE schema_info OWNER TO postgres;
+
+--
+-- Name: settings; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE settings (
+    id integer NOT NULL,
+    name text,
+    value text,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
+);
+
+
+ALTER TABLE settings OWNER TO postgres;
+
+--
+-- Name: settings_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE settings_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE settings_id_seq OWNER TO postgres;
+
+--
+-- Name: settings_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE settings_id_seq OWNED BY settings.id;
+
+
+--
+-- Name: users; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE users (
+    id integer NOT NULL,
+    first_name character varying(64),
+    last_name character varying(64),
+    address character varying(128),
+    address2 character varying(32),
+    city character varying(64),
+    state character varying(32),
+    zip character varying(16),
+    country character varying(2),
+    username text,
+    password_digest text,
+    email text,
+    role text,
+    uid text,
+    provider text,
+    refid text,
+    avatar_url text,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
+    integrations jsonb
+);
+
+
+ALTER TABLE users OWNER TO postgres;
+
+--
+-- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE users_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE users_id_seq OWNER TO postgres;
+
+--
+-- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE users_id_seq OWNED BY users.id;
+
+
+--
+-- Name: calendars id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY calendars ALTER COLUMN id SET DEFAULT nextval('calendars_id_seq'::regclass);
+
+
+--
+-- Name: events id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY events ALTER COLUMN id SET DEFAULT nextval('events_id_seq'::regclass);
+
+
+--
+-- Name: hits id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY hits ALTER COLUMN id SET DEFAULT nextval('hits_id_seq'::regclass);
+
+
+--
+-- Name: media id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY media ALTER COLUMN id SET DEFAULT nextval('media_id_seq'::regclass);
+
+
+--
+-- Name: posts id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY posts ALTER COLUMN id SET DEFAULT nextval('posts_id_seq'::regclass);
+
+
+--
+-- Name: settings id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY settings ALTER COLUMN id SET DEFAULT nextval('settings_id_seq'::regclass);
+
+
+--
+-- Name: users id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY users ALTER COLUMN id SET DEFAULT nextval('users_id_seq'::regclass);
+
+
+--
+-- Data for Name: calendars; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY calendars (id, user_id, name, rank, color, created_at, updated_at) FROM stdin;
+2	2	Work	0	#ff9f89	2016-12-15 07:44:48.480542	\N
+4	1	Work	0	black	2016-12-19 03:42:50.167514	\N
+5	1	Family	0	red	2016-12-19 03:43:26.266581	\N
+13	3	activities	0	#dbf7ed	2017-01-04 05:17:03.666123	\N
+1	2	Family	0	#FCDC00	2016-12-15 07:44:44.430378	2017-01-10 08:50:28.348332
+11	2	Food	0	#DBDF00	2016-12-28 07:02:13.472482	2017-01-10 08:51:22.073112
+12	2	Thoughts	0	#FDA1FF	2017-01-02 22:01:17.543533	2017-01-10 09:29:14.49173
+6	2	Weird	0	#009CE0	2016-12-23 07:30:56.202246	2017-01-10 09:29:47.511944
+3	2	Workouts	0	#68CCCA	2016-12-15 07:51:44.303002	2017-01-12 05:08:40.307192
+14	2	Chores	0	#B3B3B3	2017-01-12 05:09:26.032852	2017-01-12 05:10:19.50388
+15	2	Personal	0	#f2e2e5	2017-01-12 05:10:40.099581	\N
+17	2	Programming	0	#DBDF00	2017-01-17 07:37:28.095192	2017-01-17 07:40:07.284997
+18	2	Instagram	0	#AEA1FF	2017-01-20 09:52:17.625916	2017-01-20 09:52:24.455064
+20	2	Friends	0	#f7efdb	2017-01-24 22:54:31.737252	\N
+21	2	Health	0	#FDA1FF	2017-01-30 07:05:08.28886	2017-01-30 07:05:16.699048
+22	2	Entertainment	0	#FE9200	2017-02-08 10:32:25.891947	2017-02-08 10:34:38.122943
+24	5	testing	0	#e9e2f2	2017-02-14 07:13:08.045809	\N
+26	6	Meetings	0	#f7e0db	2017-02-23 22:34:09.583659	\N
+27	6	PTO	0	#f2e2e5	2017-02-23 22:34:42.030581	2017-02-23 22:34:53.296223
+28	6	WFH	0	#ffffff	2017-02-23 22:35:00.85573	\N
+29	6	Vacation	0	#f5e4f5	2017-02-23 22:35:07.224671	\N
+30	6	Time Off	0	#e9e2f2	2017-02-23 22:35:25.389271	\N
+31	6	Things Done	0	#f2e2e5	2017-02-23 22:35:47.105195	\N
+32	6	Todo	0	#f2e2e5	2017-02-23 22:36:20.247038	\N
+33	6	General	0	#f7efdb	2017-02-23 22:37:07.290178	\N
+34	2	Books	0	#e3e2f2	2017-02-28 09:27:18.174029	\N
+36	9	What I Bought	0	#e3e2f2	2017-04-09 03:38:26.528702	\N
+38	10	Sad	0	#7B64FF	2017-04-09 03:39:43.430748	2017-04-09 03:40:23.581674
+23	2	Shopping	0	#FE9200	2017-02-08 10:34:03.942123	2017-04-11 07:17:39.882449
+16	2	My Weight	0	#68BC00	2017-01-16 08:29:09.540406	2017-04-30 04:47:31.138237
+40	10	School	0	#AB149E	2017-05-02 01:57:23.527531	2017-05-02 01:57:40.900769
+9	10	Special	0	#AEA1FF	2016-12-27 01:04:32.262034	2017-05-02 04:16:04.361033
+41	10	KUMON	0	#F44E3B	2017-05-02 02:00:33.716535	2017-05-02 04:16:48.195779
+35	10	Outside	0	#0062B1	2017-03-31 13:39:59.229884	2017-05-02 22:09:36.10195
+10	10	Holiday	0	#808900	2016-12-27 01:09:35.886203	2017-05-02 22:11:15.711659
+8	10	Family	0	#653294	2016-12-27 01:04:20.380026	2017-05-05 05:49:36.632292
+19	10	VNSO BasketBall	0	#CCCCCC	2017-01-23 02:24:13.648615	2017-05-06 05:26:19.841001
+\.
+
+
+--
+-- Name: calendars_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('calendars_id_seq', 41, true);
+
+
+--
+-- Data for Name: events; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY events (id, user_id, calendar_id, source_id, title, description, url, location, color, media, starts_at, ends_at, created_at, updated_at) FROM stdin;
+5	2	1	\N	Jiena birthday Disneyland California Adventure trip!	we had a real fun time! but we couldn't watch fireworks because it was too windy :(	\N	disneyland, california	brown	["https://www.filepicker.io/api/file/AVCw4tziSiG3TcoRSkF2", "https://www.filepicker.io/api/file/OI0O97GYTW234UF7cvY4", "https://www.filepicker.io/api/file/JCmIg4CARXuKyteFwTZB", "https://www.filepicker.io/api/file/dcWL7RvTS0uGlhfqDXze", "https://www.filepicker.io/api/file/KTS143ZURwKD6k5zgRhz", "https://www.filepicker.io/api/file/WgeSMCOOTHOCwD7lW6XD", "https://www.filepicker.io/api/file/iuOaLsNGSjKaoPbWSpgt", "https://www.filepicker.io/api/file/wmyR4f3QR24t7CZ51WAe", "https://www.filepicker.io/api/file/OYLb58EoR8yQzurZVZHg", "https://www.filepicker.io/api/file/aMaKpmvORHW0fi95pY5S", "https://www.filepicker.io/api/file/mSDapQ3MTK6YxNxSzzz3", "https://www.filepicker.io/api/file/m0F92WFxRrunQIb0EgSi", "https://www.filepicker.io/api/file/cxOpp8VpRtKDz5UQpDY1"]	2016-12-02 00:00:00	2016-12-02 00:00:00	2016-12-15 07:47:32.82773	2016-12-23 08:26:21.979847
+6	2	1	\N	Jiena went to hospital for hand pinky checkup	Doctor did X-rays and said everything was fine. Advised her to take Jiena to Physical Therpay or Occupational Therapy for her hands	\N	Woodland Hills, CA	brown	["https://www.filepicker.io/api/file/q56SGUzTQFGtucHGj1ph"]	2016-12-03 00:00:00	2016-12-03 00:00:00	2016-12-15 07:48:09.373301	2016-12-15 07:49:19.312104
+10	2	2	\N	started playing ping pong		\N		#ff9f89	""	2016-11-29 00:00:00	2016-11-29 00:00:00	2016-12-15 07:51:14.394776	\N
+7	2	2	\N	sick, stayed home		\N		#ff9f89	""	2016-12-14 00:00:00	2016-12-14 00:00:00	2016-12-15 07:49:46.537073	2016-12-15 07:51:27.99153
+8	2	2	\N	sick, got haircut, stayed home		\N		#ff9f89	""	2016-12-13 00:00:00	2016-12-13 00:00:00	2016-12-15 07:50:09.640089	2016-12-15 07:51:31.112837
+11	2	3	\N	worked out at work		\N		#e38d13	""	2016-12-12 00:00:00	2016-12-12 00:00:00	2016-12-15 07:51:58.652119	\N
+12	2	3	\N	worked out at sauna		\N		#e38d13	""	2016-12-13 00:00:00	2016-12-13 00:00:00	2016-12-15 07:52:04.317065	\N
+16	1	\N	\N	went to denver		\N		\N	["https://www.filepicker.io/api/file/mKrS5TGmbq2eLG6SnVgp"]	2016-12-18 00:00:00	2016-12-18 00:00:00	2016-12-19 03:42:32.71944	\N
+17	1	\N	\N	came back from Denver		\N		\N	["https://www.filepicker.io/api/file/pgMiDy34TyZmHIzpcGLg", "https://www.filepicker.io/api/file/yDSAr4JRNlq3aBs2wHBw", "https://www.filepicker.io/api/file/0YZw8sxTNikTiNHI2Qbe"]	2016-12-17 00:00:00	2016-12-17 00:00:00	2016-12-19 03:43:09.405077	\N
+18	1	5	\N	went to disneyland california adevnture for jiena		\N		red	["https://www.filepicker.io/api/file/2TQX7yzKTS2W1FB7WA5B", "https://www.filepicker.io/api/file/JHocH3LQeSnPKV8Q0c5F", "https://www.filepicker.io/api/file/CFW4Ob2hS6OpfHfbOky8", "https://www.filepicker.io/api/file/mWDfrOjESFmlUvF2VVld", "https://www.filepicker.io/api/file/y2PWmrjkQRq2j5y8c6N9", "https://www.filepicker.io/api/file/P4B5XIgCTZi6oT8xyyFO", "https://www.filepicker.io/api/file/cDfshJL5RqGPqfj15ARs", "https://www.filepicker.io/api/file/e9jFkq7HQeOVJhkbBpfw"]	2016-12-02 00:00:00	2016-12-02 00:00:00	2016-12-19 03:44:06.381184	\N
+19	1	4	\N	going to denver for business trip		\N		black	["https://www.filepicker.io/api/file/k60Y2cH1SwWoLHtzXu2Q", "https://www.filepicker.io/api/file/57x6WfdHRWyQCvD807jB"]	2016-12-16 00:00:00	2016-12-16 00:00:00	2016-12-19 03:44:48.499245	\N
+20	1	\N	\N	Wife and kids		\N		\N	["https://www.filepicker.io/api/file/k5PBHOcWSSqIrdrQ9ox7", "https://www.filepicker.io/api/file/0PTpTrA1TYOP3yV7FUOf", "https://www.filepicker.io/api/file/tj8qDwuySz6H6BRvnpJN", "https://www.filepicker.io/api/file/Az8lOXbRi6L7vieOvjhA", "https://www.filepicker.io/api/file/RQE9O4ADQVmAWLQLVScN", "https://www.filepicker.io/api/file/lQObCo9cRnmqEjMfauIu"]	2016-12-07 00:00:00	2016-12-07 00:00:00	2016-12-19 03:47:03.386666	\N
+21	1	\N	\N	setup ping pong for kids!		\N		\N	""	2016-12-18 00:00:00	2016-12-18 00:00:00	2016-12-19 03:47:16.439347	\N
+39	2	11	\N	ordered bibigo and chipotle at lunch for kids		\N	sherman oaks westfield	#DBDF00	""	2016-12-27 00:00:00	2016-12-27 00:00:00	2016-12-28 07:03:03.776307	2017-02-01 05:35:50.919508
+25	2	2	\N	denver started snowing at midnight, so cool!		\N		#ff9f89	["https://www.filepicker.io/api/file/WE0Kgz2uTgt19PHrKDJk"]	2016-12-17 00:00:00	2016-12-17 00:00:00	2016-12-23 07:25:39.921966	\N
+9	2	2	\N	company trip to Denver, CO to see investor		\N		#ff9f89	["https://www.filepicker.io/api/file/xnOkKxNqQ2eLM7LOMklq"]	2016-12-16 00:00:00	2016-12-16 00:00:00	2016-12-15 07:50:33.354112	2016-12-23 07:26:06.20497
+26	3	\N	\N	created webpack rebuild script		\N		\N	["https://www.filepicker.io/api/file/quEvMjZ7Ssjx1hMmrnHh"]	2016-12-22 00:00:00	2016-12-22 00:00:00	2016-12-23 07:29:47.888748	\N
+24	2	2	\N	worked real late so can have a week long break	ordered thai food paid for by company!	\N		#ff9f89	""	2016-12-22 00:00:00	2016-12-22 00:00:00	2016-12-23 07:20:01.779073	2016-12-23 07:30:32.287965
+27	2	6	\N	heard about Mandela Effect from Min	somewhat mind blowing!	\N		#009dac	""	2016-12-21 00:00:00	2016-12-21 00:00:00	2016-12-23 07:31:16.888641	2016-12-23 08:22:56.09051
+38	2	11	\N	ordered thai food for dinner		\N		brown	""	2016-12-27 00:00:00	2016-12-27 00:00:00	2016-12-28 07:02:26.725429	2016-12-28 07:03:13.415097
+43	2	1	\N	gave jaelen haircut	Looks same as normal	\N	Korea town	brown	""	2016-12-30 00:00:00	2016-12-30 00:00:00	2016-12-31 00:30:28.811858	2016-12-31 00:37:09.88076
+4	2	1	\N	Jaelen school dance	I didn't see anything.	\N	Dixie Canyon School	brown	""	2016-12-14 00:00:00	2016-12-14 00:00:00	2016-12-15 07:46:40.604848	2016-12-31 00:32:14.160032
+40	2	1	\N	Jiena 2nd basketball practice 	Jiena wasn't shy she made 6 baskets and did very well. (Brave)	\N	ShermanOaks park	brown	""	2016-12-29 00:00:00	2016-12-29 00:00:00	2016-12-30 08:18:39.553723	2016-12-31 00:33:44.454408
+41	2	1	\N	jaelen headache	It was a real bad headache	\N	Home	brown	""	2016-12-29 00:00:00	2016-12-29 00:00:00	2016-12-30 08:18:56.184739	2016-12-31 00:33:00.491177
+44	2	1	\N	delete minecraft from kids	It was so so so so so so so so so so so so so so so so so so so so so so so so so so so so sad when I saw my kid get very sad when I deleted MINECRAFT. Kid says,"So so so sad WHEN HE DELETED MINECRAFT UGH!!!!!"	\N		brown	""	2016-12-30 00:00:00	2016-12-30 00:00:00	2016-12-31 00:30:42.553153	2016-12-31 00:36:47.995583
+46	2	1	\N	ate 떡국		\N		brown	""	2016-12-31 00:00:00	2016-12-31 00:00:00	2017-01-02 21:01:05.697051	\N
+48	2	2	\N	work from home, a/c not working in office		\N		#ff9f89	""	2017-01-02 00:00:00	2017-01-02 00:00:00	2017-01-02 21:01:51.646294	\N
+42	2	1	\N	watched movie "Sing"	it was sad watching gorilla, i think it made jaelen get a headache	\N	AMC Burbank	#FCDC00	["https://process.filepicker.io/ACGRkMPr9TqmbgPiHBS5Cz/resize=width:500,height:500,fit:crop/rotate=deg:exif/https://www.filepicker.io/api/file/TYAkBoxeSeOPoV3uUVRk", "https://process.filepicker.io/ACGRkMPr9TqmbgPiHBS5Cz/resize=width:500,height:500,fit:crop/rotate=deg:exif/https://www.filepicker.io/api/file/UvmLqqsWQX2MwZ7rcVJn", "https://process.filepicker.io/ACGRkMPr9TqmbgPiHBS5Cz/resize=width:500,height:500,fit:crop/rotate=deg:exif/https://www.filepicker.io/api/file/zNGSeF4BRoWEExRBWINQ", "https://process.filepicker.io/ACGRkMPr9TqmbgPiHBS5Cz/resize=width:500,height:500,fit:crop/rotate=deg:exif/https://www.filepicker.io/api/file/ccKhNaI3SOKhJ7cEtWKW"]	2016-12-29 00:00:00	2016-12-29 00:00:00	2016-12-30 08:19:26.359379	2017-01-16 07:49:07.12934
+23	2	1	\N	jiena message me and chat on minecraft		\N		#FCDC00	["https://process.filepicker.io/ACGRkMPr9TqmbgPiHBS5Cz/resize=width:500,height:500,fit:crop/rotate=deg:exif/https://www.filepicker.io/api/file/9myTOg4QTwSAk3UhJwLN", "https://process.filepicker.io/ACGRkMPr9TqmbgPiHBS5Cz/resize=width:500,height:500,fit:crop/rotate=deg:exif/https://www.filepicker.io/api/file/ftBpoldvSkGQ4bg7Fi0t", "https://process.filepicker.io/ACGRkMPr9TqmbgPiHBS5Cz/resize=width:500,height:500,fit:crop/rotate=deg:exif/https://www.filepicker.io/api/file/SrrjdFi9RYutdOqOsWLv"]	2016-12-22 00:00:00	2016-12-22 00:00:00	2016-12-22 22:00:43.918135	2017-01-17 07:25:10.329482
+45	2	1	\N	celebrated new years!		\N		#FCDC00	["https://www.filepicker.io/api/file/NCVpnv8yQLKTxDp5k50k", "https://www.filepicker.io/api/file/xWBAPIA4TDmQiUbEBcwB"]	2017-01-01 00:00:00	2017-01-01 00:00:00	2017-01-02 21:00:44.652253	2017-01-16 08:18:16.250874
+47	2	1	\N	took a walk outside house		\N		brown	["https://www.filepicker.io/api/file/Gja7PsAQZGkGa6mD1PNr", "https://www.filepicker.io/api/file/WQ33bOqRvCMJcc4ti9h3"]	2017-01-01 00:00:00	2017-01-01 00:00:00	2017-01-02 21:01:28.993863	2017-01-02 21:03:24.803395
+49	2	12	\N	heard about "atheism delusion book"	http://saviorofmankind.com/Atheism_Delusion/	\N		#f5e4f5	""	2017-01-02 00:00:00	2017-01-02 00:00:00	2017-01-02 22:02:02.051322	\N
+50	3	13	\N	Snowboarding		\N		#dbf7ed	""	2017-01-01 00:00:00	2017-01-01 00:00:00	2017-01-04 05:17:16.403828	\N
+51	2	3	\N	worked out lightly		\N		#e38d13	""	2017-01-04 00:00:00	2017-01-04 00:00:00	2017-01-05 06:45:13.152915	\N
+52	2	1	\N	jaelen light headache in car		\N		brown	""	2017-01-08 00:00:00	2017-01-08 00:00:00	2017-01-09 22:14:02.580374	\N
+53	2	1	\N	jaelen headache in morning		\N		brown	""	2017-01-07 00:00:00	2017-01-07 00:00:00	2017-01-09 22:14:21.87265	\N
+54	2	1	\N	jiena haircut by mom		\N		brown	""	2017-01-08 00:00:00	2017-01-08 00:00:00	2017-01-09 22:14:44.523421	\N
+55	2	1	\N	jae went costco with jaelen		\N		brown	""	2017-01-08 00:00:00	2017-01-08 00:00:00	2017-01-09 22:16:02.300232	\N
+56	2	1	\N	celebrated jae's 35th birthday!		\N		brown	""	2017-01-06 00:00:00	2017-01-06 00:00:00	2017-01-09 22:16:16.839789	\N
+57	2	3	\N	worked out today, squat, bicepts, bench		\N		#e38d13	""	2017-01-10 00:00:00	2017-01-10 00:00:00	2017-01-10 08:50:52.996502	\N
+58	2	1	\N	returned ping pong table	we had a lot of fun, but there just was not enough space in the house so returned it :(	\N		#FCDC00	""	2017-01-10 00:00:00	2017-01-10 00:00:00	2017-01-10 08:52:17.145827	\N
+60	2	2	\N	gearing to work on performance monitoring		\N		#ff9f89	""	2017-01-09 00:00:00	2017-01-09 00:00:00	2017-01-10 09:30:57.76956	\N
+61	2	2	\N	dennis started helping out for bambee		\N		#ff9f89	""	2017-01-06 00:00:00	2017-01-06 00:00:00	2017-01-10 09:31:12.754155	\N
+62	2	3	\N	took creatine 3 scoops		\N		#e38d13	""	2017-01-10 00:00:00	2017-01-10 00:00:00	2017-01-12 04:42:47.278503	\N
+63	2	2	\N	took a day off		\N		#ff9f89	""	2017-01-11 00:00:00	2017-01-11 00:00:00	2017-01-12 04:43:04.266428	\N
+64	2	2	\N	had a talk with max about ideas he has		\N		#ff9f89	""	2017-01-10 00:00:00	2017-01-10 00:00:00	2017-01-12 04:43:58.759761	\N
+65	2	14	\N	did oil change from valvoline		\N		#B3B3B3	""	2017-01-11 00:00:00	2017-01-11 00:00:00	2017-01-12 05:09:55.940217	\N
+66	2	14	\N	car engine light came up		\N		#B3B3B3	""	2017-01-10 00:00:00	2017-01-10 00:00:00	2017-01-12 05:10:02.289166	\N
+72	2	1	\N	ordered Lull bed for jaelen (twin)	$530	\N		#FCDC00	""	2017-01-13 00:00:00	2017-01-13 00:00:00	2017-01-16 08:19:14.868535	\N
+73	2	2	\N	had korean bbq with Sean and Andy at Oo Kook		\N	oo kook at koreatown	#ff9f89	""	2017-01-12 00:00:00	2017-01-12 00:00:00	2017-01-16 08:21:36.023405	\N
+67	2	15	\N	took a nap		\N		#f2e2e5	""	2017-01-11 00:00:00	2017-01-11 00:00:00	2017-01-12 05:10:54.188155	2017-01-12 05:11:02.784857
+68	2	1	\N	went to watch jiena basketball game	the score:\njiena's team - 8\nother team - 52\n\ntrust the process	\N	north hollywood recreational park	#FCDC00	["https://www.filepicker.io/api/file/O9zOtXWSQaLZeDYCGqjg", "https://www.filepicker.io/api/file/1RdGU9lGRBkTyymaEcjA"]	2017-01-14 00:00:00	2017-01-14 00:00:00	2017-01-16 07:25:26.732916	2017-01-16 07:29:24.583331
+75	2	2	\N	markett is having trouble, about to lose jason		\N		#ff9f89	""	2017-01-16 00:00:00	2017-01-16 00:00:00	2017-01-17 07:16:52.142435	\N
+76	2	3	\N	worked out today, upper body		\N		#68CCCA	""	2017-01-16 00:00:00	2017-01-16 00:00:00	2017-01-17 07:18:39.81871	\N
+70	2	1	\N	jiena went to alianna's birthday party in Sky High Trampoline		\N	Woodland Hills, CA	#FCDC00	""	2017-01-15 00:00:00	2017-01-15 00:00:00	2017-01-16 07:34:10.370118	\N
+71	2	11	\N	bought kalbis grill for kids	they love it	\N		#DBDF00	""	2017-01-13 00:00:00	2017-01-13 00:00:00	2017-01-16 07:36:27.098614	\N
+69	2	1	\N	went to sprint, switched from att	went to sprint because first they made a mistake on the phone bill, we were supposed to be on $100/month unlimited but when we received our bill it wasn't. i showed them and they said they made a mistake :/ seriously??\n\nthen, jaelen switched from lg x power to samsung galaxy emerge, i got iphone 7 128gb, and wife got my iphone 7. :)))	\N	woodland hills, ca	#FCDC00	""	2017-01-15 00:00:00	2017-01-15 00:00:00	2017-01-16 07:33:02.945542	2017-01-16 07:39:15.57348
+78	2	16	\N	132		\N		#7B64FF	""	2017-01-16 00:00:00	2017-01-16 00:00:00	2017-01-17 07:40:01.021815	\N
+59	2	3	\N	started taking ON at work		\N		#68CCCA	["https://www.filepicker.io/api/file/by2BPLLSpBlr841BFQLQ", "https://www.filepicker.io/api/file/C438bIKnRamjDYD9JUhh", "https://www.filepicker.io/api/file/CrV3XPi4SVkVJ2R6vAhw"]	2017-01-10 00:00:00	2017-01-10 00:00:00	2017-01-10 09:30:19.66911	2017-01-17 07:20:16.906562
+79	2	17	\N	found out postgres has much different syntax		\N		#DBDF00	""	2017-01-16 00:00:00	2017-01-16 00:00:00	2017-01-17 07:40:11.545119	2017-01-17 07:41:12.608458
+82	3	\N	\N	ktown nights		\N		#ffffff	""	2017-01-18 00:00:00	2017-01-18 00:00:00	2017-01-18 11:55:21.805196	\N
+81	2	3	\N	worked out, abs, back, and thighs		\N		#68CCCA	""	2017-01-17 00:00:00	2017-01-17 00:00:00	2017-01-18 08:56:00.167937	2017-01-18 20:06:36.662603
+84	2	1	\N	hoa meeting		\N		#FCDC00	""	2017-01-18 00:00:00	2017-01-18 00:00:00	2017-01-19 09:22:34.990074	\N
+77	2	2	\N	meet with sean, talk about work	talked about training his son	\N		#ff9f89	""	2017-01-17 00:00:00	2017-01-17 00:00:00	2017-01-17 07:22:03.094592	2017-01-19 09:23:01.425434
+85	2	2	\N	had dennis setup his own server		\N		#ff9f89	""	2017-01-18 00:00:00	2017-01-18 00:00:00	2017-01-19 09:23:37.640681	\N
+86	2	2	\N	talked about hiring dennis with company		\N		#ff9f89	""	2017-01-18 00:00:00	2017-01-18 00:00:00	2017-01-19 09:23:52.884935	\N
+242	2	34	\N	Bought Jesus, a pilgrimage book		\N		#e3e2f2	""	2017-02-28 00:00:00	2017-02-28 00:00:00	2017-02-28 09:27:45.889003	2017-02-28 09:28:06.831622
+88	2	2	\N	dennis brought up ktown nights idea to sean		\N		#ff9f89	""	2017-01-17 00:00:00	2017-01-17 00:00:00	2017-01-19 17:59:40.48979	\N
+89	2	2	\N	dennis drew ktown nights		\N		#ff9f89	""	2017-01-18 00:00:00	2017-01-18 00:00:00	2017-01-19 18:00:07.101925	\N
+90	2	17	\N	started looking into yarn		\N		#DBDF00	""	2017-01-19 00:00:00	2017-01-19 00:00:00	2017-01-19 19:46:57.950573	2017-01-19 19:47:08.347935
+92	2	2	\N	markett sent us an offer		\N		#ff9f89	""	2017-01-19 00:00:00	2017-01-19 00:00:00	2017-01-20 07:39:24.792554	\N
+126	2	2	\N	meet up franky 		\N		#ff9f89	""	2017-01-25 00:00:00	2017-01-25 00:00:00	2017-01-25 09:13:49.617522	2017-01-27 21:08:26.589261
+93	\N	\N	\N			\N	\N	\N	["https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/14582494_230590227392571_1133498872220352512_n.jpg?ig_cache_key=MTQyMzYyNDIxNzYxNDM4ODIzOA%3D%3D.2"]	2017-01-09 02:34:13	2017-01-09 02:34:13	2017-01-20 09:55:23.289786	\N
+94	\N	\N	\N			\N	\N	\N	["https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/15875956_1212917825452337_2409153512601550848_n.jpg?ig_cache_key=MTQyMzYyMzYzNzQxNjUwNjczNw%3D%3D.2"]	2017-01-09 02:33:04	2017-01-09 02:33:04	2017-01-20 09:55:23.470732	\N
+95	\N	\N	\N			\N	\N	\N	["https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/15876780_1226232254128241_4851363189457158144_n.jpg?ig_cache_key=MTQxOTgyMDc5OTQ5NDE4MjU4Mw%3D%3D.2"]	2017-01-03 20:37:30	2017-01-03 20:37:30	2017-01-20 09:55:23.712579	\N
+96	\N	\N	\N			\N	\N	\N	["https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/15802733_1191373274315759_1709870847549767680_n.jpg?ig_cache_key=MTQxOTgyMDM4OTMxNjE2Nzk4MA%3D%3D.2"]	2017-01-03 20:36:41	2017-01-03 20:36:41	2017-01-20 09:55:24.034345	\N
+97	\N	\N	\N			\N	\N	\N	["https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/15624121_242601042844755_7708581803639963648_n.jpg?ig_cache_key=MTQxODQ0OTg1NTc2NDc1NTI3NQ%3D%3D.2"]	2017-01-01 23:13:41	2017-01-01 23:13:41	2017-01-20 09:55:24.211272	\N
+98	\N	\N	\N			\N	\N	\N	["https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/15801968_633810200159502_5910472016930013184_n.jpg?ig_cache_key=MTQxODQ0OTY0MjQ1MDY4NzY2NQ%3D%3D.2"]	2017-01-01 23:13:15	2017-01-01 23:13:15	2017-01-20 09:55:24.44521	\N
+99	\N	\N	\N			\N	\N	\N	["https://scontent.cdninstagram.com/t51.2885-15/s640x640/e15/15802390_1331226976908260_6807985525979348992_n.jpg?ig_cache_key=MTQxNjg0OTMwNTM5MDI5NDc5Mw%3D%3D.2"]	2016-12-30 18:13:40	2016-12-30 18:13:40	2017-01-20 09:55:24.67958	\N
+100	\N	\N	\N			\N	\N	\N	["https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/15624919_234286640348212_4940197157681496064_n.jpg?ig_cache_key=MTQxNjg0ODAzMDU1Njc2NjA5OA%3D%3D.2"]	2016-12-30 18:11:08	2016-12-30 18:11:08	2017-01-20 09:55:24.921394	\N
+101	\N	\N	\N			\N	\N	\N	["https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/15538271_1801645323423827_6822275285900066816_n.jpg?ig_cache_key=MTQxMzU5MDA0OTM3NTU4NDIyOQ%3D%3D.2"]	2016-12-26 06:18:07	2016-12-26 06:18:07	2017-01-20 09:55:25.239272	\N
+102	\N	\N	\N			\N	\N	\N	["https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/15535167_1793029157615681_2208980772155555840_n.jpg?ig_cache_key=MTQxMzU3Njk4Nzg1MTUzMDI4Mg%3D%3D.2"]	2016-12-26 05:52:10	2016-12-26 05:52:10	2017-01-20 09:55:25.421177	\N
+103	\N	\N	\N			\N	\N	\N	["https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/15538491_346943885690223_2000754706036555776_n.jpg?ig_cache_key=MTQxMzI5MzY2NjIyMzMwMDczMQ%3D%3D.2"]	2016-12-25 20:29:15	2016-12-25 20:29:15	2017-01-20 09:55:25.604381	\N
+104	\N	\N	\N	If it's free, take it		\N	\N	\N	["https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/14566587_1722059388123207_9134096619006853120_n.jpg?ig_cache_key=MTQwNzYzOTQzNjcxMjE1MTg0Mw%3D%3D.2"]	2016-12-18 01:15:18	2016-12-18 01:15:18	2017-01-20 09:55:25.841907	\N
+105	\N	\N	\N	Wow this place is snowing a lot #denver		\N	\N	\N	["https://scontent.cdninstagram.com/t51.2885-15/s640x640/e15/15624247_1220659944689942_5749876983504830464_n.jpg?ig_cache_key=MTQwNzEyMzM4NTIxNzgwOTExMA%3D%3D.2"]	2016-12-17 08:10:00	2016-12-17 08:10:00	2017-01-20 09:55:26.083188	\N
+106	\N	\N	\N	Company bambee		\N	\N	\N	["https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/15403355_1820786581526447_777599770196705280_n.jpg?ig_cache_key=MTQwNjg1MTAzNTMyNzA2MTk4Mw%3D%3D.2"]	2016-12-16 23:08:54	2016-12-16 23:08:54	2017-01-20 09:55:26.416333	\N
+107	\N	\N	\N			\N	\N	\N	["https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/14504883_1825975937617509_8733706775397662720_n.jpg?ig_cache_key=MTQwMjcwMzEyNjU5NTM5MjIxOA%3D%3D.2"]	2016-12-11 05:47:44	2016-12-11 05:47:44	2017-01-20 09:55:26.763685	\N
+108	\N	\N	\N			\N	\N	\N	["https://scontent.cdninstagram.com/t51.2885-15/s640x640/e15/14553172_1813763772231935_3025686228172275712_n.jpg?ig_cache_key=MTM5ODE0ODk1NDcyNjQ5NTUzMg%3D%3D.2"]	2016-12-04 22:59:25	2016-12-04 22:59:25	2017-01-20 09:55:27.090363	\N
+109	\N	\N	\N			\N	\N	\N	["https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/15305860_147802365700482_8717898834732122112_n.jpg?ig_cache_key=MTM5ODEzODIyMTQyNjk5NzIxNA%3D%3D.2"]	2016-12-04 22:38:05	2016-12-04 22:38:05	2017-01-20 09:55:27.417951	\N
+110	\N	\N	\N			\N	\N	\N	["https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/15043778_1252006618197687_4222838409799925760_n.jpg?ig_cache_key=MTM5NzAxMDI4MjExNTI1MjQ0MQ%3D%3D.2"]	2016-12-03 09:17:04	2016-12-03 09:17:04	2017-01-20 09:55:27.789118	\N
+111	\N	\N	\N			\N	\N	\N	["https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/15056755_1383674161673552_8899401992292532224_n.jpg?ig_cache_key=MTM5NzAwOTM3MDkyNzk5NDUwMQ%3D%3D.2"]	2016-12-03 09:15:16	2016-12-03 09:15:16	2017-01-20 09:55:27.952186	\N
+112	\N	\N	\N			\N	\N	\N	["https://scontent.cdninstagram.com/t51.2885-15/s640x640/e15/15253350_1352660751420260_3025003285422538752_n.jpg?ig_cache_key=MTM5NzAwNzk2NzY4MTYxNTk1MQ%3D%3D.2"]	2016-12-03 09:12:29	2016-12-03 09:12:29	2017-01-20 09:55:28.333951	\N
+113	2	2	\N	found calendar theme	 - http://demos.creative-tim.com/fullcalendar	\N		#ff9f89	""	2017-01-20 00:00:00	2017-01-20 00:00:00	2017-01-20 21:56:32.647232	2017-01-20 21:56:37.51098
+115	\N	\N	\N			\N	\N	\N	["https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/16229043_1288725404507191_7116609403284881408_n.jpg?ig_cache_key=MTQzMjE3NDgzNDgyNTg2NTkzNQ%3D%3D.2"]	2017-01-20 21:42:46	2017-01-20 21:42:46	2017-01-21 20:53:55.82227	\N
+122	2	2	\N	almost going to markett		\N		#ff9f89	""	2017-01-23 00:00:00	2017-01-23 00:00:00	2017-01-24 06:34:29.525908	\N
+114	2	1	\N	jaelen gets new bed, it's from lull		\N		#FCDC00	["https://process.filepicker.io/ACGRkMPr9TqmbgPiHBS5Cz/resize=width:500,height:500,fit:crop/rotate=deg:exif/https://www.filepicker.io/api/file/eaGHLPJWRSGjE7uP5NW9", "https://www.filepicker.io/api/file/5XWj45YmQoevhTPxK0oB", "https://www.filepicker.io/api/file/Jjq0nOhdTbaYP8oTbmY0", "https://www.filepicker.io/api/file/r1XDkd5FQx2uVKxKp7uG"]	2017-01-21 00:00:00	2017-01-21 00:00:00	2017-01-21 20:53:39.607061	2017-01-24 10:33:11.278094
+243	2	14	\N	Order new bed for Jaelen		\N		#B3B3B3	null	2017-03-15 00:00:00	2017-03-15 00:00:00	2017-03-01 01:19:10.385533	\N
+124	2	15	\N	postponed jury duty to january 26 - 29, 2018	Hello Jae Lee,\n\n\nCheck between Friday, January 26, 2018 7:00 PM\nand Monday, January 29, 2018 6:00 AM\n\nYour calls to 1-800-778-5879 (SRV-JURY) and/or requests for reporting instructions on this website are recorded. Your failure to check for reporting instructions during your reporting week as instructed on even one day will cause a failure to appear notice to be mailed to you and your jury service will be rescheduled.	\N		#f2e2e5	""	2017-01-30 00:00:00	2017-01-30 00:00:00	2017-01-25 00:10:02.887672	2017-01-25 00:15:31.095671
+123	2	20	\N	attend sean's mothers funeral		\N		#f7efdb	["https://www.filepicker.io/api/file/u4ymi2szRP6g2MUUh9nL"]	2017-01-24 00:00:00	2017-01-24 00:00:00	2017-01-24 22:54:26.500705	2017-01-25 08:58:51.36129
+125	2	2	\N	bambee showed off new office space near SM pier		\N		#ff9f89	["https://www.filepicker.io/api/file/kRYx0LdvTIKxxqyh9h0S", "https://www.filepicker.io/api/file/PrSfx06KSHqnTQbjZeOS", "https://www.filepicker.io/api/file/XO6WRlCjSZaTwfeWInFh"]	2017-01-24 00:00:00	2017-01-24 00:00:00	2017-01-25 09:00:06.602155	\N
+87	2	2	\N	dennis interview with bambee		\N		#ff9f89	["https://www.filepicker.io/api/file/Ej1qCaUkQPCdGPYXqA5r", "https://www.filepicker.io/api/file/BgjclfEqTkuQyl33y8hT"]	2017-01-24 00:00:00	2017-01-24 00:00:00	2017-01-19 09:24:03.695779	2017-01-25 09:00:35.162726
+159	2	16	\N	131		\N		#7B64FF	null	2017-01-23 00:00:00	2017-01-23 00:00:00	2017-01-25 20:16:00.904629	\N
+160	2	2	\N	day off		\N		#ff9f89	null	2017-01-25 00:00:00	2017-01-25 00:00:00	2017-01-27 21:08:17.844894	\N
+161	2	15	\N	im getting pretty good at ping pong	learned to return with spins	\N		#f2e2e5	""	2017-01-26 00:00:00	2017-01-26 00:00:00	2017-01-27 21:08:52.052593	2017-01-27 21:09:04.592832
+162	2	1	\N	jiena and jaelen both scored a basket in game!		\N		#FCDC00	["https://www.filepicker.io/api/file/5Kn4h29dRw6TdWyWXhmG"]	2017-01-28 00:00:00	2017-01-28 00:00:00	2017-01-29 03:28:02.871738	2017-01-29 03:31:19.103437
+163	2	1	\N	jiena and jaelen picture day basketball team		\N		#FCDC00	["https://www.filepicker.io/api/file/VyBgiROYROkh2Dn7msJZ", "https://www.filepicker.io/api/file/mKX88X8Rf22BVuwXUHgP"]	2017-01-28 00:00:00	2017-01-28 00:00:00	2017-01-29 03:31:38.447431	2017-01-29 03:32:33.093336
+164	2	1	\N	practice basketball with jaelen	jaelen met with ari and played handball together!	\N	beeman's park	#FCDC00	["https://www.filepicker.io/api/file/2uf2lF7TqK9BjhBoyrz8", "https://www.filepicker.io/api/file/H9YbDfBFQn6O15suoY1f", "https://www.filepicker.io/api/file/ZLIU3xlRQ6YRwasbUL63"]	2017-01-29 00:00:00	2017-01-29 00:00:00	2017-01-30 07:01:55.19717	2017-01-30 07:02:50.881783
+165	2	15	\N	went to wi spa		\N		#f2e2e5	["https://process.filepicker.io/ACGRkMPr9TqmbgPiHBS5Cz/resize=width:500,height:500,fit:crop/rotate=deg:exif/https://www.filepicker.io/api/file/vdFLS0HzTmCgmzZzcmE7", "https://process.filepicker.io/ACGRkMPr9TqmbgPiHBS5Cz/resize=width:500,height:500,fit:crop/rotate=deg:exif/https://www.filepicker.io/api/file/TTXehTi8RImSqTALUrjQ"]	2017-01-29 00:00:00	2017-01-29 00:00:00	2017-01-30 07:04:21.088775	2017-01-30 07:04:56.317514
+166	2	21	\N	feeling a little sick		\N		#FDA1FF	null	2017-01-29 00:00:00	2017-01-29 00:00:00	2017-01-30 07:05:32.779542	\N
+167	2	21	\N	noticed jiena voice changing		\N		#FDA1FF	null	2017-01-27 00:00:00	2017-01-27 00:00:00	2017-01-30 07:05:46.639215	\N
+168	2	3	\N	worked out chest and abs		\N		#68CCCA	["https://www.filepicker.io/api/file/DyMJe7JMSp6bg2dDRRkS", "https://www.filepicker.io/api/file/APapBMcTrueNMzYMD1kA", "https://www.filepicker.io/api/file/VqJUcuxSBagRGfgf8X08"]	2017-01-26 00:00:00	2017-01-26 00:00:00	2017-01-30 07:06:35.6464	2017-01-30 07:07:41.848116
+83	2	1	\N	house gas inspection HOA	checked all the units, gave access to front gate	\N		#FCDC00	""	2017-01-25 00:00:00	2017-01-25 00:00:00	2017-01-19 09:22:21.761368	2017-01-30 07:08:36.170761
+177	2	2	\N	left Bambee		\N		#ff9f89	""	2017-02-03 00:00:00	2017-02-03 00:00:00	2017-02-04 21:28:36.316814	2017-02-04 21:29:10.823983
+171	2	2	\N	visited markett 	met with team, franky, ronny, erin, josh, danni, and chris from buildingblocks. worked on some initial tasks, they need lot of things done by sunday!!	\N		#ff9f89	""	2017-01-31 00:00:00	2017-01-31 00:00:00	2017-02-01 05:34:49.491997	2017-02-01 05:35:15.415773
+179	2	2	\N	stayed home to ponder		\N		#ff9f89	null	2017-02-01 00:00:00	2017-02-01 00:00:00	2017-02-04 21:57:26.342083	\N
+170	2	3	\N	worked out: arms, chest, shoulder, abs		\N	bay club in culver city	#68CCCA	["https://www.filepicker.io/api/file/50dAX2KAT46HuqmLUiGF", "https://www.filepicker.io/api/file/4bdH7KFiQr1ztnWUCmiA"]	2017-01-31 00:00:00	2017-01-31 00:00:00	2017-02-01 05:33:08.577935	2017-02-01 05:44:55.847373
+169	2	2	\N	dennis first day at bambee		\N	santa monica watergarden	#ff9f89	["https://www.filepicker.io/api/file/gt4FCASLQzqDV7oZo4NA"]	2017-01-30 00:00:00	2017-01-30 00:00:00	2017-01-30 17:31:47.791168	2017-02-01 05:46:01.117444
+172	2	20	\N	sean visited for dinner		\N		#f7efdb	""	2017-01-30 00:00:00	2017-01-30 00:00:00	2017-02-01 05:46:22.626238	2017-02-01 05:46:38.585961
+173	2	2	\N	told allan about me leaving bambee :(		\N		#ff9f89	null	2017-01-30 00:00:00	2017-01-30 00:00:00	2017-02-01 05:47:21.592681	\N
+174	2	\N	\N	\N		\N		#ffffff	null	2017-02-03 00:00:00	2017-02-03 00:00:00	2017-02-03 21:43:03.357454	\N
+175	2	2	\N	meeting allan to depart from bambee		\N		#ff9f89	["https://www.filepicker.io/api/file/BDAQXTLORuKpiM4lkUEr"]	2017-02-03 00:00:00	2017-02-03 00:00:00	2017-02-03 21:43:35.707399	2017-02-04 03:30:26.881404
+176	2	1	\N	jiena showed me her minecraft skins she made	Here all the skins she made, I'm very surprised she did this all her self! How she learn to do all this?\n\nhttp://www.minecraftskins.com/2911711/MincraftSkinMaker1/	\N		#FCDC00	["https://www.filepicker.io/api/file/8sbUutkSQgi6ux2X3a7D"]	2017-02-04 00:00:00	2017-02-04 00:00:00	2017-02-04 21:28:19.967184	\N
+180	2	2	\N	stayed home to ponder		\N		#ff9f89	null	2017-02-02 00:00:00	2017-02-02 00:00:00	2017-02-04 21:57:33.111592	\N
+182	2	1	\N	watched super bowl, crazy comeback i ever seen!		\N		#FCDC00	null	2017-02-05 00:00:00	2017-02-05 00:00:00	2017-02-07 07:43:03.126556	\N
+181	2	1	\N	met with wife's parents for dinner		\N	hokkaido buffett sherman oaks	#FCDC00	["https://process.filepicker.io/ACGRkMPr9TqmbgPiHBS5Cz/resize=width:500,height:500,fit:crop/rotate=deg:exif/https://www.filepicker.io/api/file/5YFxVAmySHWQ8vdl4t6y", "https://process.filepicker.io/ACGRkMPr9TqmbgPiHBS5Cz/resize=width:500,height:500,fit:crop/rotate=deg:exif/https://www.filepicker.io/api/file/gkGAe8mtQkiJZ5pCf0WT", "https://process.filepicker.io/ACGRkMPr9TqmbgPiHBS5Cz/resize=width:500,height:500,fit:crop/rotate=deg:exif/https://www.filepicker.io/api/file/DwhT6hFoR5ankHL04xro", "https://process.filepicker.io/ACGRkMPr9TqmbgPiHBS5Cz/resize=width:500,height:500,fit:crop/rotate=deg:exif/https://www.filepicker.io/api/file/UObdN1wR7uNgFO9o6GLj", "https://process.filepicker.io/ACGRkMPr9TqmbgPiHBS5Cz/resize=width:500,height:500,fit:crop/rotate=deg:exif/https://www.filepicker.io/api/file/joebFXXSzKi4y4LMDesA"]	2017-02-05 00:00:00	2017-02-05 00:00:00	2017-02-07 07:42:46.209172	2017-02-07 07:43:13.983508
+185	2	2	\N	worked from home because got overworked		\N		#ff9f89	null	2017-02-07 00:00:00	2017-02-07 00:00:00	2017-02-08 10:32:09.978186	\N
+186	2	22	\N	started watching "My girlfriend is a nine tailed fox"	i didnt realize the male lead character was such a good actor	\N		#BCF4EF	""	2017-02-08 00:00:00	2017-02-08 00:00:00	2017-02-08 10:32:59.178476	2017-02-08 10:33:26.304309
+188	2	17	\N	fixed docker postgres/mysql boot up bug	until psql -h "$host" -U "postgres" -c '\\l'; do\n  >&2 echo "Postgres is unavailable - sleeping"\n  sleep 1\ndone	\N		#DBDF00	null	2017-02-08 00:00:00	2017-02-08 00:00:00	2017-02-09 07:34:10.857723	\N
+184	2	3	\N	worked out legs		\N		#68CCCA	["https://www.filepicker.io/api/file/6viYKvTmT4qdHkH84V4n", "https://www.filepicker.io/api/file/1FHSKGMZRC6SXWIMWrO0"]	2017-02-07 00:00:00	2017-02-07 00:00:00	2017-02-08 10:31:50.236906	2017-02-09 07:35:52.773741
+183	2	3	\N	worked out upper body, abs		\N		#68CCCA	""	2017-02-06 00:00:00	2017-02-06 00:00:00	2017-02-08 10:31:45.652721	2017-02-09 07:36:29.582736
+189	2	3	\N	worked out chest, calf, arms, back, abs		\N		#68CCCA	""	2017-02-08 00:00:00	2017-02-08 00:00:00	2017-02-09 07:34:37.9598	2017-02-09 07:36:35.201162
+190	2	1	\N	Got Anthem HMO Gold		\N		#FCDC00	null	2017-02-08 00:00:00	2017-02-08 00:00:00	2017-02-09 07:37:33.822355	\N
+191	2	11	\N	had souplantation for dinner		\N	howard hughes promenade	#DBDF00	["https://www.filepicker.io/api/file/nmX1E4kMTMKQACFfYLho"]	2017-02-08 00:00:00	2017-02-08 00:00:00	2017-02-09 07:40:34.944111	\N
+192	2	11	\N	had chicken cutlet curry for dinner		\N	brentwood, ca	#DBDF00	["https://www.filepicker.io/api/file/j32HEkLRbXYXuCVXiX5w"]	2017-02-07 00:00:00	2017-02-07 00:00:00	2017-02-09 07:41:25.408218	\N
+187	2	23	\N	bought a scented candle from venice main st		\N		#F44E3B	""	2017-02-07 00:00:00	2017-02-07 00:00:00	2017-02-08 10:34:18.204027	2017-02-09 07:41:55.333881
+194	2	12	\N	meaning of life is to give life meaning?		\N		#FDA1FF	null	2017-02-11 00:00:00	2017-02-11 00:00:00	2017-02-11 23:26:10.619286	\N
+195	2	2	\N	worked from home		\N		#ff9f89	null	2017-02-10 00:00:00	2017-02-10 00:00:00	2017-02-11 23:26:48.594905	\N
+178	2	2	\N	start at Markett		\N		#ff9f89	["https://www.filepicker.io/api/file/4Pi7bCoARy1YB8NcM0oS"]	2017-02-06 00:00:00	2017-02-06 00:00:00	2017-02-04 21:28:53.769806	2017-02-11 23:28:16.591397
+193	2	1	\N	jiena friend emma birthday party		\N	sylmar	#FCDC00	["https://www.filepicker.io/api/file/ZKOWj2thQVixyKSb69Y4", "https://www.filepicker.io/api/file/sbRN9gsIR66stFIwHlRB", "https://www.filepicker.io/api/file/NyabpEQvRYvHXYa7ma9k", "https://www.filepicker.io/api/file/LNy67laBTvWRYNZ1LOhJ", "https://www.filepicker.io/api/file/rYXstwQTyi2cOwUfPv3A"]	2017-02-11 00:00:00	2017-02-11 00:00:00	2017-02-11 23:25:10.717623	2017-02-13 08:49:14.558745
+196	5	\N	\N	testing	testing	\N	los angeles	#ffffff	null	2017-02-13 00:00:00	2017-02-13 00:00:00	2017-02-14 07:12:59.796422	\N
+197	2	2	\N	talk with airbnb 		\N		#ff9f89	null	2017-02-15 00:00:00	2017-02-15 00:00:00	2017-02-16 01:40:41.656988	\N
+198	2	15	\N	went to sprint because iphone wasnt paid off		\N		#f2e2e5	null	2017-02-15 00:00:00	2017-02-15 00:00:00	2017-02-16 01:41:11.46548	\N
+199	2	11	\N	ate yakitori skewers at sakura house		\N	marina del rey	#DBDF00	["https://www.filepicker.io/api/file/lcaYoi35QHiolcIUsYYq"]	2017-02-15 00:00:00	2017-02-15 00:00:00	2017-02-16 03:34:18.387013	2017-02-16 20:11:39.292348
+200	2	11	\N	souplantation all alone		\N		#DBDF00	["https://www.filepicker.io/api/file/ARAbJQT7ScuRAZgxToxR"]	2017-02-14 00:00:00	2017-02-14 00:00:00	2017-02-16 03:34:42.272237	2017-02-16 20:12:18.537203
+202	2	21	\N	started feeling sick, throat, eyes, runny nose		\N		#FDA1FF	null	2017-02-13 00:00:00	2017-02-13 00:00:00	2017-02-16 20:12:57.834375	\N
+203	2	21	\N	feeling worse, sneezing a lot		\N		#FDA1FF	null	2017-02-16 00:00:00	2017-02-16 00:00:00	2017-02-16 20:13:09.994565	\N
+204	2	16	\N	133.4		\N		#7B64FF	null	2017-02-14 00:00:00	2017-02-14 00:00:00	2017-02-16 20:18:32.701913	\N
+205	2	20	\N	received the miracle water from sean		\N		#f7efdb	null	2017-02-13 00:00:00	2017-02-13 00:00:00	2017-02-16 20:19:03.043666	\N
+206	2	20	\N	sprayed miracle water on face		\N		#f7efdb	null	2017-02-15 00:00:00	2017-02-15 00:00:00	2017-02-16 20:19:20.854268	\N
+207	2	11	\N	ordered 알밥 with ubereats		\N		#DBDF00	null	2017-02-15 00:00:00	2017-02-15 00:00:00	2017-02-16 20:19:55.324553	\N
+208	2	21	\N	went to riviera spa 		\N	torrance, ca	#FDA1FF	""	2017-02-16 00:00:00	2017-02-16 00:00:00	2017-02-17 00:29:17.150487	2017-02-17 00:29:29.341202
+209	2	12	\N	became programmers after 35 	https://belitsoft.com/php-development-services/its-not-too-late-become-software-developer-after-age-35-40-or-50-top-10-true-great-success-stories	\N		#FDA1FF	null	2017-02-16 00:00:00	2017-02-16 00:00:00	2017-02-17 01:06:20.674861	\N
+210	2	6	\N	sinkholes appeared near our house :/		\N	laurel canyon + woodbridge	#009CE0	null	2017-02-17 00:00:00	2017-02-17 00:00:00	2017-02-18 07:16:04.687281	\N
+211	2	21	\N	wife sick too		\N		#FDA1FF	null	2017-02-17 00:00:00	2017-02-17 00:00:00	2017-02-18 08:05:57.969519	\N
+212	2	21	\N	wife said she was really sick		\N		#FDA1FF	null	2017-02-16 00:00:00	2017-02-16 00:00:00	2017-02-18 08:06:06.471438	\N
+213	2	21	\N	wife and i sick but getting better, james is sick tho		\N		#FDA1FF	null	2017-02-19 00:00:00	2017-02-19 00:00:00	2017-02-20 09:55:04.63739	\N
+214	2	22	\N	started watching master's sun		\N		#FE9200	null	2017-02-04 00:00:00	2017-02-04 00:00:00	2017-02-20 10:24:26.525367	\N
+215	2	17	\N	[sequel] figured out how to return associations in nested hash 	ap UserCompany.eager_graph(:user, :company).all{|p| p.values.merge!(:user=>p.user.values) && p.values.merge!(:company=>p.company.values) }[0].company.title	\N		#DBDF00	null	2017-02-20 00:00:00	2017-02-20 00:00:00	2017-02-21 02:18:21.481907	\N
+228	6	31	\N	Integrated CustomerIO welcome email drips		\N		#f2e2e5	null	2017-02-22 00:00:00	2017-02-22 00:00:00	2017-02-23 22:36:03.49036	\N
+227	2	16	\N	131		\N		#7B64FF	null	2017-02-20 00:00:00	2017-02-20 00:00:00	2017-02-21 09:46:36.099538	\N
+229	6	32	\N	Roadmap for Airbnb integration		\N		#f2e2e5	null	2017-02-26 00:00:00	2017-02-26 00:00:00	2017-02-23 22:36:30.860037	\N
+230	6	28	\N	Jae		\N		#ffffff	null	2017-02-22 00:00:00	2017-02-22 00:00:00	2017-02-23 22:36:54.534493	\N
+231	6	33	\N	Chandra joins		\N		#f7efdb	null	2017-02-22 00:00:00	2017-02-22 00:00:00	2017-02-23 22:37:25.761019	\N
+232	6	26	\N	sync about Airbnb roadmap and Payable/Bold		\N		#f7e0db	null	2017-02-23 00:00:00	2017-02-23 00:00:00	2017-02-23 22:37:44.331059	\N
+233	2	1	\N	jaelen elbowed jaden in face at school 		\N		#FCDC00	null	2017-02-24 00:00:00	2017-02-24 00:00:00	2017-02-25 08:49:22.242967	\N
+234	2	21	\N	jaelen med headache at school after lunch		\N		#FDA1FF	null	2017-02-22 00:00:00	2017-02-22 00:00:00	2017-02-25 08:50:03.881069	\N
+235	2	1	\N	jiena and jaelen cooked  fried chicken from home chef 		\N		#FCDC00	null	2017-02-26 00:00:00	2017-02-26 00:00:00	2017-02-27 01:19:35.274672	\N
+236	2	1	\N	jaelen championship basketball and scored		\N		#FCDC00	""	2017-02-25 00:00:00	2017-02-25 00:00:00	2017-02-27 01:21:04.24639	2017-02-27 01:21:14.557597
+237	2	21	\N	wife still coughing		\N		#FDA1FF	null	2017-02-26 00:00:00	2017-02-26 00:00:00	2017-02-27 01:22:05.850036	\N
+238	2	21	\N	chest stuffiness think its stomach		\N		#FDA1FF	null	2017-02-25 00:00:00	2017-02-25 00:00:00	2017-02-27 01:24:04.398772	\N
+239	2	11	\N	ate carneys burger hotdog		\N		#DBDF00	null	2017-02-25 00:00:00	2017-02-25 00:00:00	2017-02-27 01:24:45.196529	\N
+240	2	14	\N	bought laundry ball and candles bedbath		\N		#B3B3B3	null	2017-02-25 00:00:00	2017-02-25 00:00:00	2017-02-27 01:25:17.654586	\N
+241	2	12	\N	you find Christ through people, things, world		\N		#FDA1FF	null	2017-02-28 00:00:00	2017-02-28 00:00:00	2017-02-28 09:12:31.145246	\N
+246	2	11	\N	ate kokio spicy fried chicken		\N	koreatown	#DBDF00	null	2017-03-05 00:00:00	2017-03-05 00:00:00	2017-03-07 20:01:16.15497	\N
+247	2	1	\N	jiena and jaelen basketball trophy day!		\N	vnso	#FCDC00	null	2017-03-04 00:00:00	2017-03-04 00:00:00	2017-03-07 20:01:54.108183	\N
+248	2	20	\N	dinner with khoa	khoa starting bambee next wednesday	\N		#f7efdb	null	2017-03-06 00:00:00	2017-03-06 00:00:00	2017-03-07 20:03:06.688254	\N
+249	2	23	\N	ordered HomeChef, meal delivery service		\N		#F44E3B	""	2017-02-16 00:00:00	2017-02-16 00:00:00	2017-03-07 20:04:38.754797	2017-03-07 20:04:57.078114
+217	10	\N	\N	\N		\N		#ffffff	null	2017-02-20 00:00:00	2017-02-20 00:00:00	2017-02-21 03:17:02.358084	\N
+250	2	11	\N	cancelled HomeChef		\N		#DBDF00	null	2017-03-02 00:00:00	2017-03-02 00:00:00	2017-03-07 20:05:29.530725	\N
+251	2	1	\N	cancelled counseling for jaelen because he dont need it		\N		#FCDC00	null	2017-03-06 00:00:00	2017-03-06 00:00:00	2017-03-07 20:12:47.948793	\N
+252	2	22	\N	watched movie Great Wall	it was ok	\N	howard hughes	#FE9200	""	2017-03-01 00:00:00	2017-03-01 00:00:00	2017-03-07 20:14:05.208773	2017-03-07 20:14:16.540936
+253	2	11	\N	ate eggslut fairfax sandwich again		\N		#DBDF00	null	2017-03-06 00:00:00	2017-03-06 00:00:00	2017-03-07 20:14:43.839813	\N
+254	2	1	\N	jaelen was bitten in the arm by kid at school		\N	dixie canyon	#FCDC00	null	2017-03-09 00:00:00	2017-03-09 00:00:00	2017-03-09 08:44:04.868525	\N
+255	2	21	\N	jaelen went to urgent care, got antibiotics	he threw up 3-4 times at night, perhaps due to antibiotic medicine	\N		#FDA1FF	null	2017-03-09 00:00:00	2017-03-09 00:00:00	2017-03-09 08:45:02.297975	\N
+272	2	2	\N	min launches bambee with termination		\N		#ff9f89	null	2017-03-17 00:00:00	2017-03-17 00:00:00	2017-03-21 20:52:09.321396	\N
+264	2	1	\N	gave buddy a lion hair cut!		\N		#FCDC00	null	2017-03-19 00:00:00	2017-03-19 00:00:00	2017-03-20 06:30:01.745057	\N
+265	2	1	\N	went to church everyday		\N		#FCDC00	null	2017-03-19 00:00:00	2017-03-19 00:00:00	2017-03-20 06:30:16.094027	\N
+266	2	1	\N	took jaelen to taijitsu karate class		\N		#FCDC00	null	2017-03-18 00:00:00	2017-03-18 00:00:00	2017-03-20 06:31:15.588036	\N
+267	2	2	\N	ronny made peace	talked things over with franky and got what he wanted 	\N	markett hq	#ff9f89	null	2017-03-17 00:00:00	2017-03-17 00:00:00	2017-03-20 06:32:13.290574	\N
+268	2	20	\N	heard about ronny's friend who gave him place to stay		\N		#f7efdb	null	2017-03-10 00:00:00	2017-03-10 00:00:00	2017-03-20 06:33:19.39549	\N
+269	2	20	\N	heard about jimdo and billion dollar cash out		\N		#f7efdb	null	2017-03-16 00:00:00	2017-03-16 00:00:00	2017-03-20 06:33:40.926945	\N
+270	2	2	\N	ajaiy came from india to work with us at markett		\N		#ff9f89	null	2017-03-16 00:00:00	2017-03-16 00:00:00	2017-03-20 06:34:07.009597	\N
+271	2	11	\N	had igloo ice cream		\N	sherman oaks, ca	#DBDF00	null	2017-03-19 00:00:00	2017-03-19 00:00:00	2017-03-20 06:34:45.114904	\N
+273	2	20	\N	dennis gets 60k ft job at bambee		\N		#f7efdb	null	2017-03-20 00:00:00	2017-03-20 00:00:00	2017-03-21 20:52:36.234577	\N
+274	2	1	\N	lost jaelen's phone samsung j3 emerge :(		\N		#FCDC00	null	2017-03-04 00:00:00	2017-03-04 00:00:00	2017-03-21 20:54:29.871151	\N
+275	2	1	\N	jaelen gets j3 emerge phone replacement :)		\N	woodland hills, ca	#FCDC00	null	2017-03-18 00:00:00	2017-03-18 00:00:00	2017-03-21 20:55:00.318127	\N
+276	2	22	\N	started watching Empress Ki		\N	hulu	#FE9200	null	2017-03-14 00:00:00	2017-03-14 00:00:00	2017-03-21 20:55:28.527141	\N
+277	2	3	\N	worked out upper body		\N		#68CCCA	null	2017-03-20 00:00:00	2017-03-20 00:00:00	2017-03-24 17:56:15.452931	\N
+278	2	3	\N	worked out abs		\N		#68CCCA	null	2017-03-21 00:00:00	2017-03-21 00:00:00	2017-03-24 17:56:20.034219	\N
+279	2	16	\N	132.2		\N		#7B64FF	""	2017-03-21 00:00:00	2017-03-21 00:00:00	2017-03-24 17:56:31.424218	2017-03-24 17:56:47.984914
+280	2	1	\N	jaelen second karate, he was little shy because they did test		\N		#FCDC00	null	2017-03-25 00:00:00	2017-03-25 00:00:00	2017-03-27 18:12:03.266217	\N
+281	2	22	\N	finished master sun	the ending was not that good 	\N		#FE9200	null	2017-03-25 00:00:00	2017-03-25 00:00:00	2017-03-27 18:12:57.800989	\N
+282	2	1	\N	went to episode 15 for empress ki		\N		#FCDC00	null	2017-03-25 00:00:00	2017-03-25 00:00:00	2017-03-27 18:13:18.393925	\N
+283	2	1	\N	had a walk around the house with kids		\N		#FCDC00	null	2017-03-26 00:00:00	2017-03-26 00:00:00	2017-03-27 18:13:37.050946	\N
+284	2	1	\N	went to church		\N		#FCDC00	null	2017-03-26 00:00:00	2017-03-26 00:00:00	2017-03-27 18:13:47.051654	\N
+285	2	23	\N	bought a new black vinyl? pants and black shirt		\N	westfield mall fox hills, ca	#F44E3B	null	2017-03-22 00:00:00	2017-03-22 00:00:00	2017-03-27 18:14:36.884415	\N
+286	2	3	\N	worked out upper body		\N		#68CCCA	null	2017-03-28 00:00:00	2017-03-28 00:00:00	2017-03-29 06:52:28.633166	\N
+287	2	2	\N	ajaiy made a strikingly clone, impressed!		\N		#ff9f89	null	2017-03-27 00:00:00	2017-03-27 00:00:00	2017-03-29 06:53:03.974547	\N
+288	2	23	\N	bought hair dryer		\N		#F44E3B	null	2017-03-30 00:00:00	2017-03-30 00:00:00	2017-04-01 10:25:42.509868	\N
+289	2	11	\N	bought chipotle		\N		#DBDF00	null	2017-03-31 00:00:00	2017-03-31 00:00:00	2017-04-01 10:27:09.378567	\N
+291	2	16	\N	134		\N		#7B64FF	null	2017-03-28 00:00:00	2017-03-28 00:00:00	2017-04-03 04:17:24.412223	\N
+293	2	1	\N	jiena got first pimple breakout		\N		#FCDC00	["https://www.filepicker.io/api/file/Q7E9rVGGRi6VwOCrNWvI", "https://www.filepicker.io/api/file/SVymvshER9aLIKRXRIAM"]	2017-04-01 00:00:00	2017-04-01 00:00:00	2017-04-03 18:05:33.20362	\N
+294	2	2	\N	started coming in by 10		\N		#ff9f89	null	2017-04-04 00:00:00	2017-04-04 00:00:00	2017-04-06 01:45:42.491918	\N
+295	2	2	\N	looking into opencart and shopify for ronny		\N		#ff9f89	""	2017-04-05 00:00:00	2017-04-05 00:00:00	2017-04-06 01:51:31.974912	2017-04-06 01:51:41.584341
+296	2	1	\N	jiena going to urgent care for face rash/pimples	treated for impetigo	\N		#FCDC00	""	2017-04-06 00:00:00	2017-04-06 00:00:00	2017-04-06 08:25:30.08331	2017-04-06 16:56:52.377351
+297	2	3	\N	worked out upper body		\N		#68CCCA	null	2017-04-05 00:00:00	2017-04-05 00:00:00	2017-04-07 19:49:47.969915	\N
+298	2	16	\N	132		\N		#7B64FF	null	2017-04-05 00:00:00	2017-04-05 00:00:00	2017-04-07 19:49:56.289479	\N
+299	2	15	\N	doctor appt marina del rey		\N		#f2e2e5	null	2017-04-11 00:00:00	2017-04-11 00:00:00	2017-04-07 19:51:42.534429	\N
+300	2	23	\N	lull bed return date		\N		#F44E3B	""	2017-05-27 00:00:00	2017-05-27 00:00:00	2017-04-07 23:26:12.33182	2017-04-07 23:26:21.350369
+301	2	21	\N	jaelen chipped his front teeth, no PPO so its confusing		\N		#FDA1FF	null	2017-04-07 00:00:00	2017-04-07 00:00:00	2017-04-08 00:28:05.563918	\N
+302	2	21	\N	feel getting sick		\N		#FDA1FF	null	2017-04-07 00:00:00	2017-04-07 00:00:00	2017-04-08 04:05:33.391976	\N
+303	2	1	\N	jiena pimple get a lot better		\N		#FCDC00	null	2017-04-07 00:00:00	2017-04-07 00:00:00	2017-04-08 04:05:54.835507	\N
+322	2	2	\N	started techbeach	had indian food at ronnys house with james and dennis	\N		#ff9f89	null	2017-04-18 00:00:00	2017-04-18 00:00:00	2017-04-20 00:30:23.754943	\N
+305	9	36	\N	Got my new mouse: Logitech G602	My old mouse, the Logitech G9 left button broke and I could not replace the clicker.  Wanted to buy another G9, but since it was discontinued by Logitech, the price has skyrocketed to $2xx bucks.  Not gonna put down 2 hundred for a mouse so I settled for this one that had great reviews and fairly cheap.  It is pretty decent and I am actually liking the buttons.	\N		#e3e2f2	["https://process.filepicker.io/ACGRkMPr9TqmbgPiHBS5Cz/resize=width:500,height:500,fit:crop/rotate=deg:exif/https://process.filepicker.io/ACGRkMPr9TqmbgPiHBS5Cz/resize=width:500,height:500,fit:crop/rotate=deg:exif/https://www.filepicker.io/api/file/aVoui3fBQ5m2TZUZN8ex"]	2017-04-09 00:00:00	2017-04-09 00:00:00	2017-04-09 03:43:22.093136	2017-04-09 03:45:08.309524
+306	3	\N	\N	Jae might leave Markett		\N		#ffffff	null	2017-04-10 00:00:00	2017-04-10 00:00:00	2017-04-10 08:41:05.041394	\N
+307	3	\N	\N	Call CPA		\N		#ffffff	null	2017-04-11 00:00:00	2017-04-11 00:00:00	2017-04-10 08:51:45.873654	\N
+308	3	\N	\N	Tax Return Deadline		\N		#ffffff	null	2017-04-15 00:00:00	2017-04-15 00:00:00	2017-04-10 08:51:59.248492	\N
+309	3	\N	\N	Quit Smoking		\N		#ffffff	null	2017-03-25 00:00:00	2017-03-25 00:00:00	2017-04-10 08:54:29.871378	\N
+310	3	\N	\N	Went to farm		\N		#ffffff	null	2017-04-09 00:00:00	2017-04-09 00:00:00	2017-04-10 08:54:48.873183	\N
+311	3	\N	\N	Tried to take Route 66		\N		#ffffff	null	2017-04-09 00:00:00	2017-04-09 00:00:00	2017-04-10 08:55:02.247687	\N
+312	3	\N	\N	Penny got bit		\N		#ffffff	null	2017-04-10 00:00:00	2017-04-10 00:00:00	2017-04-10 08:55:15.400841	\N
+313	3	\N	\N	Ryan's Roses		\N		#ffffff	null	2017-04-10 00:00:00	2017-04-10 00:00:00	2017-04-10 09:20:00.134148	\N
+314	2	21	\N	all better		\N		#FDA1FF	null	2017-04-10 00:00:00	2017-04-10 00:00:00	2017-04-10 22:23:46.613539	\N
+315	2	3	\N	worked out upper body		\N		#68CCCA	null	2017-04-10 00:00:00	2017-04-10 00:00:00	2017-04-11 07:12:18.578605	\N
+316	2	2	\N	Met with Max today, talked about his calendar project		\N		#ff9f89	null	2017-04-10 00:00:00	2017-04-10 00:00:00	2017-04-11 07:12:42.545559	\N
+317	2	16	\N	132		\N		#7B64FF	null	2017-04-10 00:00:00	2017-04-10 00:00:00	2017-04-11 07:12:51.130425	\N
+318	2	2	\N	visit ronny's place		\N		#ff9f89	null	2017-04-13 00:00:00	2017-04-13 00:00:00	2017-04-13 23:36:31.383353	\N
+319	2	2	\N	met with Airbnb guy for Markett		\N		#ff9f89	null	2017-04-12 00:00:00	2017-04-12 00:00:00	2017-04-13 23:36:44.348022	\N
+320	2	21	\N	doctor appt with Stephane Garcia at 2pm		\N	ocean park, ca	#FDA1FF	null	2017-04-17 00:00:00	2017-04-17 00:00:00	2017-04-13 23:37:35.293865	\N
+321	2	2	\N	aviv miso media gave us speech 		\N		#ff9f89	null	2017-04-14 00:00:00	2017-04-14 00:00:00	2017-04-14 23:50:06.263173	\N
+323	2	16	\N	132		\N		#7B64FF	null	2017-04-17 00:00:00	2017-04-17 00:00:00	2017-04-20 00:30:51.62946	\N
+324	2	3	\N	worked out upper body		\N		#68CCCA	null	2017-04-17 00:00:00	2017-04-17 00:00:00	2017-04-20 00:31:14.490285	\N
+325	2	22	\N	watched Logan by my self		\N		#FE9200	null	2017-04-12 00:00:00	2017-04-12 00:00:00	2017-04-20 00:31:57.296884	\N
+326	2	21	\N	doctor appt checkup oceanpark		\N		#FDA1FF	null	2017-04-26 00:00:00	2017-04-26 00:00:00	2017-04-20 00:32:42.204546	\N
+327	2	1	\N	wife's birthday		\N		#FCDC00	null	2017-04-25 00:00:00	2017-04-25 00:00:00	2017-04-20 00:32:53.175716	\N
+328	2	1	\N	take family out to lawry for bday dinner for wife 		\N		#FCDC00	null	2017-04-23 00:00:00	2017-04-23 00:00:00	2017-04-20 00:33:20.311147	\N
+329	2	20	\N	james, dennis went to ronny house		\N		#f7efdb	null	2017-04-18 00:00:00	2017-04-18 00:00:00	2017-04-20 00:34:46.420439	\N
+330	2	22	\N	installed Starcraft on Mac OSX (free)		\N		#FE9200	null	2017-04-19 00:00:00	2017-04-19 00:00:00	2017-04-20 17:00:29.196761	\N
+331	2	2	\N	picked theme for glo		\N		#ff9f89	null	2017-04-27 00:00:00	2017-04-27 00:00:00	2017-04-30 02:19:40.593614	\N
+332	2	2	\N	started coding drinkglo		\N		#ff9f89	null	2017-04-28 00:00:00	2017-04-28 00:00:00	2017-04-30 02:19:46.937715	\N
+333	2	2	\N	polishing glo		\N		#ff9f89	null	2017-04-29 00:00:00	2017-04-29 00:00:00	2017-04-30 02:19:52.457677	\N
+334	2	2	\N	markett layoff		\N		#ff9f89	null	2017-04-21 00:00:00	2017-04-21 00:00:00	2017-04-30 02:20:07.10422	\N
+335	2	2	\N	ronny and jae starts techbeach		\N		#ff9f89	null	2017-04-21 00:00:00	2017-04-21 00:00:00	2017-04-30 02:20:23.398299	\N
+336	2	2	\N	met cameron at sensay party		\N		#ff9f89	null	2017-04-21 00:00:00	2017-04-21 00:00:00	2017-04-30 02:20:42.944872	\N
+337	2	2	\N	had consultation with cameron	it went well, she helped me realize anyone can rewire their brain like programmers can code.	\N	santa monica, ca	#ff9f89	null	2017-04-25 00:00:00	2017-04-25 00:00:00	2017-04-30 02:21:45.163756	\N
+338	2	1	\N	told wife about layoff		\N		#FCDC00	null	2017-04-28 00:00:00	2017-04-28 00:00:00	2017-04-30 02:22:08.287919	\N
+339	2	1	\N	jaelen receives yellow/white belt 	he got it in less than a month	\N		#FCDC00	null	2017-04-25 00:00:00	2017-04-25 00:00:00	2017-04-30 02:22:51.821863	\N
+340	2	15	\N	approved for 100k loan from sofi		\N		#f2e2e5	null	2017-04-27 00:00:00	2017-04-27 00:00:00	2017-04-30 02:23:15.970107	\N
+341	2	1	\N	purchased codekingdom for kids		\N		#FCDC00	null	2017-04-29 00:00:00	2017-04-29 00:00:00	2017-04-30 02:23:38.650297	\N
+343	2	22	\N	watched airbud with family for movie night		\N	home	#FE9200	null	2017-04-29 00:00:00	2017-04-29 00:00:00	2017-04-30 04:40:41.013303	\N
+344	2	2	\N	started working on sqrap homepage		\N		#ff9f89	null	2017-05-01 00:00:00	2017-05-01 00:00:00	2017-05-01 17:33:12.002107	\N
+290	2	1	\N	went to balboa park, saw a bulldog attack a pomeranian 		\N	balboa park	#FCDC00	null	2017-04-02 00:00:00	2017-04-02 00:00:00	2017-04-03 04:17:10.359543	2017-05-01 21:06:48.337733
+342	2	1	\N	min's baby shower		\N	temple city, ca	#FCDC00	["https://process.filepicker.io/ACGRkMPr9TqmbgPiHBS5Cz/resize=width:500,height:500,fit:crop/rotate=deg:exif/https://cdn.filestackcontent.com/LT0hZgMsTbCmTAM0jQ9W", "https://cdn.filestackcontent.com/2lAUYNymQBmcpFKe68uQ", "https://cdn.filestackcontent.com/vLBw1idiS1atkBUtvlhX"]	2017-04-30 00:00:00	2017-04-30 00:00:00	2017-04-30 04:40:18.054319	2017-05-01 17:35:18.909556
+292	2	1	\N	jalen karate 3rd day, loved it		\N		#FCDC00	null	2017-04-01 00:00:00	2017-04-01 00:00:00	2017-04-03 04:17:46.775541	2017-05-01 21:06:53.694853
+345	\N	2	\N	paid for hivelocity server		\N		#ff9f89	null	2017-05-01 00:00:00	2017-05-01 00:00:00	2017-05-01 22:27:24.544109	\N
+346	\N	2	\N	cancel hivelocity, move mannabbq		\N		#ff9f89	null	2017-05-27 00:00:00	2017-05-27 00:00:00	2017-05-01 22:27:57.457308	\N
+347	\N	2	\N	oneminutepage.com		\N		#ff9f89	null	2017-05-01 00:00:00	2017-05-01 00:00:00	2017-05-01 22:28:28.019645	\N
+348	2	2	\N	one minute page		\N		#ff9f89	null	2017-05-01 00:00:00	2017-05-01 00:00:00	2017-05-02 00:19:51.610221	\N
+349	2	2	\N	cancel hivelocity		\N		#ff9f89	""	2017-05-25 00:00:00	2017-05-25 00:00:00	2017-05-02 00:20:18.464063	2017-05-02 00:20:30.899508
+350	10	9	\N	Getting CodeKingdom!!!	I finally got 100%. Mom and dad said if I get 100% I could get CodeKingdom. It cost $14. 30 days free though. We did 1 month try. I made a racing game. It was fun so far... but then, it got a bit harder. I tried the starter game. It's for beginners. I was kind of nervous when I tried CodeKingdom. In my head I was like why did I get CodeKingdom? I think this is a mistake. But then I realized how fun it was and I didn't want to get rid of CodeKingdom. I thought this was a really fun code because it based on Minecraft. My favorite game.	\N	Studio City Bloomfield St.	#AEA1FF	null	2017-04-30 00:00:00	2017-04-30 00:00:00	2017-05-02 01:50:46.746261	\N
+351	10	40	\N	Taking The Test!	Ms. Gelber, my 3rd grade teacher said to eat protein but... I forgot to. When I got The Test I was not nervous at all while the other students in my classroom were. I was feeling good about this test because we are reviewing the stuff we already did. She said if you get most of the answers correct the questions are going to get harder. But if you get a question wrong the questions are going to get easier. Ms. Gelber also said to do 20 questions but, I did 25 questions instead. 	\N	DixieCanyon School	#AB149E	""	2017-05-01 00:00:00	2017-05-01 00:00:00	2017-05-02 01:57:16.387029	2017-05-02 01:58:03.786694
+29	10	\N	\N	CHRISTMAS DAY!!!!		\N		\N	""	2016-12-25 00:00:00	2016-12-25 00:00:00	2016-12-27 00:46:35.692376	\N
+31	10	\N	\N	HIKE IN MORNING!!!!!		\N		\N	""	2016-12-26 00:00:00	2016-12-26 00:00:00	2016-12-27 00:47:15.412828	2016-12-27 00:47:36.829092
+33	10	\N	\N	BASKETBALL	I was scared + excited. I saw lots of people in Dixie Canyon, atlas 3 of them. My  team name is Spork. My coach's name is Robert. 	\N	Sherman Oaks 	\N	""	2016-12-22 00:00:00	2016-12-22 00:00:00	2016-12-27 00:51:31.152744	2016-12-27 01:01:45.467603
+37	10	\N	\N	Boring-Fun-Painful	My dad brother and I went to the mall to eat Chipotle. I wanted Chipotle and my brother and dad wanted to eat Great Khan's but too much line. So instead they ate b!bigo. Then my stomach hurt so we went home. When we went home we slept then my stomach got better.	\N	Home-Street-Mall	\N	""	2016-12-27 00:00:00	2016-12-27 00:00:00	2016-12-28 01:56:54.938578	\N
+28	10	\N	\N	MY B-Day!!!!		\N	Home + California Adventure	\N	""	2016-12-02 00:00:00	2016-12-02 00:00:00	2016-12-27 00:46:17.684598	2016-12-27 01:03:24.748167
+35	10	10	\N	Christmas Day	So much presents!!!! I got 10 presents and my brother 2 say sorry got 7. My brother got a tent and other things that's no fair! I got a chair and sushi go and a purse and other things.	\N	Home	red	""	2016-12-25 00:00:00	2016-12-25 00:00:00	2016-12-27 01:10:20.775334	2016-12-27 01:12:00.063852
+36	10	9	\N	PHONE!!!	I have a phone! I have a phone because I've been a good listener but, I was suppose to get a phone on Christmas Day because it was a special day. But I didn't get a phone on Christmas Day because I was a bad kid. But a got a phone after Christmas Day.	\N	Home	brown	""	2016-12-26 00:00:00	2016-12-26 00:00:00	2016-12-28 01:51:29.98743	\N
+34	10	9	\N	MY B-DAY!!!!		\N	Home + California Adventure	#0062B1	""	2016-12-02 00:00:00	2016-12-02 00:00:00	2016-12-27 01:05:58.565582	2017-03-12 20:19:20.369917
+120	10	9	\N	Getting a Wiggy	A WIGGY! Pinky is the Wiggy's name! I did lots of chores. I earned $6 today!	\N	Home	brown	""	2017-01-22 00:00:00	2017-01-22 00:00:00	2017-01-23 02:14:12.633632	\N
+121	10	9	\N	Making MC skins	I made loads of MC skins in minecraftskins.com. I have lots of views and downloads.	\N	Home	brown	""	2017-01-20 00:00:00	2017-01-20 00:00:00	2017-01-23 02:16:29.87469	\N
+216	10	\N	\N	Presidents day- Roblox, youtube, and more	Today is presidents day so I did extra Kumon homework. I also did my laptop. I played Roblox, and I also watched youtube.	\N	Home	#ffffff	null	2017-02-20 00:00:00	2017-02-20 00:00:00	2017-02-21 03:16:56.810514	\N
+218	10	\N	\N	Field trip and Valentine's	I went on a field trip to Lackma museum. Art museum. When I went their our class or half of the class went to see Andy Warhol's painting. Then next Picasso. I saw many things. One of the structure has many hands. It means that you can do more than two hands.	\N	School and home	#ffffff	null	2017-02-14 00:00:00	2017-02-14 00:00:00	2017-02-21 03:20:43.041818	\N
+219	10	8	\N	Movie	I watched a scary movie with my family. Not with Jaelen though because he was sleeping. We only watched 1 episode of it. It was super scary. This women named Tae Gong Sil can see ghosts after an accident.	\N	home	#009dac	null	2017-02-19 00:00:00	2017-02-19 00:00:00	2017-02-21 03:23:30.665702	\N
+220	10	9	\N	Dad's B-day!!!!!!!!	Today was dad's B-day. For his b-day we didn't go anywhere. Just stayed at home. We ate cakes and cupcakes. It was good! My favorite part was when he opened the presents because I get super excited for some reason. Happy Birthday Dad!	\N	home	brown	null	2017-01-06 00:00:00	2017-01-06 00:00:00	2017-02-21 03:26:08.752841	\N
+223	10	10	\N	Valentine	I went to a field trip. I went to Lackma. It's an art museum. After that we went back to school and passed out our valentine candy.	\N	Home and school	red	null	2017-02-14 00:00:00	2017-02-14 00:00:00	2017-02-21 03:30:30.927241	\N
+226	10	9	\N	Valentine	Went to Lackma. I saw Andy Warhol's paintings such as campbell's soup. Super cool. Then we ate. Then we had to go. After we went to class we passed out candy.	\N	school/ museum	brown	null	2017-02-14 00:00:00	2017-02-14 00:00:00	2017-02-21 03:40:54.587021	\N
+245	10	19	\N	Trophy	I was getting an award for basketball. I was exited. I was the second person to be in the room part of VNSO. I love my TROPHY!!!	\N	VNSO park	#000000	null	2017-03-04 00:00:00	2017-03-04 00:00:00	2017-03-05 15:07:47.903137	\N
+224	10	40	\N	Went to field trip.	Went to lackma art museum. I had so much fun then when we came back we passed out candy.	\N	School/ museum	yellow	""	2017-02-14 00:00:00	2017-02-14 00:00:00	2017-02-21 03:30:43.808399	2017-02-21 03:32:48.423924
+244	10	40	\N	Going to homework help	I was upset that I was going to homework help. Then Mom made a promise to give me a phone case. When I was in homework help it was actually pretty good. Jaelen also went to homework help. It seemed like Jaelen liked it because in the morning he said "ok..."	\N	Home/School	yellow	null	2017-02-28 00:00:00	2017-02-28 00:00:00	2017-03-05 15:03:18.068564	\N
+258	10	9	\N	Getting a phone case	I was getting a phone case because I went to homework help. I got a pink phone case because there was really nothing left they have for Samsung Galaxy J3. I still love my phone case.	\N	Korea town	#0062B1	null	2017-03-04 00:00:00	2017-03-04 00:00:00	2017-03-11 14:20:39.984648	\N
+260	10	8	\N	Going to my dad's grandpa's house	Today we went to my grandpa's house because I don't know but we just went there. I saw few cats. I saw a black Persian cat. Next I saw 2 WHITE DOGS! They were scary so I ran to my grandpa. Next we ate. When it was even more darker I started my Wreck This Journal. Then we left to go home. I miss Buddy!	\N	Apple Valley	#7B64FF	["https://process.filepicker.io/ACGRkMPr9TqmbgPiHBS5Cz/resize=width:500,height:500,fit:crop/rotate=deg:exif/https://www.filepicker.io/api/file/PjLV7mZTpSSDgJafCSzx", "https://process.filepicker.io/ACGRkMPr9TqmbgPiHBS5Cz/resize=width:500,height:500,fit:crop/rotate=deg:exif/https://www.filepicker.io/api/file/9ndWVhgFRXGj82uvQcB6"]	2017-03-11 00:00:00	2017-03-11 00:00:00	2017-03-12 20:08:24.430706	2017-03-12 20:11:47.306113
+259	10	9	\N	Phone case decoration	When I was getting my phone I didn't knew there was a surprise until my mom said, "You haven'y found the surprise yet?" And I looked back at the place where my phone was and there was a decoration for my phone. I added the emoji clipper to my backpack and the rest of the emoji stickers on my phone case. It looks so cool!	\N	home	#0062B1	""	2017-03-10 00:00:00	2017-03-10 00:00:00	2017-03-11 14:23:06.325364	2017-03-12 20:12:29.226784
+261	10	9	\N	Wreck This Journal	Today I when I went downstairs I saw this package that was a book and it was a Wreck This Journal. I was so eager to try it. When I was at my grandpa's house I started doing Wreck This Journal. I was so excited. I LOVE IT!!!	\N	Home	#0062B1	["https://www.filepicker.io/api/file/ftNT2HpwTnqjAkCCo14c"]	2017-03-11 00:00:00	2017-03-11 00:00:00	2017-03-12 20:17:18.218619	2017-03-12 20:18:26.336904
+262	10	9	\N	Grooming	Today we went to a pets salon because Buddy's fur was getting too long. Now he looks so cute! He is so skinny. 	\N	Salon	#0062B1	["https://process.filepicker.io/ACGRkMPr9TqmbgPiHBS5Cz/resize=width:500,height:500,fit:crop/rotate=deg:exif/https://process.filepicker.io/ACGRkMPr9TqmbgPiHBS5Cz/resize=width:500,height:500,fit:crop/rotate=deg:exif/https://www.filepicker.io/api/file/okQAjm1kShmRcKAamutN", "https://process.filepicker.io/ACGRkMPr9TqmbgPiHBS5Cz/resize=width:500,height:500,fit:crop/rotate=deg:exif/https://www.filepicker.io/api/file/cOhzz7GgR5m9Q4Zte7qc"]	2017-03-19 00:00:00	2017-03-19 00:00:00	2017-03-20 02:05:56.353439	2017-03-20 02:07:37.51
+352	10	41	\N	KUMON Math Test	Today I am taking the test. If you did all of your homework then you can take the test. If you pass the test you can go to a higher level. It was all the things I reviewed at the KUMON center. When I finished it I out the time and gave it to Ms. Kim. We sat at the help table. I only got 1 thing wrong. It was a multiplication question. I got 79 out of 80. Which means I got only 1 wrong! Next level is D. Ms. Kim says it's a 4th grade work. Long division and long multiplication. Even fractions. But at the end of fractions it looked pretty hard. 	\N	Kumon	#F44E3B	""	2017-05-01 00:00:00	2017-05-01 00:00:00	2017-05-02 04:22:51.809951	2017-05-02 14:53:48.018972
+353	10	40	\N	Finishing the test	So last time I did 25 questions. Ms. Gelber said I had to do only 30 because I did 25 questions. But I didn't listen to her because I didn't know what she meant. Since I didn't know what she meant so instead, I did all of the 36 questions. Some of them were hard so that means I answered most of the questions right. When I was done with the whole entire math test I started to read.	\N	DixieCanyion	#AB149E	null	2017-05-02 00:00:00	2017-05-02 00:00:00	2017-05-02 22:08:48.455832	\N
+354	2	2	\N	staying at culver house to work on shalendar		\N		#ff9f89	null	2017-05-03 00:00:00	2017-05-03 00:00:00	2017-05-04 00:08:17.13739	\N
+355	2	20	\N	sean coming over		\N		#f7efdb	null	2017-05-03 00:00:00	2017-05-03 00:00:00	2017-05-04 00:08:35.132082	\N
+357	2	2	\N	cameron brought me several leads just from her fb post!		\N		#ff9f89	null	2017-05-01 00:00:00	2017-05-01 00:00:00	2017-05-04 00:09:48.925339	\N
+356	2	2	\N	had a call with steve dao for side gigs		\N		#ff9f89	""	2017-05-02 00:00:00	2017-05-02 00:00:00	2017-05-04 00:09:15.141537	2017-05-04 00:10:31.335287
+358	2	2	\N	talked about lawholesaler		\N		#ff9f89	null	2017-05-03 00:00:00	2017-05-03 00:00:00	2017-05-04 05:29:22.876083	\N
+360	2	2	\N	need to move iueast and manna		\N		#ff9f89	null	2017-05-25 00:00:00	2017-05-25 00:00:00	2017-05-04 05:31:13.873619	\N
+361	2	2	\N	tell steve what i thought about the gig		\N		#ff9f89	null	2017-05-05 00:00:00	2017-05-05 00:00:00	2017-05-04 05:31:42.359031	\N
+362	2	2	\N	meet with dolly singh		\N		#ff9f89	null	2017-05-10 00:00:00	2017-05-10 00:00:00	2017-05-04 05:31:58.805503	\N
+364	10	40	\N	Taking another math test 	We had 6 questions for our math test. The hardest questions I did so far were questions 4 and 5. 	\N	DixieCanyon	#AB149E	null	2017-05-03 00:00:00	2017-05-03 00:00:00	2017-05-04 22:21:03.91729	\N
+363	2	2	\N	wife designed new sqrap homepage, looks really good!		\N		#ff9f89	["https://process.filepicker.io/ACGRkMPr9TqmbgPiHBS5Cz/resize=width:500,height:500,fit:crop/rotate=deg:exif/https://cdn.filestackcontent.com/juGInPkzSX6xilWEb84c"]	2017-05-02 00:00:00	2017-05-02 00:00:00	2017-05-04 05:33:00.189545	2017-05-04 05:34:33.883446
+359	2	12	\N	thinking hard about loans		\N		#FDA1FF	""	2017-05-03 00:00:00	2017-05-03 00:00:00	2017-05-04 05:30:54.920153	2017-05-04 05:34:41.648822
+256	10	40	\N	Skipping School	I couldn't go to school because my brother was injured on the arm because Julian bit his arm. I was upset because he didn't go school because he barfed 6 times last night. I also didn't went to school because my mom thought it wasn't fair so she let me not go school. Also it's a good thing because my dad was at home!	\N	Home	#FDA1FF	null	2017-03-09 00:00:00	2017-03-09 00:00:00	2017-03-11 02:20:53.783852	\N
+257	10	40	\N	Jalen's hurt arm	I was going to scare my brother but he scared me. Later he showed me a scratch in his arm. He says that Julian bit his arm. First he pushed Jaelen and then he smacked him in the wall and last he bit Jaelen. When I looked at his arm it was dried up blood and it was a very DEEP bite.	\N	School	#FDA1FF	""	2017-03-08 00:00:00	2017-03-08 00:00:00	2017-03-11 02:23:57.011024	2017-03-11 02:24:10.393811
+366	10	40	\N	Making our animal.	Today we started making our animal. Our animal is based on the Rain Forest. Our animal has webbed feet, sharp claws, a beak, sharp teeth, far eyesight, ears that hear stuff very good, scales, and venom. I think our animal will be pretty good.	\N	DixieCanyon	#AB149E	null	2017-05-05 00:00:00	2017-05-05 00:00:00	2017-05-06 04:33:24.581615	\N
+304	10	9	\N	Getting a shalendar account	I added a new google account so I wanted to make a new Shalendar account. I can still go to my old Shalendar page if I wan to. Now I will make many new Shalendars in my new Shalendar.	\N	Home	#AEA1FF	null	2017-04-08 00:00:00	2017-04-08 00:00:00	2017-04-09 03:42:23.264491	\N
+365	10	9	\N	DanTDM	Today my dad, brother and I went to go meet DanTDM. We first got water then a burrito then we got Recese's pieces and it was shaped like Skittles or M&Ms. I was excited to meet Dan because he was my favorite you tuber. The show was about Dr. Trayurous making a spell. But then instead of a spell Evil Dan came out of the cannon or whatever. So Dan has to beat Evil Dan's plans. At the final stage they were fighting each other. Then Dan almost died but then he used our help to beat Evil Dan and Dan won! I enjoyed the show. It was fun. I also got a stuffed animal. It looked like one of Dan's pugs. It's Darcie or Ellie. But I think it's Darcie because Darcie is small while Ellie is bigger. Jaelen got a hat. In total it cost $60. It was a lot. My dad payed with a credit card though.	\N	Hollywood	#AEA1FF	["https://process.filepicker.io/ACGRkMPr9TqmbgPiHBS5Cz/resize=width:500,height:500,fit:crop/rotate=deg:exif/https://cdn.filestackcontent.com/7yRfJbEPTyao3TkawDia", "https://process.filepicker.io/ACGRkMPr9TqmbgPiHBS5Cz/resize=width:500,height:500,fit:crop/rotate=deg:exif/https://cdn.filestackcontent.com/WzVHfh8MSYu5NIcZv6Ki"]	2017-05-04 00:00:00	2017-05-04 00:00:00	2017-05-05 05:48:45.67377	2017-05-06 04:29:10.62938
+367	10	40	\N	Drama	Today we had drama. At drama we act. The scene were doing today is based on native americans. Im reader J and I. It's annoying when I dance and when I stand up for a very long time. I have to read 2 stories. It isn't really that bad because there also other people that reads with you. After saying our lines my class started to dance and sing.	\N	DixieCanyon	#AB149E	null	2017-05-05 00:00:00	2017-05-05 00:00:00	2017-05-06 04:36:38.489931	\N
+\.
+
+
+--
+-- Name: events_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('events_id_seq', 367, true);
+
+
+--
+-- Data for Name: hits; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY hits (id, user_id, ip, created_at) FROM stdin;
+\.
+
+
+--
+-- Name: hits_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('hits_id_seq', 1, false);
+
+
+--
+-- Data for Name: media; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY media (id, user_id, event_id, provider, refid, type, title, description, image_url, video_url, data, origin_at, created_at, updated_at) FROM stdin;
+1	\N	93	instagram	1423624217614388238_5533826	image			https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/14582494_230590227392571_1133498872220352512_n.jpg?ig_cache_key=MTQyMzYyNDIxNzYxNDM4ODIzOA%3D%3D.2	\N	{"id": "1423624217614388238_5533826", "link": "https://www.instagram.com/p/BPBuq7ojIwO-b-rJBozmMExAh1XS_vMs6aib4w0/", "tags": [], "type": "image", "user": {"id": "5533826", "username": "jaequery", "full_name": "", "profile_picture": "http://scontent.cdninstagram.com/t51.2885-19/11887252_589626547841906_1833480884_a.jpg"}, "likes": {"count": 4}, "filter": "Gingham", "images": {"thumbnail": {"url": "https://scontent.cdninstagram.com/t51.2885-15/s150x150/e35/14582494_230590227392571_1133498872220352512_n.jpg?ig_cache_key=MTQyMzYyNDIxNzYxNDM4ODIzOA%3D%3D.2", "width": 150, "height": 150}, "low_resolution": {"url": "https://scontent.cdninstagram.com/t51.2885-15/s320x320/e35/14582494_230590227392571_1133498872220352512_n.jpg?ig_cache_key=MTQyMzYyNDIxNzYxNDM4ODIzOA%3D%3D.2", "width": 320, "height": 320}, "standard_resolution": {"url": "https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/14582494_230590227392571_1133498872220352512_n.jpg?ig_cache_key=MTQyMzYyNDIxNzYxNDM4ODIzOA%3D%3D.2", "width": 640, "height": 640}}, "caption": null, "comments": {"count": 0}, "location": null, "attribution": null, "created_time": "1483929253", "user_has_liked": false, "users_in_photo": []}	2017-01-09 02:34:13	2017-01-20 09:55:23.284263	2017-01-20 09:55:23.290982
+2	\N	94	instagram	1423623637416506737_5533826	image			https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/15875956_1212917825452337_2409153512601550848_n.jpg?ig_cache_key=MTQyMzYyMzYzNzQxNjUwNjczNw%3D%3D.2	\N	{"id": "1423623637416506737_5533826", "link": "https://www.instagram.com/p/BPBuifSD3Vx8CIII7k1PraYwsBmrp6GgZDaa6w0/", "tags": [], "type": "image", "user": {"id": "5533826", "username": "jaequery", "full_name": "", "profile_picture": "http://scontent.cdninstagram.com/t51.2885-19/11887252_589626547841906_1833480884_a.jpg"}, "likes": {"count": 0}, "filter": "Clarendon", "images": {"thumbnail": {"url": "https://scontent.cdninstagram.com/t51.2885-15/s150x150/e35/15875956_1212917825452337_2409153512601550848_n.jpg?ig_cache_key=MTQyMzYyMzYzNzQxNjUwNjczNw%3D%3D.2", "width": 150, "height": 150}, "low_resolution": {"url": "https://scontent.cdninstagram.com/t51.2885-15/s320x320/e35/15875956_1212917825452337_2409153512601550848_n.jpg?ig_cache_key=MTQyMzYyMzYzNzQxNjUwNjczNw%3D%3D.2", "width": 320, "height": 320}, "standard_resolution": {"url": "https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/15875956_1212917825452337_2409153512601550848_n.jpg?ig_cache_key=MTQyMzYyMzYzNzQxNjUwNjczNw%3D%3D.2", "width": 640, "height": 640}}, "caption": null, "comments": {"count": 0}, "location": null, "attribution": null, "created_time": "1483929184", "user_has_liked": false, "users_in_photo": []}	2017-01-09 02:33:04	2017-01-20 09:55:23.467759	2017-01-20 09:55:23.472092
+3	\N	95	instagram	1419820799494182583_5533826	image			https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/15876780_1226232254128241_4851363189457158144_n.jpg?ig_cache_key=MTQxOTgyMDc5OTQ5NDE4MjU4Mw%3D%3D.2	\N	{"id": "1419820799494182583_5533826", "link": "https://www.instagram.com/p/BO0N36ej9a31bCkkzakytDASRNg55nGrYP7ckM0/", "tags": [], "type": "image", "user": {"id": "5533826", "username": "jaequery", "full_name": "", "profile_picture": "http://scontent.cdninstagram.com/t51.2885-19/11887252_589626547841906_1833480884_a.jpg"}, "likes": {"count": 2}, "filter": "Lark", "images": {"thumbnail": {"url": "https://scontent.cdninstagram.com/t51.2885-15/s150x150/e35/c135.0.810.810/15876780_1226232254128241_4851363189457158144_n.jpg?ig_cache_key=MTQxOTgyMDc5OTQ5NDE4MjU4Mw%3D%3D.2.c", "width": 150, "height": 150}, "low_resolution": {"url": "https://scontent.cdninstagram.com/t51.2885-15/s320x320/e35/15876780_1226232254128241_4851363189457158144_n.jpg?ig_cache_key=MTQxOTgyMDc5OTQ5NDE4MjU4Mw%3D%3D.2", "width": 320, "height": 240}, "standard_resolution": {"url": "https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/15876780_1226232254128241_4851363189457158144_n.jpg?ig_cache_key=MTQxOTgyMDc5OTQ5NDE4MjU4Mw%3D%3D.2", "width": 640, "height": 480}}, "caption": null, "comments": {"count": 0}, "location": null, "attribution": null, "created_time": "1483475850", "user_has_liked": false, "users_in_photo": []}	2017-01-03 20:37:30	2017-01-20 09:55:23.709802	2017-01-20 09:55:23.713872
+4	\N	96	instagram	1419820389316167980_5533826	image			https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/15802733_1191373274315759_1709870847549767680_n.jpg?ig_cache_key=MTQxOTgyMDM4OTMxNjE2Nzk4MA%3D%3D.2	\N	{"id": "1419820389316167980_5533826", "link": "https://www.instagram.com/p/BO0Nx8eDAksNsf-EDFcWYMzwPJfrKlAm0AS_o00/", "tags": [], "type": "image", "user": {"id": "5533826", "username": "jaequery", "full_name": "", "profile_picture": "http://scontent.cdninstagram.com/t51.2885-19/11887252_589626547841906_1833480884_a.jpg"}, "likes": {"count": 2}, "filter": "Clarendon", "images": {"thumbnail": {"url": "https://scontent.cdninstagram.com/t51.2885-15/s150x150/e35/15802733_1191373274315759_1709870847549767680_n.jpg?ig_cache_key=MTQxOTgyMDM4OTMxNjE2Nzk4MA%3D%3D.2", "width": 150, "height": 150}, "low_resolution": {"url": "https://scontent.cdninstagram.com/t51.2885-15/s320x320/e35/15802733_1191373274315759_1709870847549767680_n.jpg?ig_cache_key=MTQxOTgyMDM4OTMxNjE2Nzk4MA%3D%3D.2", "width": 320, "height": 320}, "standard_resolution": {"url": "https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/15802733_1191373274315759_1709870847549767680_n.jpg?ig_cache_key=MTQxOTgyMDM4OTMxNjE2Nzk4MA%3D%3D.2", "width": 640, "height": 640}}, "caption": null, "comments": {"count": 0}, "location": null, "attribution": null, "created_time": "1483475801", "user_has_liked": false, "users_in_photo": []}	2017-01-03 20:36:41	2017-01-20 09:55:24.031053	2017-01-20 09:55:24.035732
+61	\N	115	instagram	1432174834825865935_5533826	image			https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/16229043_1288725404507191_7116609403284881408_n.jpg?ig_cache_key=MTQzMjE3NDgzNDgyNTg2NTkzNQ%3D%3D.2	\N	{"id": "1432174834825865935_5533826", "link": "https://www.instagram.com/p/BPgG2yeDKrPv82TYntCgddhPFwbPXmh3PziJps0/", "tags": [], "type": "image", "user": {"id": "5533826", "username": "jaequery", "full_name": "", "profile_picture": "http://scontent.cdninstagram.com/t51.2885-19/11887252_589626547841906_1833480884_a.jpg"}, "likes": {"count": 2}, "filter": "Gingham", "images": {"thumbnail": {"url": "https://scontent.cdninstagram.com/t51.2885-15/s150x150/e35/16229043_1288725404507191_7116609403284881408_n.jpg?ig_cache_key=MTQzMjE3NDgzNDgyNTg2NTkzNQ%3D%3D.2", "width": 150, "height": 150}, "low_resolution": {"url": "https://scontent.cdninstagram.com/t51.2885-15/s320x320/e35/16229043_1288725404507191_7116609403284881408_n.jpg?ig_cache_key=MTQzMjE3NDgzNDgyNTg2NTkzNQ%3D%3D.2", "width": 320, "height": 320}, "standard_resolution": {"url": "https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/16229043_1288725404507191_7116609403284881408_n.jpg?ig_cache_key=MTQzMjE3NDgzNDgyNTg2NTkzNQ%3D%3D.2", "width": 640, "height": 640}}, "caption": null, "comments": {"count": 0}, "location": null, "attribution": null, "created_time": "1484948566", "user_has_liked": false, "users_in_photo": []}	2017-01-20 21:42:46	2017-01-21 20:53:55.817791	2017-01-21 20:53:55.823331
+5	\N	97	instagram	1418449855764755275_5533826	image			https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/15624121_242601042844755_7708581803639963648_n.jpg?ig_cache_key=MTQxODQ0OTg1NTc2NDc1NTI3NQ%3D%3D.2	\N	{"id": "1418449855764755275_5533826", "link": "https://www.instagram.com/p/BOvWKDoj_NLN2Ox7rwcIpOSVMiKIRmqqr6Rf840/", "tags": [], "type": "image", "user": {"id": "5533826", "username": "jaequery", "full_name": "", "profile_picture": "http://scontent.cdninstagram.com/t51.2885-19/11887252_589626547841906_1833480884_a.jpg"}, "likes": {"count": 3}, "filter": "Gingham", "images": {"thumbnail": {"url": "https://scontent.cdninstagram.com/t51.2885-15/s150x150/e35/15624121_242601042844755_7708581803639963648_n.jpg?ig_cache_key=MTQxODQ0OTg1NTc2NDc1NTI3NQ%3D%3D.2", "width": 150, "height": 150}, "low_resolution": {"url": "https://scontent.cdninstagram.com/t51.2885-15/s320x320/e35/15624121_242601042844755_7708581803639963648_n.jpg?ig_cache_key=MTQxODQ0OTg1NTc2NDc1NTI3NQ%3D%3D.2", "width": 320, "height": 320}, "standard_resolution": {"url": "https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/15624121_242601042844755_7708581803639963648_n.jpg?ig_cache_key=MTQxODQ0OTg1NTc2NDc1NTI3NQ%3D%3D.2", "width": 640, "height": 640}}, "caption": null, "comments": {"count": 0}, "location": null, "attribution": null, "created_time": "1483312421", "user_has_liked": false, "users_in_photo": []}	2017-01-01 23:13:41	2017-01-20 09:55:24.207995	2017-01-20 09:55:24.212738
+6	\N	98	instagram	1418449642450687665_5533826	image			https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/15801968_633810200159502_5910472016930013184_n.jpg?ig_cache_key=MTQxODQ0OTY0MjQ1MDY4NzY2NQ%3D%3D.2	\N	{"id": "1418449642450687665_5533826", "link": "https://www.instagram.com/p/BOvWG8-DZaxW2lpud47XgP0d0XOVOoj1scipv00/", "tags": [], "type": "image", "user": {"id": "5533826", "username": "jaequery", "full_name": "", "profile_picture": "http://scontent.cdninstagram.com/t51.2885-19/11887252_589626547841906_1833480884_a.jpg"}, "likes": {"count": 6}, "filter": "Gingham", "images": {"thumbnail": {"url": "https://scontent.cdninstagram.com/t51.2885-15/s150x150/e35/15801968_633810200159502_5910472016930013184_n.jpg?ig_cache_key=MTQxODQ0OTY0MjQ1MDY4NzY2NQ%3D%3D.2", "width": 150, "height": 150}, "low_resolution": {"url": "https://scontent.cdninstagram.com/t51.2885-15/s320x320/e35/15801968_633810200159502_5910472016930013184_n.jpg?ig_cache_key=MTQxODQ0OTY0MjQ1MDY4NzY2NQ%3D%3D.2", "width": 320, "height": 320}, "standard_resolution": {"url": "https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/15801968_633810200159502_5910472016930013184_n.jpg?ig_cache_key=MTQxODQ0OTY0MjQ1MDY4NzY2NQ%3D%3D.2", "width": 640, "height": 640}}, "caption": null, "comments": {"count": 0}, "location": null, "attribution": null, "created_time": "1483312395", "user_has_liked": false, "users_in_photo": []}	2017-01-01 23:13:15	2017-01-20 09:55:24.442342	2017-01-20 09:55:24.446568
+7	\N	99	instagram	1416849305390294793_5533826	video			https://scontent.cdninstagram.com/t51.2885-15/s640x640/e15/15802390_1331226976908260_6807985525979348992_n.jpg?ig_cache_key=MTQxNjg0OTMwNTM5MDI5NDc5Mw%3D%3D.2	https://scontent.cdninstagram.com/t50.2886-16/15777881_218467031944956_3388087532724944896_n.mp4	{"id": "1416849305390294793_5533826", "link": "https://www.instagram.com/p/BOpqO-8DCcJVEpY783s8UBdWoqqIIQNmh5wGZ00/", "tags": [], "type": "video", "user": {"id": "5533826", "username": "jaequery", "full_name": "", "profile_picture": "http://scontent.cdninstagram.com/t51.2885-19/11887252_589626547841906_1833480884_a.jpg"}, "likes": {"count": 0}, "filter": "Clarendon", "images": {"thumbnail": {"url": "https://scontent.cdninstagram.com/t51.2885-15/s150x150/e15/15802390_1331226976908260_6807985525979348992_n.jpg?ig_cache_key=MTQxNjg0OTMwNTM5MDI5NDc5Mw%3D%3D.2", "width": 150, "height": 150}, "low_resolution": {"url": "https://scontent.cdninstagram.com/t51.2885-15/s320x320/e15/15802390_1331226976908260_6807985525979348992_n.jpg?ig_cache_key=MTQxNjg0OTMwNTM5MDI5NDc5Mw%3D%3D.2", "width": 320, "height": 320}, "standard_resolution": {"url": "https://scontent.cdninstagram.com/t51.2885-15/s640x640/e15/15802390_1331226976908260_6807985525979348992_n.jpg?ig_cache_key=MTQxNjg0OTMwNTM5MDI5NDc5Mw%3D%3D.2", "width": 640, "height": 640}}, "videos": {"low_bandwidth": {"url": "https://scontent.cdninstagram.com/t50.2886-16/15819338_202665360137667_4996164816386129920_n.mp4", "width": 480, "height": 480}, "low_resolution": {"url": "https://scontent.cdninstagram.com/t50.2886-16/15819338_202665360137667_4996164816386129920_n.mp4", "width": 480, "height": 480}, "standard_resolution": {"url": "https://scontent.cdninstagram.com/t50.2886-16/15777881_218467031944956_3388087532724944896_n.mp4", "width": 640, "height": 640}}, "caption": null, "comments": {"count": 0}, "location": null, "attribution": null, "created_time": "1483121620", "user_has_liked": false, "users_in_photo": []}	2016-12-30 18:13:40	2017-01-20 09:55:24.676364	2017-01-20 09:55:24.680985
+8	\N	100	instagram	1416848030556766098_5533826	image			https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/15624919_234286640348212_4940197157681496064_n.jpg?ig_cache_key=MTQxNjg0ODAzMDU1Njc2NjA5OA%3D%3D.2	\N	{"id": "1416848030556766098_5533826", "link": "https://www.instagram.com/p/BOpp8bqDD-SWBN5RSr49aSk2IrSRo2-u6K3f2E0/", "tags": [], "type": "image", "user": {"id": "5533826", "username": "jaequery", "full_name": "", "profile_picture": "http://scontent.cdninstagram.com/t51.2885-19/11887252_589626547841906_1833480884_a.jpg"}, "likes": {"count": 0}, "filter": "Gingham", "images": {"thumbnail": {"url": "https://scontent.cdninstagram.com/t51.2885-15/s150x150/e35/c135.0.810.810/15624919_234286640348212_4940197157681496064_n.jpg?ig_cache_key=MTQxNjg0ODAzMDU1Njc2NjA5OA%3D%3D.2.c", "width": 150, "height": 150}, "low_resolution": {"url": "https://scontent.cdninstagram.com/t51.2885-15/s320x320/e35/15624919_234286640348212_4940197157681496064_n.jpg?ig_cache_key=MTQxNjg0ODAzMDU1Njc2NjA5OA%3D%3D.2", "width": 320, "height": 240}, "standard_resolution": {"url": "https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/15624919_234286640348212_4940197157681496064_n.jpg?ig_cache_key=MTQxNjg0ODAzMDU1Njc2NjA5OA%3D%3D.2", "width": 640, "height": 480}}, "caption": null, "comments": {"count": 0}, "location": null, "attribution": null, "created_time": "1483121468", "user_has_liked": false, "users_in_photo": []}	2016-12-30 18:11:08	2017-01-20 09:55:24.918347	2017-01-20 09:55:24.922713
+9	\N	101	instagram	1413590049375584229_5533826	image			https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/15538271_1801645323423827_6822275285900066816_n.jpg?ig_cache_key=MTQxMzU5MDA0OTM3NTU4NDIyOQ%3D%3D.2	\N	{"id": "1413590049375584229_5533826", "link": "https://www.instagram.com/p/BOeFKkPDv_lqMgAha6_LUYwL-AEB5ZXRDrI1ws0/", "tags": [], "type": "image", "user": {"id": "5533826", "username": "jaequery", "full_name": "", "profile_picture": "http://scontent.cdninstagram.com/t51.2885-19/11887252_589626547841906_1833480884_a.jpg"}, "likes": {"count": 4}, "filter": "Clarendon", "images": {"thumbnail": {"url": "https://scontent.cdninstagram.com/t51.2885-15/s150x150/e35/15538271_1801645323423827_6822275285900066816_n.jpg?ig_cache_key=MTQxMzU5MDA0OTM3NTU4NDIyOQ%3D%3D.2", "width": 150, "height": 150}, "low_resolution": {"url": "https://scontent.cdninstagram.com/t51.2885-15/s320x320/e35/15538271_1801645323423827_6822275285900066816_n.jpg?ig_cache_key=MTQxMzU5MDA0OTM3NTU4NDIyOQ%3D%3D.2", "width": 320, "height": 320}, "standard_resolution": {"url": "https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/15538271_1801645323423827_6822275285900066816_n.jpg?ig_cache_key=MTQxMzU5MDA0OTM3NTU4NDIyOQ%3D%3D.2", "width": 640, "height": 640}}, "caption": null, "comments": {"count": 0}, "location": null, "attribution": null, "created_time": "1482733087", "user_has_liked": false, "users_in_photo": []}	2016-12-26 06:18:07	2017-01-20 09:55:25.235957	2017-01-20 09:55:25.240644
+10	\N	102	instagram	1413576987851530282_5533826	image			https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/15535167_1793029157615681_2208980772155555840_n.jpg?ig_cache_key=MTQxMzU3Njk4Nzg1MTUzMDI4Mg%3D%3D.2	\N	{"id": "1413576987851530282_5533826", "link": "https://www.instagram.com/p/BOeCMfvjqAql7eZ4IYxCUhwW8IpolLd74Bjg5c0/", "tags": [], "type": "image", "user": {"id": "5533826", "username": "jaequery", "full_name": "", "profile_picture": "http://scontent.cdninstagram.com/t51.2885-19/11887252_589626547841906_1833480884_a.jpg"}, "likes": {"count": 8}, "filter": "Clarendon", "images": {"thumbnail": {"url": "https://scontent.cdninstagram.com/t51.2885-15/s150x150/e35/15535167_1793029157615681_2208980772155555840_n.jpg?ig_cache_key=MTQxMzU3Njk4Nzg1MTUzMDI4Mg%3D%3D.2", "width": 150, "height": 150}, "low_resolution": {"url": "https://scontent.cdninstagram.com/t51.2885-15/s320x320/e35/15535167_1793029157615681_2208980772155555840_n.jpg?ig_cache_key=MTQxMzU3Njk4Nzg1MTUzMDI4Mg%3D%3D.2", "width": 320, "height": 320}, "standard_resolution": {"url": "https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/15535167_1793029157615681_2208980772155555840_n.jpg?ig_cache_key=MTQxMzU3Njk4Nzg1MTUzMDI4Mg%3D%3D.2", "width": 640, "height": 640}}, "caption": null, "comments": {"count": 0}, "location": null, "attribution": null, "created_time": "1482731530", "user_has_liked": false, "users_in_photo": []}	2016-12-26 05:52:10	2017-01-20 09:55:25.418195	2017-01-20 09:55:25.422533
+11	\N	103	instagram	1413293666223300731_5533826	image			https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/15538491_346943885690223_2000754706036555776_n.jpg?ig_cache_key=MTQxMzI5MzY2NjIyMzMwMDczMQ%3D%3D.2	\N	{"id": "1413293666223300731_5533826", "link": "https://www.instagram.com/p/BOdBxn6jKB7f3ZkTAIeeTwmKzQlwr8kXMe7Dns0/", "tags": [], "type": "image", "user": {"id": "5533826", "username": "jaequery", "full_name": "", "profile_picture": "http://scontent.cdninstagram.com/t51.2885-19/11887252_589626547841906_1833480884_a.jpg"}, "likes": {"count": 3}, "filter": "Clarendon", "images": {"thumbnail": {"url": "https://scontent.cdninstagram.com/t51.2885-15/s150x150/e35/15538491_346943885690223_2000754706036555776_n.jpg?ig_cache_key=MTQxMzI5MzY2NjIyMzMwMDczMQ%3D%3D.2", "width": 150, "height": 150}, "low_resolution": {"url": "https://scontent.cdninstagram.com/t51.2885-15/s320x320/e35/15538491_346943885690223_2000754706036555776_n.jpg?ig_cache_key=MTQxMzI5MzY2NjIyMzMwMDczMQ%3D%3D.2", "width": 320, "height": 320}, "standard_resolution": {"url": "https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/15538491_346943885690223_2000754706036555776_n.jpg?ig_cache_key=MTQxMzI5MzY2NjIyMzMwMDczMQ%3D%3D.2", "width": 640, "height": 640}}, "caption": null, "comments": {"count": 0}, "location": null, "attribution": null, "created_time": "1482697755", "user_has_liked": false, "users_in_photo": []}	2016-12-25 20:29:15	2017-01-20 09:55:25.601341	2017-01-20 09:55:25.605492
+16	\N	108	instagram	1398148954726495532_5533826	video			https://scontent.cdninstagram.com/t51.2885-15/s640x640/e15/14553172_1813763772231935_3025686228172275712_n.jpg?ig_cache_key=MTM5ODE0ODk1NDcyNjQ5NTUzMg%3D%3D.2	https://scontent.cdninstagram.com/t50.2886-16/15360432_971045183039684_436760631694065664_n.mp4	{"id": "1398148954726495532_5533826", "link": "https://www.instagram.com/p/BNnORENjnUsXAQMNWD3fk3T4A6Y6PjuYqkiaCs0/", "tags": [], "type": "video", "user": {"id": "5533826", "username": "jaequery", "full_name": "", "profile_picture": "http://scontent.cdninstagram.com/t51.2885-19/11887252_589626547841906_1833480884_a.jpg"}, "likes": {"count": 3}, "filter": "Normal", "images": {"thumbnail": {"url": "https://scontent.cdninstagram.com/t51.2885-15/s150x150/e15/14553172_1813763772231935_3025686228172275712_n.jpg?ig_cache_key=MTM5ODE0ODk1NDcyNjQ5NTUzMg%3D%3D.2", "width": 150, "height": 150}, "low_resolution": {"url": "https://scontent.cdninstagram.com/t51.2885-15/s320x320/e15/14553172_1813763772231935_3025686228172275712_n.jpg?ig_cache_key=MTM5ODE0ODk1NDcyNjQ5NTUzMg%3D%3D.2", "width": 320, "height": 320}, "standard_resolution": {"url": "https://scontent.cdninstagram.com/t51.2885-15/s640x640/e15/14553172_1813763772231935_3025686228172275712_n.jpg?ig_cache_key=MTM5ODE0ODk1NDcyNjQ5NTUzMg%3D%3D.2", "width": 640, "height": 640}}, "videos": {"low_bandwidth": {"url": "https://scontent.cdninstagram.com/t50.2886-16/15344577_1730506063935385_2954725663271026688_n.mp4", "width": 480, "height": 480}, "low_resolution": {"url": "https://scontent.cdninstagram.com/t50.2886-16/15344577_1730506063935385_2954725663271026688_n.mp4", "width": 480, "height": 480}, "standard_resolution": {"url": "https://scontent.cdninstagram.com/t50.2886-16/15360432_971045183039684_436760631694065664_n.mp4", "width": 640, "height": 640}}, "caption": null, "comments": {"count": 0}, "location": null, "attribution": null, "created_time": "1480892365", "user_has_liked": false, "users_in_photo": []}	2016-12-04 22:59:25	2017-01-20 09:55:27.088148	2017-01-20 09:55:27.091126
+12	\N	104	instagram	1407639436712151843_5533826	image	If it's free, take it		https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/14566587_1722059388123207_9134096619006853120_n.jpg?ig_cache_key=MTQwNzYzOTQzNjcxMjE1MTg0Mw%3D%3D.2	\N	{"id": "1407639436712151843_5533826", "link": "https://www.instagram.com/p/BOI8JwVDwsj53B_83Z36_hBNk4LD0rmrwd784k0/", "tags": [], "type": "image", "user": {"id": "5533826", "username": "jaequery", "full_name": "", "profile_picture": "http://scontent.cdninstagram.com/t51.2885-19/11887252_589626547841906_1833480884_a.jpg"}, "likes": {"count": 3}, "filter": "Clarendon", "images": {"thumbnail": {"url": "https://scontent.cdninstagram.com/t51.2885-15/s150x150/e35/14566587_1722059388123207_9134096619006853120_n.jpg?ig_cache_key=MTQwNzYzOTQzNjcxMjE1MTg0Mw%3D%3D.2", "width": 150, "height": 150}, "low_resolution": {"url": "https://scontent.cdninstagram.com/t51.2885-15/s320x320/e35/14566587_1722059388123207_9134096619006853120_n.jpg?ig_cache_key=MTQwNzYzOTQzNjcxMjE1MTg0Mw%3D%3D.2", "width": 320, "height": 320}, "standard_resolution": {"url": "https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/14566587_1722059388123207_9134096619006853120_n.jpg?ig_cache_key=MTQwNzYzOTQzNjcxMjE1MTg0Mw%3D%3D.2", "width": 640, "height": 640}}, "caption": {"id": "17867634475040096", "from": {"id": "5533826", "username": "jaequery", "full_name": "", "profile_picture": "http://scontent.cdninstagram.com/t51.2885-19/11887252_589626547841906_1833480884_a.jpg"}, "text": "If it's free, take it", "created_time": "1482023718"}, "comments": {"count": 0}, "location": null, "attribution": null, "created_time": "1482023718", "user_has_liked": false, "users_in_photo": []}	2016-12-18 01:15:18	2017-01-20 09:55:25.838831	2017-01-20 09:55:25.843354
+13	\N	105	instagram	1407123385217809110_5533826	video	Wow this place is snowing a lot #denver		https://scontent.cdninstagram.com/t51.2885-15/s640x640/e15/15624247_1220659944689942_5749876983504830464_n.jpg?ig_cache_key=MTQwNzEyMzM4NTIxNzgwOTExMA%3D%3D.2	https://scontent.cdninstagram.com/t50.2886-16/15592887_217429258713664_9129328634077642752_n.mp4	{"id": "1407123385217809110_5533826", "link": "https://www.instagram.com/p/BOHG0N7DXrWHD8BKUbDaEXQPBJdOdVv5R8KJDY0/", "tags": ["denver"], "type": "video", "user": {"id": "5533826", "username": "jaequery", "full_name": "", "profile_picture": "http://scontent.cdninstagram.com/t51.2885-19/11887252_589626547841906_1833480884_a.jpg"}, "likes": {"count": 3}, "filter": "Normal", "images": {"thumbnail": {"url": "https://scontent.cdninstagram.com/t51.2885-15/s150x150/e15/15624247_1220659944689942_5749876983504830464_n.jpg?ig_cache_key=MTQwNzEyMzM4NTIxNzgwOTExMA%3D%3D.2", "width": 150, "height": 150}, "low_resolution": {"url": "https://scontent.cdninstagram.com/t51.2885-15/s320x320/e15/15624247_1220659944689942_5749876983504830464_n.jpg?ig_cache_key=MTQwNzEyMzM4NTIxNzgwOTExMA%3D%3D.2", "width": 320, "height": 320}, "standard_resolution": {"url": "https://scontent.cdninstagram.com/t51.2885-15/s640x640/e15/15624247_1220659944689942_5749876983504830464_n.jpg?ig_cache_key=MTQwNzEyMzM4NTIxNzgwOTExMA%3D%3D.2", "width": 640, "height": 640}}, "videos": {"low_bandwidth": {"url": "https://scontent.cdninstagram.com/t50.2886-16/15626911_851280294975661_7726240699116421120_n.mp4", "width": 480, "height": 480}, "low_resolution": {"url": "https://scontent.cdninstagram.com/t50.2886-16/15626911_851280294975661_7726240699116421120_n.mp4", "width": 480, "height": 480}, "standard_resolution": {"url": "https://scontent.cdninstagram.com/t50.2886-16/15592887_217429258713664_9129328634077642752_n.mp4", "width": 640, "height": 640}}, "caption": {"id": "17868169624021873", "from": {"id": "5533826", "username": "jaequery", "full_name": "", "profile_picture": "http://scontent.cdninstagram.com/t51.2885-19/11887252_589626547841906_1833480884_a.jpg"}, "text": "Wow this place is snowing a lot #denver", "created_time": "1481962200"}, "comments": {"count": 0}, "location": null, "attribution": null, "created_time": "1481962200", "user_has_liked": false, "users_in_photo": []}	2016-12-17 08:10:00	2017-01-20 09:55:26.079932	2017-01-20 09:55:26.084599
+14	\N	106	instagram	1406851035327061983_5533826	image	Company bambee		https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/15403355_1820786581526447_777599770196705280_n.jpg?ig_cache_key=MTQwNjg1MTAzNTMyNzA2MTk4Mw%3D%3D.2	\N	{"id": "1406851035327061983_5533826", "link": "https://www.instagram.com/p/BOGI5AUj1_fmN0MtqZPiv2sjl_ciUgZVbHckLc0/", "tags": [], "type": "image", "user": {"id": "5533826", "username": "jaequery", "full_name": "", "profile_picture": "http://scontent.cdninstagram.com/t51.2885-19/11887252_589626547841906_1833480884_a.jpg"}, "likes": {"count": 6}, "filter": "Gingham", "images": {"thumbnail": {"url": "https://scontent.cdninstagram.com/t51.2885-15/s150x150/e35/c135.0.810.810/15403355_1820786581526447_777599770196705280_n.jpg?ig_cache_key=MTQwNjg1MTAzNTMyNzA2MTk4Mw%3D%3D.2.c", "width": 150, "height": 150}, "low_resolution": {"url": "https://scontent.cdninstagram.com/t51.2885-15/s320x320/e35/15403355_1820786581526447_777599770196705280_n.jpg?ig_cache_key=MTQwNjg1MTAzNTMyNzA2MTk4Mw%3D%3D.2", "width": 320, "height": 240}, "standard_resolution": {"url": "https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/15403355_1820786581526447_777599770196705280_n.jpg?ig_cache_key=MTQwNjg1MTAzNTMyNzA2MTk4Mw%3D%3D.2", "width": 640, "height": 480}}, "caption": {"id": "17845642384170673", "from": {"id": "5533826", "username": "jaequery", "full_name": "", "profile_picture": "http://scontent.cdninstagram.com/t51.2885-19/11887252_589626547841906_1833480884_a.jpg"}, "text": "Company bambee", "created_time": "1481929734"}, "comments": {"count": 0}, "location": null, "attribution": null, "created_time": "1481929734", "user_has_liked": false, "users_in_photo": []}	2016-12-16 23:08:54	2017-01-20 09:55:26.413065	2017-01-20 09:55:26.417832
+15	\N	107	instagram	1402703126595392218_5533826	image			https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/14504883_1825975937617509_8733706775397662720_n.jpg?ig_cache_key=MTQwMjcwMzEyNjU5NTM5MjIxOA%3D%3D.2	\N	{"id": "1402703126595392218_5533826", "link": "https://www.instagram.com/p/BN3Zw_SDFLa2L1IRqRR18oZJilgZcKIbZ0HUiw0/", "tags": [], "type": "image", "user": {"id": "5533826", "username": "jaequery", "full_name": "", "profile_picture": "http://scontent.cdninstagram.com/t51.2885-19/11887252_589626547841906_1833480884_a.jpg"}, "likes": {"count": 2}, "filter": "Juno", "images": {"thumbnail": {"url": "https://scontent.cdninstagram.com/t51.2885-15/s150x150/e35/14504883_1825975937617509_8733706775397662720_n.jpg?ig_cache_key=MTQwMjcwMzEyNjU5NTM5MjIxOA%3D%3D.2", "width": 150, "height": 150}, "low_resolution": {"url": "https://scontent.cdninstagram.com/t51.2885-15/s320x320/e35/14504883_1825975937617509_8733706775397662720_n.jpg?ig_cache_key=MTQwMjcwMzEyNjU5NTM5MjIxOA%3D%3D.2", "width": 320, "height": 320}, "standard_resolution": {"url": "https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/14504883_1825975937617509_8733706775397662720_n.jpg?ig_cache_key=MTQwMjcwMzEyNjU5NTM5MjIxOA%3D%3D.2", "width": 640, "height": 640}}, "caption": null, "comments": {"count": 0}, "location": null, "attribution": null, "created_time": "1481435264", "user_has_liked": false, "users_in_photo": []}	2016-12-11 05:47:44	2017-01-20 09:55:26.76073	2017-01-20 09:55:26.765163
+17	\N	109	instagram	1398138221426997214_5533826	image			https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/15305860_147802365700482_8717898834732122112_n.jpg?ig_cache_key=MTM5ODEzODIyMTQyNjk5NzIxNA%3D%3D.2	\N	{"id": "1398138221426997214_5533826", "link": "https://www.instagram.com/p/BNnL04DDXfeYDy2WqRt2QnG-8bF9b7gbbFTspk0/", "tags": [], "type": "image", "user": {"id": "5533826", "username": "jaequery", "full_name": "", "profile_picture": "http://scontent.cdninstagram.com/t51.2885-19/11887252_589626547841906_1833480884_a.jpg"}, "likes": {"count": 5}, "filter": "Clarendon", "images": {"thumbnail": {"url": "https://scontent.cdninstagram.com/t51.2885-15/s150x150/e35/15305860_147802365700482_8717898834732122112_n.jpg?ig_cache_key=MTM5ODEzODIyMTQyNjk5NzIxNA%3D%3D.2", "width": 150, "height": 150}, "low_resolution": {"url": "https://scontent.cdninstagram.com/t51.2885-15/s320x320/e35/15305860_147802365700482_8717898834732122112_n.jpg?ig_cache_key=MTM5ODEzODIyMTQyNjk5NzIxNA%3D%3D.2", "width": 320, "height": 320}, "standard_resolution": {"url": "https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/15305860_147802365700482_8717898834732122112_n.jpg?ig_cache_key=MTM5ODEzODIyMTQyNjk5NzIxNA%3D%3D.2", "width": 640, "height": 640}}, "caption": null, "comments": {"count": 0}, "location": null, "attribution": null, "created_time": "1480891085", "user_has_liked": false, "users_in_photo": []}	2016-12-04 22:38:05	2017-01-20 09:55:27.414743	2017-01-20 09:55:27.419319
+18	\N	110	instagram	1397010282115252441_5533826	image			https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/15043778_1252006618197687_4222838409799925760_n.jpg?ig_cache_key=MTM5NzAxMDI4MjExNTI1MjQ0MQ%3D%3D.2	\N	{"id": "1397010282115252441_5533826", "link": "https://www.instagram.com/p/BNjLXMtDEDZp4MfdY9ETqEbs55qpNSDJbwvD480/", "tags": [], "type": "image", "user": {"id": "5533826", "username": "jaequery", "full_name": "", "profile_picture": "http://scontent.cdninstagram.com/t51.2885-19/11887252_589626547841906_1833480884_a.jpg"}, "likes": {"count": 4}, "filter": "Gingham", "images": {"thumbnail": {"url": "https://scontent.cdninstagram.com/t51.2885-15/s150x150/e35/15043778_1252006618197687_4222838409799925760_n.jpg?ig_cache_key=MTM5NzAxMDI4MjExNTI1MjQ0MQ%3D%3D.2", "width": 150, "height": 150}, "low_resolution": {"url": "https://scontent.cdninstagram.com/t51.2885-15/s320x320/e35/15043778_1252006618197687_4222838409799925760_n.jpg?ig_cache_key=MTM5NzAxMDI4MjExNTI1MjQ0MQ%3D%3D.2", "width": 320, "height": 320}, "standard_resolution": {"url": "https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/15043778_1252006618197687_4222838409799925760_n.jpg?ig_cache_key=MTM5NzAxMDI4MjExNTI1MjQ0MQ%3D%3D.2", "width": 640, "height": 640}}, "caption": null, "comments": {"count": 0}, "location": null, "attribution": null, "created_time": "1480756624", "user_has_liked": false, "users_in_photo": []}	2016-12-03 09:17:04	2017-01-20 09:55:27.78614	2017-01-20 09:55:27.790089
+19	\N	111	instagram	1397009370927994501_5533826	image			https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/15056755_1383674161673552_8899401992292532224_n.jpg?ig_cache_key=MTM5NzAwOTM3MDkyNzk5NDUwMQ%3D%3D.2	\N	{"id": "1397009370927994501_5533826", "link": "https://www.instagram.com/p/BNjLJ8GDhaFgtIUG_or19ukoHWqJaeB36GKu_w0/", "tags": [], "type": "image", "user": {"id": "5533826", "username": "jaequery", "full_name": "", "profile_picture": "http://scontent.cdninstagram.com/t51.2885-19/11887252_589626547841906_1833480884_a.jpg"}, "likes": {"count": 2}, "filter": "Clarendon", "images": {"thumbnail": {"url": "https://scontent.cdninstagram.com/t51.2885-15/s150x150/e35/15056755_1383674161673552_8899401992292532224_n.jpg?ig_cache_key=MTM5NzAwOTM3MDkyNzk5NDUwMQ%3D%3D.2", "width": 150, "height": 150}, "low_resolution": {"url": "https://scontent.cdninstagram.com/t51.2885-15/s320x320/e35/15056755_1383674161673552_8899401992292532224_n.jpg?ig_cache_key=MTM5NzAwOTM3MDkyNzk5NDUwMQ%3D%3D.2", "width": 320, "height": 320}, "standard_resolution": {"url": "https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/15056755_1383674161673552_8899401992292532224_n.jpg?ig_cache_key=MTM5NzAwOTM3MDkyNzk5NDUwMQ%3D%3D.2", "width": 640, "height": 640}}, "caption": null, "comments": {"count": 0}, "location": null, "attribution": null, "created_time": "1480756516", "user_has_liked": false, "users_in_photo": []}	2016-12-03 09:15:16	2017-01-20 09:55:27.949185	2017-01-20 09:55:27.953716
+20	\N	112	instagram	1397007967681615951_5533826	video			https://scontent.cdninstagram.com/t51.2885-15/s640x640/e15/15253350_1352660751420260_3025003285422538752_n.jpg?ig_cache_key=MTM5NzAwNzk2NzY4MTYxNTk1MQ%3D%3D.2	https://scontent.cdninstagram.com/t50.2886-16/15353314_343458636029856_3592241961257402368_n.mp4	{"id": "1397007967681615951_5533826", "link": "https://www.instagram.com/p/BNjK1hODZhPgVgSrXIDX7OPfDbKQMlEFSF8jX00/", "tags": [], "type": "video", "user": {"id": "5533826", "username": "jaequery", "full_name": "", "profile_picture": "http://scontent.cdninstagram.com/t51.2885-19/11887252_589626547841906_1833480884_a.jpg"}, "likes": {"count": 0}, "filter": "Normal", "images": {"thumbnail": {"url": "https://scontent.cdninstagram.com/t51.2885-15/s150x150/e15/15253350_1352660751420260_3025003285422538752_n.jpg?ig_cache_key=MTM5NzAwNzk2NzY4MTYxNTk1MQ%3D%3D.2", "width": 150, "height": 150}, "low_resolution": {"url": "https://scontent.cdninstagram.com/t51.2885-15/s320x320/e15/15253350_1352660751420260_3025003285422538752_n.jpg?ig_cache_key=MTM5NzAwNzk2NzY4MTYxNTk1MQ%3D%3D.2", "width": 320, "height": 320}, "standard_resolution": {"url": "https://scontent.cdninstagram.com/t51.2885-15/s640x640/e15/15253350_1352660751420260_3025003285422538752_n.jpg?ig_cache_key=MTM5NzAwNzk2NzY4MTYxNTk1MQ%3D%3D.2", "width": 640, "height": 640}}, "videos": {"low_bandwidth": {"url": "https://scontent.cdninstagram.com/t50.2886-16/15359862_1236615049734721_24177539140288512_n.mp4", "width": 480, "height": 480}, "low_resolution": {"url": "https://scontent.cdninstagram.com/t50.2886-16/15359862_1236615049734721_24177539140288512_n.mp4", "width": 480, "height": 480}, "standard_resolution": {"url": "https://scontent.cdninstagram.com/t50.2886-16/15353314_343458636029856_3592241961257402368_n.mp4", "width": 640, "height": 640}}, "caption": null, "comments": {"count": 0}, "location": null, "attribution": null, "created_time": "1480756349", "user_has_liked": false, "users_in_photo": []}	2016-12-03 09:12:29	2017-01-20 09:55:28.330741	2017-01-20 09:55:28.3353
+\.
+
+
+--
+-- Name: media_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('media_id_seq', 80, true);
+
+
+--
+-- Data for Name: posts; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY posts (id, user_id, title, teaser, content, created_at, updated_at) FROM stdin;
+\.
+
+
+--
+-- Name: posts_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('posts_id_seq', 1, false);
+
+
+--
+-- Data for Name: schema_info; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY schema_info (version) FROM stdin;
+8
+\.
+
+
+--
+-- Data for Name: settings; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY settings (id, name, value, created_at, updated_at) FROM stdin;
+\.
+
+
+--
+-- Name: settings_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('settings_id_seq', 1, false);
+
+
+--
+-- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY users (id, first_name, last_name, address, address2, city, state, zip, country, username, password_digest, email, role, uid, provider, refid, avatar_url, created_at, updated_at, integrations) FROM stdin;
+1	Jae	Lee	\N	\N	\N	\N	\N	\N	jae	$2a$10$L0P.jRPT/nTFaAGn0f9mgewNyRJJmrYXI8OqoPOfSMrxJsolzXk92	test@test.com	admin	\N	email	test@test.com	/vendor/honeybadger/img/avatar.jpg	2016-12-15 07:43:15.56764	\N	\N
+2	\N	\N	\N	\N	\N	\N	\N	\N	jaequery	$2a$10$HmgGHkpSmITK3b2BaNLiceXHuNzl8a06aVBuHTNU9wPWWjNlufkLi	jaequery@gmail.com	users	\N	email	jaequery@gmail.com	\N	2016-12-15 07:43:30.076581	\N	\N
+3	\N	\N	\N	\N	\N	\N	\N	\N	startuptabs	$2a$10$3WiRyj/zqRBG5UqdAdan2.pvIuuej/nOXpeUZqmKpKUnRFUrff5Xy	jameslee@startuptabs.com	users	\N	email	jameslee@startuptabs.com	\N	2016-12-23 07:24:59.905392	\N	\N
+4	\N	\N	\N	\N	\N	\N	\N	\N	XxJLxX	$2a$10$QjTalY1TtC47TO0SPgMYsO0QDTt2ZgVyJdUiz3aUUByV2ZIo.zIEu	jienamc@icloud.com	users	\N	email	jienamc@icloud.com	\N	2016-12-27 00:43:31.273528	\N	\N
+5	\N	\N	\N	\N	\N	\N	\N	\N	mninthara	$2a$10$GYFQPGJYUSvK5CR7EqhpE.rH/lgOpCsjVrlRhq4SOhW5K9G1ni2AO	mninthara@gmail.com	users	\N	email	mninthara@gmail.com	\N	2017-02-14 07:12:24.819713	\N	\N
+6	\N	\N	\N	\N	\N	\N	\N	\N	markett	$2a$10$NqxVhAPfryQfJxwU8vZLtejzen8CuZ4uuqZ8KhFDi/HGjVOBv/zcK	jae@markett.com	users	\N	email	jae@markett.com	\N	2017-02-23 22:33:51.769522	\N	\N
+7	\N	\N	\N	\N	\N	\N	\N	\N	tobyg	$2a$10$3ubL0FgEuBX/f1AJSnYXw.XzjAq4WUUQqQIX.Ga6WcAm2CeSIJWLm	tobeee@gmail.com	users	\N	email	tobeee@gmail.com	\N	2017-04-01 11:22:04.67154	\N	\N
+8	\N	\N	\N	\N	\N	\N	\N	\N	dave@davegriffiths.net	$2a$10$.vWrH6GIVg0GZ/CqB6l9deldnnjzre.IYC0rCEOnwtS1gfqtE87Ny	dave@davegriffiths.net	users	\N	email	dave@davegriffiths.net	\N	2017-04-03 10:58:46.043219	\N	\N
+9	\N	\N	\N	\N	\N	\N	\N	\N	ibanzajoe	$2a$10$l/M/LcBZ6R5BiL/p5J4Yd.kfW5DiyilY3czphg6dVQ2/RQLc.rf82	ibanzajoe@gmail.com	users	\N	email	ibanzajoe@gmail.com	\N	2017-04-09 03:37:28.108643	\N	\N
+10	\N	\N	\N	\N	\N	\N	\N	\N	KittyKat	$2a$10$6hN3X0E1a7TOeUWtbwnLDu0hhemrboCfgWFxCY8kg2aLcZV0zRREy	kittykat6383@gmail.com	users	\N	email	kittykat6383@gmail.com	\N	2017-04-09 03:39:19.551618	\N	\N
+11	\N	\N	\N	\N	\N	\N	\N	\N	ronnysingh	$2a$10$ALpmR9lcKriOQ7VmJR5nruxr69S1UZzPR3FBEbI0FCZpD0aLjmwC6	rtpanesar@gmail.com	users	\N	email	rtpanesar@gmail.com	\N	2017-04-14 05:38:28.914175	\N	\N
+\.
+
+
+--
+-- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('users_id_seq', 11, true);
+
+
+--
+-- Name: calendars calendars_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY calendars
+    ADD CONSTRAINT calendars_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: events events_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY events
+    ADD CONSTRAINT events_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: hits hits_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY hits
+    ADD CONSTRAINT hits_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: media media_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY media
+    ADD CONSTRAINT media_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: media media_provider_refid_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY media
+    ADD CONSTRAINT media_provider_refid_key UNIQUE (provider, refid);
+
+
+--
+-- Name: posts posts_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY posts
+    ADD CONSTRAINT posts_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: settings settings_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY settings
+    ADD CONSTRAINT settings_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY users
+    ADD CONSTRAINT users_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: users users_provider_refid_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY users
+    ADD CONSTRAINT users_provider_refid_key UNIQUE (provider, refid);
+
+
+--
+-- Name: media_event_id_index; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX media_event_id_index ON media USING btree (event_id);
+
+
+--
+-- Name: media_provider_index; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX media_provider_index ON media USING btree (provider);
+
+
+--
+-- Name: media_refid_index; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX media_refid_index ON media USING btree (refid);
+
+
+--
+-- Name: media_type_index; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX media_type_index ON media USING btree (type);
+
+
+--
+-- Name: media_user_id_index; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX media_user_id_index ON media USING btree (user_id);
+
+
+--
+-- Name: media_user_id_provider_index; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX media_user_id_provider_index ON media USING btree (user_id, provider);
+
+
+--
+-- PostgreSQL database dump complete
+--
+
